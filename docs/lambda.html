@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>lambda.miz</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>lambda.miz</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h2>Lambda calculus</h2>
+<p>Environ originally taken from <code>finseq_2</code>. Later, I added trees and orders.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">environ</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Vocabularies are basically for Mizar&#39;s lexer.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">vocabularies</span> LAMBDA,
+      NUMBERS,
+      NAT_1, XBOOLE_0, SUBSET_1, FINSEQ_1, XXREAL_0, CARD_1,
+      ARYTM_1, ARYTM_3, TARSKI, RELAT_1, ORDINAL4, FUNCOP_1,
+      FUNCT_1, FUNCT_2,
+      ZFMISC_1, PARTFUN1,
+      ORDERS_2, ORDERS_1,
+      FINSEQ_2, PBOOLE, CARD_3, VALUED_1,
+      TREES_2, TREES_1;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Radix type specifications</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">notations</span> TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
+      NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
+      FUNCT_1, FUNCT_2,
+      FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+      TREES_2, TREES_1,
+      ORDERS_1, ORDERS_2,
+      XXREAL_0, VALUED_1,
+      RECDEF_1;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>For modes? (unknown mode format resolved)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">constructors</span> RELAT_2, PARTFUN1, BINOP_1, DOMAIN_1,
+      FUNCT_1, FUNCT_2, FUNCT_3,
+      FUNCOP_1,
+      SQUARE_1, NAT_1, FINSEQ_1, RELSET_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+      TREES_2, TREES_1,
+      ORDERS_1, ORDERS_2,
+      RECDEF_1;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Definition are for automatically unfolding predicates in the thesis you are proving</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">definitions</span> TARSKI,
+      FUNCT_1, FUNCT_2,
+      FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
+      ORDERS_1,
+      TREES_2, TREES_1;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Registrations are for clusters (showing that a type exists (is non-empty),
+ and automatically adding adjectives)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">registrations</span> XBOOLE_0, SUBSET_1, RELAT_1, ORDINAL1, PARTFUN1,
+      FUNCT_1, FUNCT_2,
+      FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
+      PBOOLE, CARD_3,
+      ORDERS_2,
+      TREES_2, TREES_1;
+
+  <span class="keyword">schemes</span> RECDEF_1;
+
+  <span class="keyword">requirements</span> BOOLE, SUBSET, NUMERALS, ARITHM, REAL;
+
+<span class="keyword">begin</span>
+
+<span class="keyword">reserve</span> D <span class="keyword">for</span> DecoratedTree,
+        p,q,r <span class="keyword">for</span> FinSequence <span class="keyword">of</span> NAT,
+        x <span class="keyword">for</span> <span class="keyword">set</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <h3>Lambda terms</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="comment">::</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>A <em>lambda term</em> is identified with it&#39;s AST (abstract
+ syntax tree). More precisely, we identify a lambda term
+ with a finite decorated tree.
+The nodes of the tree denote either application, abstraction
+ or a variable. Using <em>De Bruijn</em> variable indexing, we decorate
+ variables with their De Bruijn index (a natural nuber). Note
+ that we needn&#39;t explicitly annotate the type of a node,
+ as the three types of nodes differ in how many children they must
+ have: an application always has two children, an abstraction but one,
+ and variables don&#39;t have any. So it suffices to decorate application
+ and abstraction nodes with some default value (say, $0$).</p>
+<p>In Mizar, a <code>Tree</code> is a non-empty subset of <code>NAT*</code>, so a set of finite
+ sequences of natural numbers, such that certain logical properties hold.
+Every such sequence denotes a node in the tree, and can be interpreted
+ as a <em>path specification</em> (how to get there, from the top). We see, then,
+ that lambda term trees are a specific subset of general trees, in which
+ only finite sequences of $\{0,1\}$ are used to denote nodes, nodes
+ with children are decorated with a $0$, and is also finite in height.
+By <em>decorating</em> a node <code>r</code> with a number <code>n</code>, we mean that <code>M.r = n</code>.
+Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents the lambda term.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D;
+  
+  <span class="keyword">attr</span> D <span class="keyword">is</span> LambdaTerm-like <span class="keyword">means</span>
+    (dom D qua Tree) <span class="keyword">is</span> finite &amp;
+<span class="comment">::&gt;                          *143,306</span>
+<span class="comment">::                           This must be an environ error,</span>
+<span class="comment">::                            but I haven't been able to sort it out.</span>
+    <span class="keyword">for</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D <span class="keyword">holds</span>
+      r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} &amp;
+      r^&lt;*0*&gt; <span class="keyword">in</span> dom D <span class="keyword">implies</span> D.r = 0;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Here, I am having some troubles with Mizar types. I want to follow
+ the general MML pattern of first defining an attribute <code>LambdaTerm-like</code>,
+ and then a mode <code>LambdaTerm</code> which is simply a <code>LambdaTerm-like DecoratedTree
+ of NAT</code>. But then first, I must show that this is a existence cluster, and thus
+ I must show that such a decoratedtree actually exists...</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">cluster</span> LambdaTerm-like <span class="keyword">for</span> DecoratedTree <span class="keyword">of</span> NAT;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">mode</span> LambdaTerm <span class="keyword">is</span> LambdaTerm-like DecoratedTree <span class="keyword">of</span> NAT;
+<span class="keyword">end</span>;
+
+<span class="keyword">reserve</span> M,N,P,Q <span class="keyword">for</span> LambdaTerm;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Let Mizar know that <code>M|r</code> is also a <code>LambdaTerm</code>.
+The definition of <code>|</code> that we are using is the definition
+ that operates on (and returns) a <code>DecoratedTree</code>. Showing
+ that retricting a <code>LambdaTerm</code> produces a <code>NAT-valued</code> result
+ ensures that the result is then a <code>DecoratedTree of NAT</code>;
+ which then together with <code>LambdaTerm-like</code> means that it is
+ indeed a <code>LambdaTerm</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">let</span> M,r;
+
+  <span class="keyword">cluster</span> M|r -&gt; NAT-valued LambdaTerm-like;
+  <span class="keyword">coherence</span>;
+<span class="comment">::&gt;       *4,4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">theorem</span>
+  (M|r qua DecoratedTree <span class="keyword">of</span> NAT) <span class="keyword">is</span> LambdaTerm
+<span class="keyword">proof</span>
+  <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>See below, definition of <code>beta*</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">func</span> LAMBDA_TERMS -&gt; <span class="keyword">set</span> <span class="keyword">means</span>
+    <span class="keyword">for</span> M <span class="keyword">holds</span> M <span class="keyword">in</span> it &amp; <span class="keyword">for</span> x <span class="keyword">st</span> x <span class="keyword">in</span> it <span class="keyword">holds</span> x <span class="keyword">is</span> LambdaTerm;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Some helper definitions for working with lambda terms.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M,r;
+  
+  <span class="keyword">pred</span> r is_variable_in M <span class="keyword">means</span>
+    <span class="keyword">not</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom M;
+
+  <span class="keyword">pred</span> r is_abstraction_in M <span class="keyword">means</span>
+    r^&lt;*0*&gt; <span class="keyword">in</span> dom M &amp; <span class="keyword">not</span> r^&lt;*1*&gt; <span class="keyword">in</span> dom M;
+
+  <span class="keyword">pred</span> r is_application_in M <span class="keyword">means</span>
+    r^&lt;*0*&gt; <span class="keyword">in</span> dom M &amp; r^&lt;*1*&gt; <span class="keyword">in</span> dom M;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>By $r$ being an <em>active variable</em> of some term $M$ (or more precisely,
+ a path identifying an active variable), I mean that if $\lambda M$ were
+ to be applied to some other term $N$, we would substitute this variable
+ by $M$.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M,r;
+  
+  <span class="keyword">pred</span> r is_active_variable_in M <span class="keyword">means</span>
+    r is_variable_in M &amp;
+    M.r = card { p where p <span class="keyword">is</span> Element <span class="keyword">of</span> dom M
+                 : p is_a_proper_prefix_of r &amp;
+                   p is_abstraction_in M };
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> M;
+  
+  <span class="keyword">func</span> Abs(M) -&gt; LambdaTerm <span class="keyword">means</span>
+    it|&lt;*0*&gt; = M &amp; <span class="keyword">not</span> &lt;*0*&gt; <span class="keyword">in</span> dom it;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> M,N;
+
+  <span class="keyword">func</span> App(M,N) -&gt; LambdaTerm <span class="keyword">means</span>
+    it|&lt;*0*&gt; = M &amp; it|&lt;*1*&gt; = N;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> M,N;
+
+  <span class="keyword">func</span> SubstituteActiveVar(M,N) -&gt; LambdaTerm <span class="keyword">means</span>
+    <span class="comment">:: most things are the same,</span>
+    (<span class="keyword">for</span> r <span class="keyword">st</span> <span class="keyword">not</span> (<span class="keyword">ex</span> p <span class="keyword">st</span> p is_active_variable_in N &amp;
+                           p is_a_prefix_of r)
+           <span class="keyword">holds</span> [r,x] <span class="keyword">in</span> it <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N
+    ) &amp;
+    <span class="comment">:: except that the active variables are replaced with M</span>
+    (<span class="keyword">for</span> r <span class="keyword">st</span> r is_active_variable_in N <span class="keyword">holds</span> it|r = M);
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <h3>Reduction and conversion</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="comment">::</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>First I define <em>shallow</em> one-step beta substitution, which only
+ states (the De Bruijn equivalent of)
+ $(\lambda x.N)M \to_{\beta} N[x:=M]$.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> P,Q;
+  
+  <span class="comment">:: P === (\x.N)M --&gt; N[x:=M] === Q</span>
+  <span class="keyword">pred</span> P beta_shallow Q <span class="keyword">means</span>
+    <span class="keyword">ex</span> M,N <span class="keyword">st</span>
+      <span class="comment">:: P === (\x.N)M</span>
+      P = App(Abs(N),M) &amp;
+
+      <span class="comment">:: Q === N[x:=M]</span>
+      Q = SubstituteActiveVar(N,M);
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Then we extend this ordinary one-step beta reduction, that is,
+ any subterm is also allowed to reduce.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M,N;
+
+  <span class="keyword">pred</span> M beta N <span class="keyword">means</span>
+    <span class="keyword">ex</span> p <span class="keyword">st</span>
+      M|p beta_shallow N|p &amp;
+      <span class="keyword">for</span> q <span class="keyword">st</span> <span class="keyword">not</span> p is_a_prefix_of q <span class="keyword">holds</span>
+        [r,x] <span class="keyword">in</span> M <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>We close the relation under transitivity and reflexivity
+ to get the full beta reduction relation.</p>
+<p>I defined the set <code>LAMBDA_TERMS</code> above, to avoid the 102 error
+ here, but apparently is doesn&#39;t work (as can be seen by the fact
+ that the qua gives an 116 error).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M,N;
+  
+  <span class="keyword">pred</span> M beta* N <span class="keyword">means</span>
+    <span class="keyword">ex</span> Ps <span class="keyword">being</span> FinSequence <span class="keyword">of</span> LAMBDA_TERMS <span class="keyword">st</span>
+      (Ps.1 qua LambdaTerm) = M &amp; Ps.(len Ps) = N &amp;
+<span class="comment">::&gt;           *116</span>
+      <span class="keyword">for</span> n <span class="keyword">being</span> Nat <span class="keyword">st</span> 1 &lt;= n &amp; n &lt; len Ps <span class="keyword">holds</span>
+        (Ps.n qua LambdaTerm) beta Ps.(n + 1);
+<span class="comment">::&gt;             *116             *102</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>And then close under symmetry to get beta conversion.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M,N;
+  
+  <span class="keyword">pred</span> M beta= N <span class="keyword">means</span>
+    M beta* N <span class="keyword">or</span> N beta* M;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <h3>Graph Models</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> Bn <span class="keyword">be</span> non empty <span class="keyword">set</span>;
+  <span class="keyword">func</span> BnNext(Bn) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span> Bn \/ [: Bn*, Bn :];
+  <span class="keyword">coherence</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> A <span class="keyword">be</span> non empty <span class="keyword">set</span>;
+  <span class="keyword">func</span> G(A) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span> A;
+  <span class="comment">:: TODO inductive construction</span>
+  <span class="keyword">coherence</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">theorem</span>
+  <span class="keyword">for</span> A <span class="keyword">being</span> non empty <span class="keyword">set</span> <span class="keyword">holds</span>
+    id G(A) <span class="keyword">is</span> one-to-one
+<span class="keyword">proof</span>
+  <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">let</span> B <span class="keyword">be</span> infinite <span class="keyword">set</span>;
+<span class="comment">::&gt;               *143*306</span>
+  <span class="keyword">cluster</span> one-to-one <span class="keyword">for</span> Function <span class="keyword">of</span> [:B*,B:],B;
+<span class="comment">::&gt;                *115                 *100</span>
+  <span class="comment">:: TODO show that such an embedding is possible, by above construction</span>
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">take</span> G(B);
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="comment">:: Graph models</span>
+<span class="keyword">definition</span>
+  <span class="keyword">struct</span> GraphModel
+  (#
+    carrier -&gt; <span class="keyword">set</span>,
+    c -&gt; one-to-one (Function <span class="keyword">of</span>
+<span class="comment">::&gt;                         *136</span>
+           [:(the carrier)*, the carrier:], the carrier)
+  #);
+<span class="keyword">end</span>;
+
+<span class="keyword">reserve</span> B <span class="keyword">for</span> non empty <span class="keyword">set</span>;
+<span class="keyword">reserve</span> cB <span class="keyword">for</span> one-to-one (Function <span class="keyword">of</span> [:B*,B:],B);
+<span class="comment">::&gt;                               *136</span>
+ <span class="comment">:: one-to-one is an attribute of Function, not Function of X</span>
+<span class="comment">::&gt;</span>
+<span class="comment">::&gt; 4: This inference is not accepted</span>
+<span class="comment">::&gt; 100: Unused locus</span>
+<span class="comment">::&gt; 102: Unknown predicate</span>
+<span class="comment">::&gt; 115: Unknown attribute</span>
+<span class="comment">::&gt; 116: Invalid "qua"</span>
+<span class="comment">::&gt; 136: Non registered cluster</span>
+<span class="comment">::&gt; 143: No implicit qualification</span>
+<span class="comment">::&gt; 306: Attribute symbol expected</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"], scale: 90 }
+  });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

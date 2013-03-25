@@ -11,6 +11,11 @@
 OActiveVar
 OG
 OBnNext
+OApp
+OAbs
+OVar
+OSubstituteActiveVar
+OLAMBDA_TERMS
 
 :: selectors
 Uc
