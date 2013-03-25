@@ -1,0 +1,247 @@
+:: Lambda calculus?
+
+:: Environ originally taken from [finseq_2],
+::   then added trees as in [trees_2],
+::   then added [orders_X]'s for Poset
+environ
+
+  vocabularies LAMBDA,
+      NUMBERS,
+      NAT_1, XBOOLE_0, SUBSET_1, FINSEQ_1, XXREAL_0, CARD_1,
+      ARYTM_1, ARYTM_3, TARSKI, RELAT_1, ORDINAL4, FUNCOP_1,
+      FUNCT_1, FUNCT_2,
+      ZFMISC_1, PARTFUN1,
+      TREES_2, TREES_1,
+      ORDERS_2, ORDERS_1,
+      FINSEQ_2, PBOOLE, CARD_3, VALUED_1;
+  
+  :: Radix type specifications
+  notations TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
+      NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
+      FUNCT_1, FUNCT_2,
+      FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+      TREES_2, TREES_1,
+      ORDERS_1, ORDERS_2,
+      XXREAL_0, VALUED_1,
+      RECDEF_1;
+
+  :: For modes? (unknown mode format resolved)
+  constructors RELAT_2, PARTFUN1, BINOP_1, DOMAIN_1,
+      FUNCT_1, FUNCT_2, FUNCT_3,
+      FUNCOP_1,
+      SQUARE_1, NAT_1, FINSEQ_1, RELSET_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+      TREES_2, TREES_1,
+      ORDERS_1, ORDERS_2,
+      RECDEF_1;
+
+  :: Definition are for automatically unfolding predicates in the thesis you are proving
+  definitions TARSKI,
+      FUNCT_1, FUNCT_2,
+      FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
+      ORDERS_1,
+      TREES_2, TREES_1;
+
+  :: Registrations are for clusters, automatically adding adjectives
+  registrations XBOOLE_0, SUBSET_1, RELAT_1, ORDINAL1, PARTFUN1,
+      FUNCT_1, FUNCT_2,
+      FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
+      PBOOLE, CARD_3,
+      ORDERS_2,
+      TREES_2, TREES_1;
+
+  schemes RECDEF_1;
+
+  requirements BOOLE, SUBSET, NUMERALS, ARITHM, REAL;
+
+begin
+
+reserve r for FinSequence of NAT;
+
+:: A lambda term is identified with it's AST (abstract
+::  syntax tree). A term is thus a decorated tree that sends
+::  variable nodes to natural numbers, being De Bruijn indices
+::  of the term. Note that the function of a node (either being
+::  a variable, abstraction or application) need not be
+::  explicitly given, as it follows from the number of subnodes.
+:: We send abstraction and application nodes to 0, to ensure
+::  that no two different decorated trees represent the
+:: same term.
+
+:: DecoratedTree of NAT is NAT-valued DecoratedTree
+
+definition
+  let M be DecoratedTree of NAT;
+  attr M is LambdaTerm-like means
+    :: TODO finiteness (in height)
+    for r st r in dom M holds
+      r is FinSequence of {0,1} &
+      r^<*0*> in dom M implies M.r = 0;
+end;
+
+registration
+  cluster LambdaTerm-like for DecoratedTree of NAT;
+  existence
+  proof
+    set s = <*> {0,1};
+A6: s is FinSequence of {0,1};
+A5: {0,1} c= NAT;
+    reconsider s as FinSequence of NAT by A6,A5;
+::>                                     *4
+    set x = { [s, 0] };
+    dom x = { s };
+::>             *4
+A4: { s } is Tree;
+    x is DecoratedTree by A4;
+::>                     *4
+A2: x is Function;
+A3: x is NAT-valued Function;
+    x is DecoratedTree-like;
+::>                       *4
+    then reconsider x as DecoratedTree of NAT;
+    take { [<*> {0,1}, 0] };
+::>      *57
+  end;
+end;
+
+::definition
+::  mode LambdaTerm is LambdaTerm-like DecoratedTree-like Function;
+::end;
+
+:: These definitions, too, are a bit more abstract than
+::  actually needed. However, when one takes an arbitrary
+::  r in dom M with M a DecoratedTree [of ..], then r
+::  is a FinSequence of NAT, not of {0,1}. And it doesn't
+::  really matter, as long as lambda terms actually DO
+::  only allow .. of {0,1}...
+definition
+  let M be DecoratedTree,
+      r be FinSequence of NAT;
+  
+  pred r is_variable_in M means
+    not r^<*0*> in dom M;
+
+  pred r is_abstraction_in M means
+    r^<*0*> in dom M & not r^<*1*> in dom M;
+
+  pred r is_application_in M means
+    r^<*0*> in dom M & r^<*1*> in dom M;
+end;
+
+definition
+  let N be DecoratedTree,
+      r be FinSequence of NAT;
+  
+  pred r is_active_variable_in N means
+    r is_variable_in N &
+    N.r = card { p where p is Element of dom N
+                 : p is_a_proper_prefix_of r &
+                   p is_abstraction_in N };
+end;
+
+:: The following definition actually only has
+::  to work for DecoratedTree of NAT, but later on,
+::  to be able to work with M|r, which is a DecoratedTree,
+::  we have to be a bit more abstract. This doesn't matter.
+reserve M,N for DecoratedTree;
+reserve r,p for FinSequence of NAT;
+reserve x for set;
+definition
+  let P,Q be DecoratedTree;
+  
+  :: P === (\x.N)M --> N[x:=M] === Q
+  pred P beta_shallow Q means
+    ex M,N st
+      :: P === (\x.N)M
+      (for r holds
+        [r,x] in P iff
+          (ex p st r = <*0,0*>^p & [p,x] in N) or
+          (ex p st r =   <*1*>^p & [p,x] in M)
+      ) &
+      :: Q === N[x:=M]
+        :: Q = N at most places
+        (for r st not (ex p st p is_active_variable_in N &
+                               r is_a_prefix_of p)
+               holds [r,x] in Q iff [r,x] in N
+        ) &
+        :: except that the active variables are replaced with M
+        (for r st r is_active_variable_in N holds Q|r = M);
+end;
+
+:: Extend beta to be simple beta, but then in any subterm.
+reserve p,q for FinSequence of NAT;
+reserve x for set;
+definition
+  let P,Q be DecoratedTree;
+
+  pred P beta Q means
+    ex p st
+      :: P|p is not a DecoratedTree of NAT, only a DecoratedTree
+      P|p beta_shallow Q|p &
+      for q st not p is_a_prefix_of q holds
+        [r,x] in P iff [r,x] in Q;
+end;
+
+:: Close beta under transitivity and reflexivity
+definition
+  let M,N be DecoratedTree;
+  
+  pred M beta* N means
+    ex Ps being FinSequence of MY_DECORATED_TREES st
+::>                             *143,203
+      Ps.1 = M & Ps.(len Ps) = N &
+      for n being Nat st 1 <= n & n < len Ps holds
+        Ps.n beta Ps.(n + 1);
+end;
+
+:: Close beta* under symmetry
+definition
+  let P,Q be DecoratedTree;
+  
+  pred P beta= Q means
+    P beta* Q or Q beta* P;
+end;
+
+definition
+  let Bn be non empty set;
+  func BnNext(Bn) -> set equals Bn \/ [: Bn*, Bn :];
+  coherence;
+end;
+
+definition
+  let A be non empty set;
+  func G(A) -> set equals A;
+  coherence;
+end;
+
+registration
+  let B be set;
+  cluster one-to-one for Function of [:B*,B:],B;
+  existence
+  proof
+    set A = { {} };
+    deffunc
+::>        *300
+  end;
+::> *70
+end;
+
+:: Graph models
+definition
+  struct GraphModel
+  (#
+    carrier -> set,
+    c -> one-to-one (Function of
+           [:(the carrier)*, the carrier:], the carrier)
+  #);
+end;
+
+reserve B for non empty set;
+reserve cB for one-to-one (Function of [:B*,B:],B);
+ :: one-to-one is an attribute of Function, not Function of X
+::>
+::> 4: This inference is not accepted
+::> 57: The type of the instatiated term doesn't widen properly
+::> 70: Something remains to be proved
+::> 143: No implicit qualification
+::> 203: Unknown token, maybe an illegal character used in an identifier
+::> 300: Identifier expected

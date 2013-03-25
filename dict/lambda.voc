@@ -1,0 +1,37 @@
+:: R predicate
+:: O functor
+:: M mode
+:: G structure
+:: U selector
+:: V attribute
+:: K left functor bracket
+:: L right functor bracket
+
+:: functors
+OActiveVar
+OG
+OBnNext
+
+:: selectors
+Uc
+Ucarrier
+
+:: structures
+GGraphModel
+
+:: attributes
+VLambdaTerm-like
+VSuperSimple
+
+:: modes
+MLambdaTerm
+
+:: predicates
+Ris_variable_in
+Ris_active_variable_in
+Ris_abstraction_in
+Ris_application_in
+Rbeta_shallow
+Rbeta
+Rbeta*
+Rbeta=
