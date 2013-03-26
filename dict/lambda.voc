@@ -34,7 +34,7 @@ GCPO
 VLambdaTerm-like
 VSuperSimple
 V-directed
-V-complete
+Vcomplete
 V-bottom
 Vmonotone
 Vcontinuous

@@ -538,6 +538,16 @@ The definition of <code>|</code> that we are using is the definition
 <p>An element $u$ of $D$ is an <em>upper bound</em> of a
  subset $X\subseteq D$ iff for all $x\in X$,
  $x\sqsubseteq u$.</p>
+<p>I often encountered *100 errors (also elsewhere, but most notably)
+ here. Note: a *100 error occurs when not all loci (which are variables
+ introduced by the <code>let</code> statement) are used <em>in the attribute name</em>.
+&quot;Transitive&quot; usage <em>is</em> allowed: in the below definition of
+ upper bounds, the variable <code>D</code> is not explicitly stated in the name
+ of the attribute, however it is used in the <code>let</code> introduction rule of
+ <code>R</code>, <code>X</code> and <code>u</code>, so it is allowed.
+However, I had to explicitly add <code>R</code> to the attribute name, because even
+ though it is used in the defining formula, it is not included in the
+ introductory rules of <code>D</code>, <code>X</code> or <code>u</code>.</p>
 
             </div>
             
@@ -547,19 +557,7 @@ The definition of <code>|</code> that we are using is the definition
       X <span class="keyword">be</span> Subset <span class="keyword">of</span> D,
       u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
 
-  <span class="keyword">attr</span> u <span class="keyword">is</span> X-ub <span class="keyword">means</span>
-<span class="comment">::&gt;            *100</span>
-    u=u &amp; <span class="keyword">for</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X <span class="keyword">holds</span> [x,u] <span class="keyword">in</span> R;
-<span class="keyword">end</span>;
-
-<span class="keyword">definition</span>
-  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
-      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
-      X <span class="keyword">be</span> Subset <span class="keyword">of</span> D,
-      u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
-
-  <span class="keyword">pred</span> u is_ub_of X <span class="keyword">means</span>
-<span class="comment">::&gt;             *100</span>
+  <span class="keyword">attr</span> u <span class="keyword">is</span> X,R-ub <span class="keyword">means</span>
     <span class="keyword">for</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X <span class="keyword">holds</span> [x,u] <span class="keyword">in</span> R;
 <span class="keyword">end</span>;</pre></div></div>
             
@@ -572,21 +570,20 @@ The definition of <code>|</code> that we are using is the definition
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
-              <p>Define least upper bounds</p>
+              <p>Least upper bounds</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
   <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
-      R <span class="keyword">be</span> transitive reflexive antisymmetric Relation,
-      X <span class="keyword">be</span> R-directed Subset <span class="keyword">of</span> D,
-<span class="comment">::&gt;                 *175   *151</span>
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+      X <span class="keyword">be</span> Subset <span class="keyword">of</span> D,
       u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
 
-  <span class="keyword">attr</span> u <span class="keyword">is</span> X-lub <span class="keyword">means</span>
-    u <span class="keyword">is</span> X-ub &amp;
-    <span class="keyword">for</span> u2 <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u2 <span class="keyword">is</span> X-ub <span class="keyword">holds</span>
-      u = u2;
+  <span class="keyword">attr</span> u <span class="keyword">is</span> X,R-lub <span class="keyword">means</span>
+    u <span class="keyword">is</span> X,R-ub &amp;
+    <span class="keyword">for</span> u2 <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u2 <span class="keyword">is</span> X,R-ub <span class="keyword">holds</span>
+      [u,u2] <span class="keyword">in</span> R;
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -636,18 +633,18 @@ The definition of <code>|</code> that we are using is the definition
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p><strong>Completeness</strong></p>
+<p>A partial ordered set is complete iff every directed set has
+ a least upper bound.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
   <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
-      R <span class="keyword">be</span> transitive reflexive antisymmetric Relation;
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
 
-  <span class="keyword">attr</span> R <span class="keyword">is</span> D-complete <span class="keyword">means</span>
+  <span class="keyword">attr</span> R <span class="keyword">is</span> complete <span class="keyword">means</span>
     <span class="keyword">for</span> X <span class="keyword">being</span> R-directed Subset <span class="keyword">of</span> D <span class="keyword">holds</span>
-<span class="comment">::&gt;                      *115</span>
-      <span class="keyword">ex</span> u <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u <span class="keyword">is</span> X-lub;
-<span class="comment">::&gt;                                       *106</span>
+      <span class="keyword">ex</span> u <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u <span class="keyword">is</span> X,R-lub;
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -669,78 +666,22 @@ The definition of <code>|</code> that we are using is the definition
             <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
   <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>;
 
-  <span class="keyword">cluster</span> D-complete <span class="keyword">for</span> transitive reflexive antisymmetric Relation;
+  <span class="keyword">cluster</span> complete <span class="keyword">for</span> PartialOrder <span class="keyword">of</span> D;
   <span class="keyword">existence</span>;
 <span class="comment">::&gt;       *4</span>
 <span class="keyword">end</span>;
 
 <span class="keyword">definition</span>
   <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
-      R <span class="keyword">be</span> D-complete transitive reflexive antisymmetric Relation,
+      R <span class="keyword">be</span> complete PartialOrder <span class="keyword">of</span> D,
       X <span class="keyword">be</span> R-directed Subset <span class="keyword">of</span> D;
-<span class="comment">::&gt;                 *115</span>
 
   <span class="keyword">func</span> LUB(X) -&gt; Element <span class="keyword">of</span> D <span class="keyword">means</span>
-<span class="comment">::&gt;      *100</span>
-    it <span class="keyword">is</span> X-lub;
-<span class="comment">::&gt;           *106</span>
+    it <span class="keyword">is</span> X,R-lub;
   <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
   <span class="keyword">uniqueness</span>;
-<span class="keyword">end</span>;
-
-<span class="keyword">definition</span>
-  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
-      R <span class="keyword">be</span> transitive reflexive antisymmetric Relation,
-      x <span class="keyword">be</span> Element <span class="keyword">of</span> D;
-
-  <span class="keyword">attr</span> x <span class="keyword">is</span> D-bottom <span class="keyword">means</span>
-<span class="comment">::&gt;                *100</span>
-    <span class="keyword">for</span> y <span class="keyword">st</span> y <span class="keyword">in</span> D <span class="keyword">holds</span> [x,y] <span class="keyword">in</span> R;
-<span class="keyword">end</span>;
-
-<span class="keyword">registration</span>
-  <span class="keyword">let</span> R <span class="keyword">be</span> transitive reflexive antisymmetric Relation,
-      X <span class="keyword">be</span> <span class="keyword">set</span>;
-
-  <span class="keyword">cluster</span> R-bottom <span class="keyword">for</span> Element <span class="keyword">of</span> X;
-<span class="comment">::&gt;              *106,115    *100</span>
-  <span class="keyword">existence</span>;
-<span class="keyword">end</span>;
-
-<span class="keyword">definition</span>
-  <span class="keyword">struct</span> CPO (#
-    carrier -&gt; <span class="keyword">set</span>,
-
-    <span class="comment">:: complete partial order</span>
-    BinRel -&gt; (the carrier)-complete
-      transitive reflexive antisymmetric
-      (Relation <span class="keyword">of</span> the carrier, the carrier),
-<span class="comment">::&gt;           *136</span>
-    
-    <span class="comment">:: with bottom element</span>
-    Bot -&gt; (the BinRel)-bottom Element <span class="keyword">of</span> the carrier
-<span class="comment">::&gt;                          *115    *136</span>
-  #);
-<span class="keyword">end</span>;
-
-<span class="keyword">definition</span>
-  <span class="keyword">let</span> D <span class="keyword">be</span> CPO,
-      f <span class="keyword">be</span> Function <span class="keyword">of</span> D,D;
-
-  <span class="keyword">attr</span> f <span class="keyword">is</span> monotone <span class="keyword">means</span>
-    <span class="keyword">for</span> x,y <span class="keyword">st</span> [x,y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> D) <span class="keyword">holds</span>
-      [f.x,f.y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> D);
-<span class="keyword">end</span>;
-
-<span class="keyword">definition</span>
-  <span class="keyword">let</span> D <span class="keyword">be</span> CPO,
-      f <span class="keyword">be</span> Function <span class="keyword">of</span> D,D;
-
-  <span class="keyword">attr</span> f <span class="keyword">is</span> continuous <span class="keyword">means</span>
-    f <span class="keyword">is</span> monotone &amp;
-    <span class="keyword">for</span> X <span class="keyword">being</span> (the BinRel <span class="keyword">of</span> D)-directed Subset <span class="keyword">of</span> D <span class="keyword">holds</span>
-<span class="comment">::&gt;                                      *115</span>
-      X=X; <span class="comment">::TODO</span>
+<span class="comment">::&gt;        *4</span>
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -749,8 +690,85 @@ The definition of <code>|</code> that we are using is the definition
         <li id="section-25">
             <div class="annotation">
               
-              <div class="pilwrap for-h3">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p><strong>Bottom element</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+      b <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+
+  <span class="keyword">attr</span> b <span class="keyword">is</span> R-bottom <span class="keyword">means</span>
+    <span class="keyword">for</span> y <span class="keyword">st</span> y <span class="keyword">in</span> D <span class="keyword">holds</span> [b,y] <span class="keyword">in</span> R;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
+
+  <span class="keyword">cluster</span> R-bottom <span class="keyword">for</span> Element <span class="keyword">of</span> D;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p><strong>CPO structure</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">struct</span> CPO (#
+    carrier -&gt; <span class="keyword">set</span>,
+    BinRel -&gt; complete PartialOrder <span class="keyword">of</span> (the carrier),
+    Bot -&gt; (the BinRel)-bottom Element <span class="keyword">of</span> the carrier
+  #);
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> CPO,
+      f <span class="keyword">be</span> Function <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> D);
+
+  <span class="keyword">attr</span> f <span class="keyword">is</span> monotone <span class="keyword">means</span>
+    <span class="keyword">for</span> x,y <span class="keyword">st</span> [x,y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> D) <span class="keyword">holds</span>
+      [f.x,f.y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> D);
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> CPO,
+      f <span class="keyword">be</span> Function <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> D);
+
+  <span class="keyword">attr</span> f <span class="keyword">is</span> continuous <span class="keyword">means</span>
+    f <span class="keyword">is</span> monotone &amp;
+    <span class="keyword">for</span> X <span class="keyword">being</span> (the BinRel <span class="keyword">of</span> D)-directed
+                Subset <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D)
+      <span class="keyword">holds</span>
+        f.LUB(X) = LUB(f.:X);
+<span class="comment">::&gt;                  *103</span>
+<span class="comment">::                 This is indeed somewhat complicated,</span>
+<span class="comment">::                  why would it necessarily be directed,</span>
+<span class="comment">::                  and thus eligible for LUB ?</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <h3>Graph Models</h3>
 
@@ -779,11 +797,11 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-26">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>What does this registration actually state?</p>
 <ol>
@@ -823,12 +841,7 @@ The definition of <code>|</code> that we are using is the definition
 
 <span class="comment">::&gt;</span>
 <span class="comment">::&gt; 4: This inference is not accepted</span>
-<span class="comment">::&gt; 100: Unused locus</span>
-<span class="comment">::&gt; 106: Unknown attribute</span>
-<span class="comment">::&gt; 115: Unknown attribute</span>
-<span class="comment">::&gt; 136: Non registered cluster</span>
-<span class="comment">::&gt; 151: Unknown mode format</span>
-<span class="comment">::&gt; 175: Unknown attribute format</span></pre></div></div>
+<span class="comment">::&gt; 103: Unknown functor</span></pre></div></div>
             
         </li>
         

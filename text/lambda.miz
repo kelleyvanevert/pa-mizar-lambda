@@ -282,40 +282,38 @@ end;
 ::: An element $u$ of $D$ is an _upper bound_ of a
 :::  subset $X\\subseteq D$ iff for all $x\\in X$,
 :::  $x\\sqsubseteq u$.
+
+::: I often encountered \*100 errors (also elsewhere, but most notably)
+:::  here. Note: a \*100 error occurs when not all loci (which are variables
+:::  introduced by the `let` statement) are used _in the attribute name_.
+::: "Transitive" usage _is_ allowed: in the below definition of
+:::  upper bounds, the variable `D` is not explicitly stated in the name
+:::  of the attribute, however it is used in the `let` introduction rule of
+:::  `R`, `X` and `u`, so it is allowed.
+::: However, I had to explicitly add `R` to the attribute name, because even
+:::  though it is used in the defining formula, it is not included in the
+:::  introductory rules of `D`, `X` or `u`.
 definition
   let D be set,
       R be PartialOrder of D,
       X be Subset of D,
       u be Element of D;
 
-  attr u is X-ub means
-::>            *100
+  attr u is X,R-ub means
     for x st x in X holds [x,u] in R;
 end;
 
+::: Least upper bounds
 definition
   let D be set,
       R be PartialOrder of D,
       X be Subset of D,
       u be Element of D;
 
-  pred u is_ub_of X means
-::>             *100
-    for x st x in X holds [x,u] in R;
-end;
-
-::: Define least upper bounds
-definition
-  let D be set,
-      R be transitive reflexive antisymmetric Relation,
-      X be R-directed Subset of D,
-::>                 *175   *151
-      u be Element of D;
-
-  attr u is X-lub means
-    u is X-ub &
-    for u2 being Element of D st u2 is X-ub holds
-      u = u2;
+  attr u is X,R-lub means
+    u is X,R-ub &
+    for u2 being Element of D st u2 is X,R-ub holds
+      [u,u2] in R;
 end;
 
 ::: **Directed sets**
@@ -345,15 +343,16 @@ registration
 end;
 
 ::: **Completeness**
+
+::: A partial ordered set is complete iff every directed set has
+:::  a least upper bound.
 definition
   let D be set,
-      R be transitive reflexive antisymmetric Relation;
+      R be PartialOrder of D;
 
-  attr R is D-complete means
+  attr R is complete means
     for X being R-directed Subset of D holds
-::>                      *115
-      ex u being Element of D st u is X-lub;
-::>                                       *106
+      ex u being Element of D st u is X,R-lub;
 end;
 
 ::: Here again, what I want to express is that such complete partial
@@ -364,63 +363,55 @@ end;
 registration
   let D be set;
 
-  cluster D-complete for transitive reflexive antisymmetric Relation;
+  cluster complete for PartialOrder of D;
   existence;
 ::>       *4
 end;
 
 definition
   let D be set,
-      R be D-complete transitive reflexive antisymmetric Relation,
+      R be complete PartialOrder of D,
       X be R-directed Subset of D;
-::>                 *115
 
   func LUB(X) -> Element of D means
-::>      *100
-    it is X-lub;
-::>           *106
+    it is X,R-lub;
   existence;
+::>       *4
   uniqueness;
+::>        *4
 end;
 
+::: **Bottom element**
 definition
   let D be set,
-      R be transitive reflexive antisymmetric Relation,
-      x be Element of D;
+      R be PartialOrder of D,
+      b be Element of D;
 
-  attr x is D-bottom means
-::>                *100
-    for y st y in D holds [x,y] in R;
+  attr b is R-bottom means
+    for y st y in D holds [b,y] in R;
 end;
 
 registration
-  let R be transitive reflexive antisymmetric Relation,
-      X be set;
+  let D be set,
+      R be PartialOrder of D;
 
-  cluster R-bottom for Element of X;
-::>              *106,115    *100
+  cluster R-bottom for Element of D;
   existence;
+::>       *4
 end;
 
+::: **CPO structure**
 definition
   struct CPO (#
     carrier -> set,
-
-    :: complete partial order
-    BinRel -> (the carrier)-complete
-      transitive reflexive antisymmetric
-      (Relation of the carrier, the carrier),
-::>           *136
-    
-    :: with bottom element
+    BinRel -> complete PartialOrder of (the carrier),
     Bot -> (the BinRel)-bottom Element of the carrier
-::>                          *115    *136
   #);
 end;
 
 definition
   let D be CPO,
-      f be Function of D,D;
+      f be Function of (the carrier of D),(the carrier of D);
 
   attr f is monotone means
     for x,y st [x,y] in (the BinRel of D) holds
@@ -429,13 +420,18 @@ end;
 
 definition
   let D be CPO,
-      f be Function of D,D;
+      f be Function of (the carrier of D),(the carrier of D);
 
   attr f is continuous means
     f is monotone &
-    for X being (the BinRel of D)-directed Subset of D holds
-::>                                      *115
-      X=X; ::TODO
+    for X being (the BinRel of D)-directed
+                Subset of (the carrier of D)
+      holds
+        f.LUB(X) = LUB(f.:X);
+::>                  *103
+::                 This is indeed somewhat complicated,
+::                  why would it necessarily be directed,
+::                  and thus eligible for LUB ?
 end;
 
 
@@ -497,9 +493,4 @@ end;
 
 ::>
 ::> 4: This inference is not accepted
-::> 100: Unused locus
-::> 106: Unknown attribute
-::> 115: Unknown attribute
-::> 136: Non registered cluster
-::> 151: Unknown mode format
-::> 175: Unknown attribute format
+::> 103: Unknown functor
