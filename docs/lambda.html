@@ -54,9 +54,11 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="keyword">vocabularies</span> LAMBDA,
+      FINSET_1,
       NUMBERS,
       NAT_1, XBOOLE_0, SUBSET_1, FINSEQ_1, XXREAL_0, CARD_1,
-      ARYTM_1, ARYTM_3, TARSKI, RELAT_1, ORDINAL4, FUNCOP_1,
+      ARYTM_1, ARYTM_3, TARSKI, ORDINAL4, FUNCOP_1,
+      RELAT_2, RELAT_1,
       FUNCT_1, FUNCT_2,
       ZFMISC_1, PARTFUN1,
       ORDERS_2, ORDERS_1,
@@ -72,12 +74,15 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Radix type specifications</p>
+              <p>Radix type specifications
+But it also helped [175 unknown attribute format] error with [finite set]</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">notations</span> TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">notations</span> FINSET_1,
+      TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
       NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
+      RELAT_2, RELSET_1,
       FUNCT_1, FUNCT_2,
       FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
       TREES_2, TREES_1,
@@ -98,10 +103,12 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">constructors</span> RELAT_2, PARTFUN1, BINOP_1, DOMAIN_1,
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">constructors</span> RELAT_2, RELAT_1,
+      PARTFUN1, BINOP_1, DOMAIN_1,
       FUNCT_1, FUNCT_2, FUNCT_3,
       FUNCOP_1,
-      SQUARE_1, NAT_1, FINSEQ_1, RELSET_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+      RELSET_1,
+      SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
       TREES_2, TREES_1,
       ORDERS_1, ORDERS_2,
       RECDEF_1;</pre></div></div>
@@ -139,7 +146,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">registrations</span> XBOOLE_0, SUBSET_1, RELAT_1, ORDINAL1, PARTFUN1,
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">registrations</span> XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
+      RELAT_2, RELAT_1,
       FUNCT_1, FUNCT_2,
       FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
       PBOOLE, CARD_3,
@@ -208,9 +216,6 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
   
   <span class="keyword">attr</span> D <span class="keyword">is</span> LambdaTerm-like <span class="keyword">means</span>
     (dom D qua Tree) <span class="keyword">is</span> finite &amp;
-<span class="comment">::&gt;                          *143,306</span>
-<span class="comment">::                           This must be an environ error,</span>
-<span class="comment">::                            but I haven't been able to sort it out.</span>
     <span class="keyword">for</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D <span class="keyword">holds</span>
       r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} &amp;
       r^&lt;*0*&gt; <span class="keyword">in</span> dom D <span class="keyword">implies</span> D.r = 0;
@@ -528,54 +533,293 @@ The definition of <code>|</code> that we are using is the definition
 
 <span class="keyword">definition</span>
   <span class="keyword">let</span> A <span class="keyword">be</span> non empty <span class="keyword">set</span>;
-  <span class="keyword">func</span> G(A) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span> A;
+  <span class="keyword">func</span> Web(A) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span> A;
   <span class="comment">:: TODO inductive construction</span>
   <span class="keyword">coherence</span>;
 <span class="keyword">end</span>;
 
 <span class="keyword">theorem</span>
   <span class="keyword">for</span> A <span class="keyword">being</span> non empty <span class="keyword">set</span> <span class="keyword">holds</span>
-    id G(A) <span class="keyword">is</span> one-to-one
+    id Web(A) <span class="keyword">is</span> one-to-one
 <span class="keyword">proof</span>
   <span class="keyword">thus</span> <span class="keyword">thesis</span>;
-<span class="keyword">end</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>What does this registration actually state?</p>
+<ol>
+<li>For any infinite set $B$, there is some one-to-one function that
+ embeds $B^*\times B$ into $B$.</li>
+<li>There are at least certain infinite sets $B$ for which
+ such an embedding is possible.</li>
+</ol>
+<p>I only need the second statement, and proving it shouldn&#39;t be too
+ much trouble. (It would simply require
+ doing the infinite recursive construction of $B=Web(A)$ for some
+ non-empty set $A$). I don&#39;t even know for sure if the first
+ statement holds.</p>
+<p>If the first is the case, then how to I define the second statement
+ in Mizar? And how do I then define the graph model struct, below,
+ without being able to use the <code>one-to-one</code> adjective?</p>
 
-<span class="keyword">registration</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
   <span class="keyword">let</span> B <span class="keyword">be</span> infinite <span class="keyword">set</span>;
-<span class="comment">::&gt;               *143*306</span>
   <span class="keyword">cluster</span> one-to-one <span class="keyword">for</span> Function <span class="keyword">of</span> [:B*,B:],B;
-<span class="comment">::&gt;                *115                 *100</span>
   <span class="comment">:: TODO show that such an embedding is possible, by above construction</span>
-  <span class="keyword">existence</span>
-  <span class="keyword">proof</span>
-    <span class="keyword">take</span> G(B);
-  <span class="keyword">end</span>;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
 <span class="keyword">end</span>;
 
 <span class="comment">:: Graph models</span>
 <span class="keyword">definition</span>
-  <span class="keyword">struct</span> GraphModel
-  (#
-    carrier -&gt; <span class="keyword">set</span>,
+  <span class="keyword">struct</span> GraphModel (#
+    carrier -&gt; infinite <span class="keyword">set</span>,
     c -&gt; one-to-one (Function <span class="keyword">of</span>
-<span class="comment">::&gt;                         *136</span>
-           [:(the carrier)*, the carrier:], the carrier)
+      [:(the carrier)*, the carrier:], the carrier)
+  #);
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <h3>CPO&#39;s</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="comment">::</span>
+
+<span class="keyword">reserve</span> x,y,z,z2 <span class="keyword">for</span> <span class="keyword">set</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">mode</span> PartialOrder <span class="keyword">is</span> transitive reflexive antisymmetric Relation;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>I&#39;d rather define something like:</p>
+<p>If $D$ is a set, and $R$ a partial order on $D$,
+ then an $X\subseteq D$ is called <em>directed</em> iff
+ for all $x,y \in X$, there is some $z \in X$,
+ such that $x\sqsubseteq z$ and $y\sqsubseteq z$.</p>
+<p>However, Mizar wants me to use the exact same variables
+ (in some exact order), that are introduced in the <code>let</code>
+ statement, to occur in the attribute.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder,
+      X <span class="keyword">be</span> Subset <span class="keyword">of</span> D;
+
+  <span class="keyword">attr</span> X <span class="keyword">is</span> R-directed <span class="keyword">means</span>
+    <span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
+      <span class="keyword">ex</span> z <span class="keyword">st</span>
+        z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> transitive reflexive antisymmetric Relation;
+
+  <span class="keyword">cluster</span> R-directed <span class="keyword">for</span> Subset <span class="keyword">of</span> D;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Define upper bounds</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> transitive reflexive antisymmetric Relation,
+      X <span class="keyword">be</span> R-directed Subset <span class="keyword">of</span> D,
+      u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+
+  <span class="keyword">attr</span> u <span class="keyword">is</span> X-ub <span class="keyword">means</span>
+    <span class="keyword">for</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X <span class="keyword">holds</span> [x,u] <span class="keyword">in</span> R;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Define least upper bounds</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> transitive reflexive antisymmetric Relation,
+      X <span class="keyword">be</span> R-directed Subset <span class="keyword">of</span> D,
+      u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+
+  <span class="keyword">attr</span> u <span class="keyword">is</span> X-lub <span class="keyword">means</span>
+    u <span class="keyword">is</span> X-ub &amp;
+    <span class="keyword">for</span> u2 <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u2 <span class="keyword">is</span> X-ub <span class="keyword">holds</span>
+      u = u2;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Define what it is to be complete</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> transitive reflexive antisymmetric Relation;
+
+  <span class="keyword">attr</span> R <span class="keyword">is</span> D-complete <span class="keyword">means</span>
+    <span class="keyword">for</span> X <span class="keyword">being</span> R-directed Subset <span class="keyword">of</span> D <span class="keyword">holds</span>
+      <span class="keyword">ex</span> u <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u <span class="keyword">is</span> X-lub;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Here again, what I want to express is that such complete partial
+ orders exist, not that for every $D$, any partial order is $D$-complete,
+ or something weird like that...</p>
+<p>What are the precise semantics of these clusters?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>;
+
+  <span class="keyword">cluster</span> D-complete <span class="keyword">for</span> transitive reflexive antisymmetric Relation;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> D-complete transitive reflexive antisymmetric Relation,
+      X <span class="keyword">be</span> R-directed Subset <span class="keyword">of</span> D;
+
+  <span class="keyword">func</span> LUB(X) -&gt; Element <span class="keyword">of</span> D <span class="keyword">means</span>
+    it <span class="keyword">is</span> X-lub;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> transitive reflexive antisymmetric Relation,
+      x <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+
+  <span class="keyword">attr</span> x <span class="keyword">is</span> D-bottom <span class="keyword">means</span>
+<span class="comment">::&gt;                *100</span>
+    <span class="keyword">for</span> y <span class="keyword">st</span> y <span class="keyword">in</span> D <span class="keyword">holds</span> [x,y] <span class="keyword">in</span> R;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">let</span> R <span class="keyword">be</span> transitive reflexive antisymmetric Relation,
+      X <span class="keyword">be</span> <span class="keyword">set</span>;
+
+  <span class="keyword">cluster</span> R-bottom <span class="keyword">for</span> Element <span class="keyword">of</span> X;
+<span class="comment">::&gt;              *106,115    *100</span>
+  <span class="keyword">existence</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">struct</span> CPO (#
+    carrier -&gt; <span class="keyword">set</span>,
+
+    <span class="comment">:: complete partial order</span>
+    BinRel -&gt; (the carrier)-complete
+      transitive reflexive antisymmetric
+      (Relation <span class="keyword">of</span> the carrier, the carrier),
+<span class="comment">::&gt;           *136</span>
+    
+    <span class="comment">:: with bottom element</span>
+    Bot -&gt; (the BinRel)-bottom Element <span class="keyword">of</span> the carrier
+<span class="comment">::&gt;                          *115    *136</span>
   #);
 <span class="keyword">end</span>;
 
-<span class="keyword">reserve</span> B <span class="keyword">for</span> non empty <span class="keyword">set</span>;
-<span class="keyword">reserve</span> cB <span class="keyword">for</span> one-to-one (Function <span class="keyword">of</span> [:B*,B:],B);
-<span class="comment">::&gt;                               *136</span>
- <span class="comment">:: one-to-one is an attribute of Function, not Function of X</span>
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> CPO,
+      f <span class="keyword">be</span> Function <span class="keyword">of</span> D,D;
+
+  <span class="keyword">attr</span> f <span class="keyword">is</span> monotone <span class="keyword">means</span>
+    <span class="keyword">for</span> x,y <span class="keyword">st</span> [x,y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> D) <span class="keyword">holds</span>
+      [f.x,f.y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> D);
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> CPO,
+      f <span class="keyword">be</span> Function <span class="keyword">of</span> D,D;
+
+  <span class="keyword">attr</span> f <span class="keyword">is</span> continuous <span class="keyword">means</span>
+    f <span class="keyword">is</span> monotone &amp;
+    <span class="keyword">for</span> X <span class="keyword">being</span> (the BinRel <span class="keyword">of</span> D)-directed Subset <span class="keyword">of</span> D <span class="keyword">holds</span>
+<span class="comment">::&gt;                                      *115</span>
+      X=X; <span class="comment">::TODO</span>
+<span class="keyword">end</span>;
+
 <span class="comment">::&gt;</span>
 <span class="comment">::&gt; 4: This inference is not accepted</span>
 <span class="comment">::&gt; 100: Unused locus</span>
 <span class="comment">::&gt; 102: Unknown predicate</span>
+<span class="comment">::&gt; 106: Unknown attribute</span>
 <span class="comment">::&gt; 115: Unknown attribute</span>
 <span class="comment">::&gt; 116: Invalid "qua"</span>
-<span class="comment">::&gt; 136: Non registered cluster</span>
-<span class="comment">::&gt; 143: No implicit qualification</span>
-<span class="comment">::&gt; 306: Attribute symbol expected</span></pre></div></div>
+<span class="comment">::&gt; 136: Non registered cluster</span></pre></div></div>
             
         </li>
         

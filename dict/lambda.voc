@@ -10,26 +10,40 @@
 :: functors
 OActiveVar
 OG
+OF
+OWeb
 OBnNext
 OApp
 OAbs
 OVar
 OSubstituteActiveVar
 OLAMBDA_TERMS
+OLUB
 
 :: selectors
 Uc
 Ucarrier
+UBinRel
+UBot
 
 :: structures
 GGraphModel
+GCPO
 
 :: attributes
 VLambdaTerm-like
 VSuperSimple
+V-directed
+V-complete
+V-bottom
+Vmonotone
+Vcontinuous
+V-lub
+V-ub
 
 :: modes
 MLambdaTerm
+MPartialOrder
 
 :: predicates
 Ris_variable_in

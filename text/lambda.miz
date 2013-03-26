@@ -5,9 +5,11 @@ environ
 
   ::: Vocabularies are basically for Mizar's lexer.
   vocabularies LAMBDA,
+      FINSET_1,
       NUMBERS,
       NAT_1, XBOOLE_0, SUBSET_1, FINSEQ_1, XXREAL_0, CARD_1,
-      ARYTM_1, ARYTM_3, TARSKI, RELAT_1, ORDINAL4, FUNCOP_1,
+      ARYTM_1, ARYTM_3, TARSKI, ORDINAL4, FUNCOP_1,
+      RELAT_2, RELAT_1,
       FUNCT_1, FUNCT_2,
       ZFMISC_1, PARTFUN1,
       ORDERS_2, ORDERS_1,
@@ -15,8 +17,11 @@ environ
       TREES_2, TREES_1;
   
   ::: Radix type specifications
-  notations TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
+  ::: But it also helped [175 unknown attribute format] error with [finite set]
+  notations FINSET_1,
+      TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
       NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
+      RELAT_2, RELSET_1,
       FUNCT_1, FUNCT_2,
       FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
       TREES_2, TREES_1,
@@ -25,10 +30,12 @@ environ
       RECDEF_1;
 
   ::: For modes? (unknown mode format resolved)
-  constructors RELAT_2, PARTFUN1, BINOP_1, DOMAIN_1,
+  constructors RELAT_2, RELAT_1,
+      PARTFUN1, BINOP_1, DOMAIN_1,
       FUNCT_1, FUNCT_2, FUNCT_3,
       FUNCOP_1,
-      SQUARE_1, NAT_1, FINSEQ_1, RELSET_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+      RELSET_1,
+      SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
       TREES_2, TREES_1,
       ORDERS_1, ORDERS_2,
       RECDEF_1;
@@ -42,7 +49,8 @@ environ
 
   ::: Registrations are for clusters (showing that a type exists (is non-empty),
   :::  and automatically adding adjectives)
-  registrations XBOOLE_0, SUBSET_1, RELAT_1, ORDINAL1, PARTFUN1,
+  registrations XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
+      RELAT_2, RELAT_1,
       FUNCT_1, FUNCT_2,
       FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
       PBOOLE, CARD_3,
@@ -89,9 +97,6 @@ definition
   
   attr D is LambdaTerm-like means
     (dom D qua Tree) is finite &
-::>                          *143,306
-::                           This must be an environ error,
-::                            but I haven't been able to sort it out.
     for r st r in dom D holds
       r is FinSequence of {0,1} &
       r^<*0*> in dom D implies D.r = 0;
@@ -281,51 +286,210 @@ end;
 
 definition
   let A be non empty set;
-  func G(A) -> set equals A;
+  func Web(A) -> set equals A;
   :: TODO inductive construction
   coherence;
 end;
 
 theorem
   for A being non empty set holds
-    id G(A) is one-to-one
+    id Web(A) is one-to-one
 proof
   thus thesis;
 end;
 
+::: What does this registration actually state?
+:::
+::: 1. For any infinite set $B$, there is some one-to-one function that
+:::     embeds $B^*\\times B$ into $B$.
+::: 2. There are at least certain infinite sets $B$ for which
+:::     such an embedding is possible.
+:::
+::: I only need the second statement, and proving it shouldn't be too
+:::  much trouble. (It would simply require
+:::  doing the infinite recursive construction of $B=Web(A)$ for some
+:::  non-empty set $A$). I don't even know for sure if the first
+:::  statement holds.
+:::
+::: If the first is the case, then how to I define the second statement
+:::  in Mizar? And how do I then define the graph model struct, below,
+:::  without being able to use the `one-to-one` adjective?
 registration
   let B be infinite set;
-::>               *143*306
   cluster one-to-one for Function of [:B*,B:],B;
-::>                *115                 *100
   :: TODO show that such an embedding is possible, by above construction
-  existence
-  proof
-    take G(B);
-  end;
+  existence;
+::>       *4
 end;
 
 :: Graph models
 definition
-  struct GraphModel
-  (#
-    carrier -> set,
+  struct GraphModel (#
+    carrier -> infinite set,
     c -> one-to-one (Function of
-::>                         *136
-           [:(the carrier)*, the carrier:], the carrier)
+      [:(the carrier)*, the carrier:], the carrier)
   #);
 end;
 
-reserve B for non empty set;
-reserve cB for one-to-one (Function of [:B*,B:],B);
-::>                               *136
- :: one-to-one is an attribute of Function, not Function of X
+::: ### CPO's
+::
+
+reserve x,y,z,z2 for set;
+
+definition
+  mode PartialOrder is transitive reflexive antisymmetric Relation;
+end;
+
+::: I'd rather define something like:
+:::
+::: If $D$ is a set, and $R$ a partial order on $D$,
+:::  then an $X\\subseteq D$ is called _directed_ iff
+:::  for all $x,y \\in X$, there is some $z \\in X$,
+:::  such that $x\\sqsubseteq z$ and $y\\sqsubseteq z$.
+:::
+::: However, Mizar wants me to use the exact same variables
+:::  (in some exact order), that are introduced in the `let`
+:::  statement, to occur in the attribute.
+definition
+  let D be set,
+      R be PartialOrder,
+      X be Subset of D;
+
+  attr X is R-directed means
+    for x,y st x in X & y in X holds
+      ex z st
+        z in X & [x,z] in R & [y,z] in R;
+end;
+
+registration
+  let D be set,
+      R be transitive reflexive antisymmetric Relation;
+
+  cluster R-directed for Subset of D;
+  existence;
+::>       *4
+end;
+
+::: Define upper bounds
+definition
+  let D be set,
+      R be transitive reflexive antisymmetric Relation,
+      X be R-directed Subset of D,
+      u be Element of D;
+
+  attr u is X-ub means
+    for x st x in X holds [x,u] in R;
+end;
+
+::: Define least upper bounds
+definition
+  let D be set,
+      R be transitive reflexive antisymmetric Relation,
+      X be R-directed Subset of D,
+      u be Element of D;
+
+  attr u is X-lub means
+    u is X-ub &
+    for u2 being Element of D st u2 is X-ub holds
+      u = u2;
+end;
+
+::: Define what it is to be complete
+definition
+  let D be set,
+      R be transitive reflexive antisymmetric Relation;
+
+  attr R is D-complete means
+    for X being R-directed Subset of D holds
+      ex u being Element of D st u is X-lub;
+end;
+
+::: Here again, what I want to express is that such complete partial
+:::  orders exist, not that for every $D$, any partial order is $D$-complete,
+:::  or something weird like that...
+:::
+::: What are the precise semantics of these clusters?
+registration
+  let D be set;
+
+  cluster D-complete for transitive reflexive antisymmetric Relation;
+  existence;
+::>       *4
+end;
+
+definition
+  let D be set,
+      R be D-complete transitive reflexive antisymmetric Relation,
+      X be R-directed Subset of D;
+
+  func LUB(X) -> Element of D means
+    it is X-lub;
+  existence;
+::>       *4
+  uniqueness;
+::>        *4
+end;
+
+definition
+  let D be set,
+      R be transitive reflexive antisymmetric Relation,
+      x be Element of D;
+
+  attr x is D-bottom means
+::>                *100
+    for y st y in D holds [x,y] in R;
+end;
+
+registration
+  let R be transitive reflexive antisymmetric Relation,
+      X be set;
+
+  cluster R-bottom for Element of X;
+::>              *106,115    *100
+  existence;
+end;
+
+definition
+  struct CPO (#
+    carrier -> set,
+
+    :: complete partial order
+    BinRel -> (the carrier)-complete
+      transitive reflexive antisymmetric
+      (Relation of the carrier, the carrier),
+::>           *136
+    
+    :: with bottom element
+    Bot -> (the BinRel)-bottom Element of the carrier
+::>                          *115    *136
+  #);
+end;
+
+definition
+  let D be CPO,
+      f be Function of D,D;
+
+  attr f is monotone means
+    for x,y st [x,y] in (the BinRel of D) holds
+      [f.x,f.y] in (the BinRel of D);
+end;
+
+definition
+  let D be CPO,
+      f be Function of D,D;
+
+  attr f is continuous means
+    f is monotone &
+    for X being (the BinRel of D)-directed Subset of D holds
+::>                                      *115
+      X=X; ::TODO
+end;
+
 ::>
 ::> 4: This inference is not accepted
 ::> 100: Unused locus
 ::> 102: Unknown predicate
+::> 106: Unknown attribute
 ::> 115: Unknown attribute
 ::> 116: Invalid "qua"
 ::> 136: Non registered cluster
-::> 143: No implicit qualification
-::> 306: Attribute symbol expected
