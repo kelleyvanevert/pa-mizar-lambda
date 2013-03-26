@@ -336,23 +336,61 @@ end;
 
 reserve x,y,z,z2 for set;
 
+::: We'll now be defining CPO stuff. We start off by defining
+:::  a mode for partial orders upon some set `D`. I don't really
+:::  get why de Mizar guys wrote their order definition the way
+:::  they did (in `ORDERS_1`, `ORDERS_2`, etc...)
+
 definition
   mode PartialOrder is transitive reflexive antisymmetric Relation;
 end;
 
-::: I'd rather define something like:
-:::
+definition
+  let D be set;
+  mode PartialOrder of D is transitive reflexive antisymmetric Relation of D;
+end;
+
+::: **(Least) upper bounds**
+
+::: An element $u$ of $D$ is an _upper bound_ of a
+:::  subset $X\\subseteq D$ iff for all $x\\in X$,
+:::  $x\\sqsubseteq u$.
+definition
+  let D be set,
+      R be PartialOrder of D,
+      X be Subset of D,
+      u be Element of D;
+
+  pred u is_ub_of X means
+::>             *100
+    for x st x in X holds [x,u] in R;
+end;
+
+::: Define least upper bounds
+definition
+  let D be set,
+      R be transitive reflexive antisymmetric Relation,
+      X be R-directed Subset of D,
+::>                 *175   *151
+      u be Element of D;
+
+  attr u is X-lub means
+    u is X-ub &
+::>         *175
+    for u2 being Element of D st u2 is X-ub holds
+::>                                       *175
+      u = u2;
+end;
+
+::: **Directed sets**
+
 ::: If $D$ is a set, and $R$ a partial order on $D$,
 :::  then an $X\\subseteq D$ is called _directed_ iff
 :::  for all $x,y \\in X$, there is some $z \\in X$,
 :::  such that $x\\sqsubseteq z$ and $y\\sqsubseteq z$.
-:::
-::: However, Mizar wants me to use the exact same variables
-:::  (in some exact order), that are introduced in the `let`
-:::  statement, to occur in the attribute.
 definition
   let D be set,
-      R be PartialOrder,
+      R be PartialOrder of D,
       X be Subset of D;
 
   attr X is R-directed means
@@ -363,45 +401,23 @@ end;
 
 registration
   let D be set,
-      R be transitive reflexive antisymmetric Relation;
+      R be PartialOrder of D;
 
   cluster R-directed for Subset of D;
   existence;
 ::>       *4
 end;
 
-::: Define upper bounds
-definition
-  let D be set,
-      R be transitive reflexive antisymmetric Relation,
-      X be R-directed Subset of D,
-      u be Element of D;
-
-  attr u is X-ub means
-    for x st x in X holds [x,u] in R;
-end;
-
-::: Define least upper bounds
-definition
-  let D be set,
-      R be transitive reflexive antisymmetric Relation,
-      X be R-directed Subset of D,
-      u be Element of D;
-
-  attr u is X-lub means
-    u is X-ub &
-    for u2 being Element of D st u2 is X-ub holds
-      u = u2;
-end;
-
-::: Define what it is to be complete
+::: **Completeness**
 definition
   let D be set,
       R be transitive reflexive antisymmetric Relation;
 
   attr R is D-complete means
     for X being R-directed Subset of D holds
+::>                      *115
       ex u being Element of D st u is X-lub;
+::>                                       *106
 end;
 
 ::: Here again, what I want to express is that such complete partial
@@ -421,13 +437,14 @@ definition
   let D be set,
       R be D-complete transitive reflexive antisymmetric Relation,
       X be R-directed Subset of D;
+::>                 *115
 
   func LUB(X) -> Element of D means
+::>      *100
     it is X-lub;
+::>           *106
   existence;
-::>       *4
   uniqueness;
-::>        *4
 end;
 
 definition
@@ -493,3 +510,5 @@ end;
 ::> 115: Unknown attribute
 ::> 116: Invalid "qua"
 ::> 136: Non registered cluster
+::> 151: Unknown mode format
+::> 175: Unknown attribute format
