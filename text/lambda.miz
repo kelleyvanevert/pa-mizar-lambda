@@ -141,16 +141,6 @@ proof
   thus thesis;
 end;
 
-::: See below, definition of `beta*`.
-definition
-  func LAMBDA_TERMS -> set means
-    for M holds M in it & for x st x in it holds x is LambdaTerm;
-  existence;
-::>       *4
-  uniqueness;
-::>        *4
-end;
-
 ::: Some helper definitions for working with lambda terms.
 definition
   let M,r;
@@ -252,20 +242,12 @@ end;
 
 ::: We close the relation under transitivity and reflexivity
 :::  to get the full beta reduction relation.
-
-::: I defined the set `LAMBDA_TERMS` above, to avoid the 102 error
-:::  here, but apparently is doesn't work (as can be seen by the fact
-:::  that the qua gives an 116 error).
 definition
   let M,N;
   
   pred M beta* N means
-    ex Ps being FinSequence of LAMBDA_TERMS st
-      (Ps.1 qua LambdaTerm) = M & Ps.(len Ps) = N &
-::>           *116
-      for n being Nat st 1 <= n & n < len Ps holds
-        (Ps.n qua LambdaTerm) beta Ps.(n + 1);
-::>             *116             *102
+    M = N or
+    ex P st M beta P & P beta N;
 end;
 
 ::: And then close under symmetry to get beta conversion.
@@ -276,67 +258,12 @@ definition
     M beta* N or N beta* M;
 end;
 
-::: ### Graph Models
-
-definition
-  let Bn be non empty set;
-  func BnNext(Bn) -> set equals Bn \/ [: Bn*, Bn :];
-  coherence;
-end;
-
-definition
-  let A be non empty set;
-  func Web(A) -> set equals A;
-  :: TODO inductive construction
-  coherence;
-end;
-
-theorem
-  for A being non empty set holds
-    id Web(A) is one-to-one
-proof
-  thus thesis;
-end;
-
-::: What does this registration actually state?
-:::
-::: 1. For any infinite set $B$, there is some one-to-one function that
-:::     embeds $B^*\\times B$ into $B$.
-::: 2. There are at least certain infinite sets $B$ for which
-:::     such an embedding is possible.
-:::
-::: I only need the second statement, and proving it shouldn't be too
-:::  much trouble. (It would simply require
-:::  doing the infinite recursive construction of $B=Web(A)$ for some
-:::  non-empty set $A$). I don't even know for sure if the first
-:::  statement holds.
-:::
-::: If the first is the case, then how to I define the second statement
-:::  in Mizar? And how do I then define the graph model struct, below,
-:::  without being able to use the `one-to-one` adjective?
-registration
-  let B be infinite set;
-  cluster one-to-one for Function of [:B*,B:],B;
-  :: TODO show that such an embedding is possible, by above construction
-  existence;
-::>       *4
-end;
-
-:: Graph models
-definition
-  struct GraphModel (#
-    carrier -> infinite set,
-    c -> one-to-one (Function of
-      [:(the carrier)*, the carrier:], the carrier)
-  #);
-end;
-
 ::: ### CPO's
 ::
 
 reserve x,y,z,z2 for set;
 
-::: We'll now be defining CPO stuff. We start off by defining
+::: We start off by defining
 :::  a mode for partial orders upon some set `D`. I don't really
 :::  get why de Mizar guys wrote their order definition the way
 :::  they did (in `ORDERS_1`, `ORDERS_2`, etc...)
@@ -347,7 +274,7 @@ end;
 
 definition
   let D be set;
-  mode PartialOrder of D is transitive reflexive antisymmetric Relation of D;
+  mode PartialOrder of D is transitive reflexive antisymmetric (Relation of D);
 end;
 
 ::: **(Least) upper bounds**
@@ -355,6 +282,17 @@ end;
 ::: An element $u$ of $D$ is an _upper bound_ of a
 :::  subset $X\\subseteq D$ iff for all $x\\in X$,
 :::  $x\\sqsubseteq u$.
+definition
+  let D be set,
+      R be PartialOrder of D,
+      X be Subset of D,
+      u be Element of D;
+
+  attr u is X-ub means
+::>            *100
+    for x st x in X holds [x,u] in R;
+end;
+
 definition
   let D be set,
       R be PartialOrder of D,
@@ -376,9 +314,7 @@ definition
 
   attr u is X-lub means
     u is X-ub &
-::>         *175
     for u2 being Element of D st u2 is X-ub holds
-::>                                       *175
       u = u2;
 end;
 
@@ -502,13 +438,68 @@ definition
       X=X; ::TODO
 end;
 
+
+::: ### Graph Models
+
+definition
+  let Bn be non empty set;
+  func BnNext(Bn) -> set equals Bn \/ [: Bn*, Bn :];
+  coherence;
+end;
+
+definition
+  let A be non empty set;
+  func Web(A) -> set equals A;
+  :: TODO inductive construction
+  coherence;
+end;
+
+theorem
+  for A being non empty set holds
+    id Web(A) is one-to-one
+proof
+  thus thesis;
+end;
+
+::: What does this registration actually state?
+:::
+::: 1. For any infinite set $B$, there is some one-to-one function that
+:::     embeds $B^*\\times B$ into $B$.
+::: 2. There are at least certain infinite sets $B$ for which
+:::     such an embedding is possible.
+:::
+::: I only need the second statement, and proving it shouldn't be too
+:::  much trouble. (It would simply require
+:::  doing the infinite recursive construction of $B=Web(A)$ for some
+:::  non-empty set $A$). I don't even know for sure if the first
+:::  statement holds.
+:::
+::: If the first is the case, then how to I define the second statement
+:::  in Mizar? And how do I then define the graph model struct, below,
+:::  without being able to use the `one-to-one` adjective?
+registration
+  let B be infinite set;
+  cluster one-to-one for Function of [:B*,B:],B;
+  :: TODO show that such an embedding is possible, by above construction
+  existence;
+::>       *4
+end;
+
+:: Graph models
+definition
+  struct GraphModel (#
+    carrier -> infinite set,
+    c -> one-to-one (Function of
+      [:(the carrier)*, the carrier:], the carrier)
+  #);
+end;
+
+
 ::>
 ::> 4: This inference is not accepted
 ::> 100: Unused locus
-::> 102: Unknown predicate
 ::> 106: Unknown attribute
 ::> 115: Unknown attribute
-::> 116: Invalid "qua"
 ::> 136: Non registered cluster
 ::> 151: Unknown mode format
 ::> 175: Unknown attribute format

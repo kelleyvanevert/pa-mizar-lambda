@@ -292,28 +292,6 @@ The definition of <code>|</code> that we are using is the definition
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <p>See below, definition of <code>beta*</code>.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
-  <span class="keyword">func</span> LAMBDA_TERMS -&gt; <span class="keyword">set</span> <span class="keyword">means</span>
-    <span class="keyword">for</span> M <span class="keyword">holds</span> M <span class="keyword">in</span> it &amp; <span class="keyword">for</span> x <span class="keyword">st</span> x <span class="keyword">in</span> it <span class="keyword">holds</span> x <span class="keyword">is</span> LambdaTerm;
-  <span class="keyword">existence</span>;
-<span class="comment">::&gt;       *4</span>
-  <span class="keyword">uniqueness</span>;
-<span class="comment">::&gt;        *4</span>
-<span class="keyword">end</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-12">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
-              </div>
               <p>Some helper definitions for working with lambda terms.</p>
 
             </div>
@@ -334,11 +312,11 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-13">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>By $r$ being an <em>active variable</em> of some term $M$ (or more precisely,
  a path identifying an active variable), I mean that if $\lambda M$ were
@@ -399,11 +377,11 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-14">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <h3>Reduction and conversion</h3>
 
@@ -414,11 +392,11 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-15">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>First I define <em>shallow</em> one-step beta substitution, which only
  states (the De Bruijn equivalent of)
@@ -442,11 +420,11 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-16">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>Then we extend this ordinary one-step beta reduction, that is,
  any subterm is also allowed to reduce.</p>
@@ -466,17 +444,14 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-17">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>We close the relation under transitivity and reflexivity
  to get the full beta reduction relation.</p>
-<p>I defined the set <code>LAMBDA_TERMS</code> above, to avoid the 102 error
- here, but apparently is doesn&#39;t work (as can be seen by the fact
- that the qua gives an 116 error).</p>
 
             </div>
             
@@ -484,22 +459,18 @@ The definition of <code>|</code> that we are using is the definition
   <span class="keyword">let</span> M,N;
   
   <span class="keyword">pred</span> M beta* N <span class="keyword">means</span>
-    <span class="keyword">ex</span> Ps <span class="keyword">being</span> FinSequence <span class="keyword">of</span> LAMBDA_TERMS <span class="keyword">st</span>
-      (Ps.1 qua LambdaTerm) = M &amp; Ps.(len Ps) = N &amp;
-<span class="comment">::&gt;           *116</span>
-      <span class="keyword">for</span> n <span class="keyword">being</span> Nat <span class="keyword">st</span> 1 &lt;= n &amp; n &lt; len Ps <span class="keyword">holds</span>
-        (Ps.n qua LambdaTerm) beta Ps.(n + 1);
-<span class="comment">::&gt;             *116             *102</span>
+    M = N <span class="keyword">or</span>
+    <span class="keyword">ex</span> P <span class="keyword">st</span> M beta P &amp; P beta N;
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
         
         
-        <li id="section-18">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>And then close under symmetry to get beta conversion.</p>
 
@@ -515,88 +486,11 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-19">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-19">&#182;</a>
-              </div>
-              <h3>Graph Models</h3>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
-  <span class="keyword">let</span> Bn <span class="keyword">be</span> non empty <span class="keyword">set</span>;
-  <span class="keyword">func</span> BnNext(Bn) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span> Bn \/ [: Bn*, Bn :];
-  <span class="keyword">coherence</span>;
-<span class="keyword">end</span>;
-
-<span class="keyword">definition</span>
-  <span class="keyword">let</span> A <span class="keyword">be</span> non empty <span class="keyword">set</span>;
-  <span class="keyword">func</span> Web(A) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span> A;
-  <span class="comment">:: TODO inductive construction</span>
-  <span class="keyword">coherence</span>;
-<span class="keyword">end</span>;
-
-<span class="keyword">theorem</span>
-  <span class="keyword">for</span> A <span class="keyword">being</span> non empty <span class="keyword">set</span> <span class="keyword">holds</span>
-    id Web(A) <span class="keyword">is</span> one-to-one
-<span class="keyword">proof</span>
-  <span class="keyword">thus</span> <span class="keyword">thesis</span>;
-<span class="keyword">end</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-20">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
-              </div>
-              <p>What does this registration actually state?</p>
-<ol>
-<li>For any infinite set $B$, there is some one-to-one function that
- embeds $B^*\times B$ into $B$.</li>
-<li>There are at least certain infinite sets $B$ for which
- such an embedding is possible.</li>
-</ol>
-<p>I only need the second statement, and proving it shouldn&#39;t be too
- much trouble. (It would simply require
- doing the infinite recursive construction of $B=Web(A)$ for some
- non-empty set $A$). I don&#39;t even know for sure if the first
- statement holds.</p>
-<p>If the first is the case, then how to I define the second statement
- in Mizar? And how do I then define the graph model struct, below,
- without being able to use the <code>one-to-one</code> adjective?</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
-  <span class="keyword">let</span> B <span class="keyword">be</span> infinite <span class="keyword">set</span>;
-  <span class="keyword">cluster</span> one-to-one <span class="keyword">for</span> Function <span class="keyword">of</span> [:B*,B:],B;
-  <span class="comment">:: TODO show that such an embedding is possible, by above construction</span>
-  <span class="keyword">existence</span>;
-<span class="comment">::&gt;       *4</span>
-<span class="keyword">end</span>;
-
-<span class="comment">:: Graph models</span>
-<span class="keyword">definition</span>
-  <span class="keyword">struct</span> GraphModel (#
-    carrier -&gt; infinite <span class="keyword">set</span>,
-    c -&gt; one-to-one (Function <span class="keyword">of</span>
-      [:(the carrier)*, the carrier:], the carrier)
-  #);
-<span class="keyword">end</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-21">
-            <div class="annotation">
-              
-              <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <h3>CPO&#39;s</h3>
 
@@ -609,13 +503,13 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-22">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
-              <p>We&#39;ll now be defining CPO stuff. We start off by defining
+              <p>We start off by defining
  a mode for partial orders upon some set <code>D</code>. I don&#39;t really
  get why de Mizar guys wrote their order definition the way
  they did (in <code>ORDERS_1</code>, <code>ORDERS_2</code>, etc...)</p>
@@ -628,17 +522,17 @@ The definition of <code>|</code> that we are using is the definition
 
 <span class="keyword">definition</span>
   <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>;
-  <span class="keyword">mode</span> PartialOrder <span class="keyword">of</span> D <span class="keyword">is</span> transitive reflexive antisymmetric Relation <span class="keyword">of</span> D;
+  <span class="keyword">mode</span> PartialOrder <span class="keyword">of</span> D <span class="keyword">is</span> transitive reflexive antisymmetric (Relation <span class="keyword">of</span> D);
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
         
         
-        <li id="section-23">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p><strong>(Least) upper bounds</strong></p>
 <p>An element $u$ of $D$ is an <em>upper bound</em> of a
@@ -653,6 +547,17 @@ The definition of <code>|</code> that we are using is the definition
       X <span class="keyword">be</span> Subset <span class="keyword">of</span> D,
       u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
 
+  <span class="keyword">attr</span> u <span class="keyword">is</span> X-ub <span class="keyword">means</span>
+<span class="comment">::&gt;            *100</span>
+    u=u &amp; <span class="keyword">for</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X <span class="keyword">holds</span> [x,u] <span class="keyword">in</span> R;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+      X <span class="keyword">be</span> Subset <span class="keyword">of</span> D,
+      u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+
   <span class="keyword">pred</span> u is_ub_of X <span class="keyword">means</span>
 <span class="comment">::&gt;             *100</span>
     <span class="keyword">for</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X <span class="keyword">holds</span> [x,u] <span class="keyword">in</span> R;
@@ -661,11 +566,11 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-24">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>Define least upper bounds</p>
 
@@ -680,20 +585,18 @@ The definition of <code>|</code> that we are using is the definition
 
   <span class="keyword">attr</span> u <span class="keyword">is</span> X-lub <span class="keyword">means</span>
     u <span class="keyword">is</span> X-ub &amp;
-<span class="comment">::&gt;         *175</span>
     <span class="keyword">for</span> u2 <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u2 <span class="keyword">is</span> X-ub <span class="keyword">holds</span>
-<span class="comment">::&gt;                                       *175</span>
       u = u2;
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
         
         
-        <li id="section-25">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p><strong>Directed sets</strong></p>
 <p>If $D$ is a set, and $R$ a partial order on $D$,
@@ -726,11 +629,11 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-26">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p><strong>Completeness</strong></p>
 
@@ -750,11 +653,11 @@ The definition of <code>|</code> that we are using is the definition
         </li>
         
         
-        <li id="section-27">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Here again, what I want to express is that such complete partial
  orders exist, not that for every $D$, any partial order is $D$-complete,
@@ -838,15 +741,91 @@ The definition of <code>|</code> that we are using is the definition
     <span class="keyword">for</span> X <span class="keyword">being</span> (the BinRel <span class="keyword">of</span> D)-directed Subset <span class="keyword">of</span> D <span class="keyword">holds</span>
 <span class="comment">::&gt;                                      *115</span>
       X=X; <span class="comment">::TODO</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <h3>Graph Models</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> Bn <span class="keyword">be</span> non empty <span class="keyword">set</span>;
+  <span class="keyword">func</span> BnNext(Bn) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span> Bn \/ [: Bn*, Bn :];
+  <span class="keyword">coherence</span>;
 <span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> A <span class="keyword">be</span> non empty <span class="keyword">set</span>;
+  <span class="keyword">func</span> Web(A) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span> A;
+  <span class="comment">:: TODO inductive construction</span>
+  <span class="keyword">coherence</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">theorem</span>
+  <span class="keyword">for</span> A <span class="keyword">being</span> non empty <span class="keyword">set</span> <span class="keyword">holds</span>
+    id Web(A) <span class="keyword">is</span> one-to-one
+<span class="keyword">proof</span>
+  <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>What does this registration actually state?</p>
+<ol>
+<li>For any infinite set $B$, there is some one-to-one function that
+ embeds $B^*\times B$ into $B$.</li>
+<li>There are at least certain infinite sets $B$ for which
+ such an embedding is possible.</li>
+</ol>
+<p>I only need the second statement, and proving it shouldn&#39;t be too
+ much trouble. (It would simply require
+ doing the infinite recursive construction of $B=Web(A)$ for some
+ non-empty set $A$). I don&#39;t even know for sure if the first
+ statement holds.</p>
+<p>If the first is the case, then how to I define the second statement
+ in Mizar? And how do I then define the graph model struct, below,
+ without being able to use the <code>one-to-one</code> adjective?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">let</span> B <span class="keyword">be</span> infinite <span class="keyword">set</span>;
+  <span class="keyword">cluster</span> one-to-one <span class="keyword">for</span> Function <span class="keyword">of</span> [:B*,B:],B;
+  <span class="comment">:: TODO show that such an embedding is possible, by above construction</span>
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+<span class="keyword">end</span>;
+
+<span class="comment">:: Graph models</span>
+<span class="keyword">definition</span>
+  <span class="keyword">struct</span> GraphModel (#
+    carrier -&gt; infinite <span class="keyword">set</span>,
+    c -&gt; one-to-one (Function <span class="keyword">of</span>
+      [:(the carrier)*, the carrier:], the carrier)
+  #);
+<span class="keyword">end</span>;
+
 
 <span class="comment">::&gt;</span>
 <span class="comment">::&gt; 4: This inference is not accepted</span>
 <span class="comment">::&gt; 100: Unused locus</span>
-<span class="comment">::&gt; 102: Unknown predicate</span>
 <span class="comment">::&gt; 106: Unknown attribute</span>
 <span class="comment">::&gt; 115: Unknown attribute</span>
-<span class="comment">::&gt; 116: Invalid "qua"</span>
 <span class="comment">::&gt; 136: Non registered cluster</span>
 <span class="comment">::&gt; 151: Unknown mode format</span>
 <span class="comment">::&gt; 175: Unknown attribute format</span></pre></div></div>

@@ -1,3 +1,3 @@
-Parser   [ 514 *4]   0:00
-Analyzer [ 503 *21]   0:01
-Checker  [ 503 *35]
+Parser   [ 505 *2]   0:00
+Analyzer [ 495 *17]   0:01
+Checker  [ 495 *29]
