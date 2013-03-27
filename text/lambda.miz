@@ -1,4 +1,4 @@
-::: ## Lambda calculus
+::: # Lambda Calculus
 
 ::: Environ originally taken from `finseq_2`. Later, I added trees and orders.
 environ
@@ -63,12 +63,13 @@ environ
 
 begin
 
+::: ## Lambda calculus
+
 reserve D for DecoratedTree,
         p,q,r for FinSequence of NAT,
-        x for set;
+        x,y for set;
 
 ::: ### Lambda terms
-::
 
 ::: A _lambda term_ is identified with it's AST (abstract
 :::  syntax tree). More precisely, we identify a lambda term
@@ -209,7 +210,6 @@ definition
 end;
 
 ::: ### Reduction and conversion
-::
 
 ::: First I define _shallow_ one-step beta substitution, which only
 :::  states (the De Bruijn equivalent of)
@@ -258,26 +258,21 @@ definition
     M beta* N or N beta* M;
 end;
 
-::: ### CPO's
-::
+::: ## CPO's
 
 reserve x,y,z,z2 for set;
 
 ::: We start off by defining
 :::  a mode for partial orders upon some set `D`. I don't really
-:::  get why de Mizar guys wrote their order definition the way
+:::  get why de Mizar guys wrote their order definitions the way
 :::  they did (in `ORDERS_1`, `ORDERS_2`, etc...)
-
-definition
-  mode PartialOrder is transitive reflexive antisymmetric Relation;
-end;
 
 definition
   let D be set;
   mode PartialOrder of D is transitive reflexive antisymmetric (Relation of D);
 end;
 
-::: **(Least) upper bounds**
+::: ### (Least) upper bounds
 
 ::: An element $u$ of $D$ is an _upper bound_ of a
 :::  subset $X\\subseteq D$ iff for all $x\\in X$,
@@ -316,7 +311,7 @@ definition
       [u,u2] in R;
 end;
 
-::: **Directed sets**
+::: ### Directed sets
 
 ::: If $D$ is a set, and $R$ a partial order on $D$,
 :::  then an $X\\subseteq D$ is called _directed_ iff
@@ -342,7 +337,7 @@ registration
 ::>       *4
 end;
 
-::: **Completeness**
+::: ### Completeness
 
 ::: A partial ordered set is complete iff every directed set has
 :::  a least upper bound.
@@ -381,7 +376,7 @@ definition
 ::>        *4
 end;
 
-::: **Bottom element**
+::: ### Bottom element
 definition
   let D be set,
       R be PartialOrder of D,
@@ -400,7 +395,7 @@ registration
 ::>       *4
 end;
 
-::: **CPO structure**
+::: ### The CPO structure
 definition
   struct CPO (#
     carrier -> set,
@@ -409,18 +404,21 @@ definition
   #);
 end;
 
+::: ### Continuity
+::: #### Monotonicity
 definition
-  let D be CPO,
-      f be Function of (the carrier of D),(the carrier of D);
+  let D,E be CPO,
+      f be Function of (the carrier of D),(the carrier of E);
 
   attr f is monotone means
     for x,y st [x,y] in (the BinRel of D) holds
-      [f.x,f.y] in (the BinRel of D);
+      [f.x,f.y] in (the BinRel of E);
 end;
 
+::: #### Continuity
 definition
-  let D be CPO,
-      f be Function of (the carrier of D),(the carrier of D);
+  let D,E be CPO,
+      f be Function of (the carrier of D),(the carrier of E);
 
   attr f is continuous means
     f is monotone &
@@ -434,8 +432,75 @@ definition
 ::                  and thus eligible for LUB ?
 end;
 
+registration
+  let D,E be CPO;
 
-::: ### Graph Models
+  cluster continuous for Function of (the carrier of D),(the carrier of E);
+  existence;
+::>       *4
+end;
+
+definition
+  let D,E be CPO;
+
+  mode ContinuousFunc of D,E is continuous Function of
+    (the carrier of D),(the carrier of E);
+end;
+
+::: #### Continuous function space
+definition
+  let D,E be CPO;
+
+  func ContinuousFuncs(D,E) -> set means
+    x in it iff x is ContinuousFunc of D,E;
+  existence;
+::>       *4
+  uniqueness;
+::>        *4
+end;
+
+definition
+  let D,E be CPO,
+      f,g be ContinuousFunc of D,E;
+
+  pred f piecewise_le g means
+    for x being Element of D holds
+      [f.x, g.x] in (the BinRel of E);
+end;
+
+theorem
+  for D,E being CPO holds
+    CPO(# ContinuousFuncs(D,E),
+          { [f,g] where f,g is ContinuousFunc of D,E : f piecewise_le g },
+          {} #) is CPO
+::>           *105
+proof
+  thus thesis;
+end;
+
+::: #### The powerset CPO
+definition
+  let A be non empty set;
+
+  func SubsetRelation(A) -> Relation of bool A means
+    [x,y] in it iff x is Subset of y;
+  existence;
+::>       *4
+  uniqueness;
+::>        *4
+end;
+
+theorem
+  for A being non empty set holds
+    CPO(# bool A, SubsetRelation(A), {} #) is CPO
+::>                                      *105
+proof
+  thus thesis;
+end;
+
+
+
+::: ## Graph Models
 
 definition
   let Bn be non empty set;
@@ -494,3 +559,4 @@ end;
 ::>
 ::> 4: This inference is not accepted
 ::> 103: Unknown functor
+::> 105: Illegal projection

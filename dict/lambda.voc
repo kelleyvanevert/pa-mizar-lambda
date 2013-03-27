@@ -1,13 +1,6 @@
-:: R predicate
-:: O functor
-:: M mode
-:: G structure
-:: U selector
-:: V attribute
-:: K left functor bracket
-:: L right functor bracket
+::: # Lambda Calculus
 
-:: functors
+::: ## Functors
 OActiveVar
 OG
 OF
@@ -19,18 +12,20 @@ OVar
 OSubstituteActiveVar
 OLAMBDA_TERMS
 OLUB
+OSubsetRelation
+OContinuousFuncs
 
-:: selectors
+::: ## Selectors
 Uc
 Ucarrier
 UBinRel
 UBot
 
-:: structures
+::: ## Structures
 GGraphModel
 GCPO
 
-:: attributes
+::: ## Attributes
 VLambdaTerm-like
 VSuperSimple
 V-directed
@@ -41,11 +36,12 @@ Vcontinuous
 V-lub
 V-ub
 
-:: modes
+::: ## Modes
 MLambdaTerm
 MPartialOrder
+MContinuousFunc
 
-:: predicates
+::: ## Predicates
 Ris_variable_in
 Ris_active_variable_in
 Ris_abstraction_in
@@ -54,5 +50,4 @@ Rbeta_shallow
 Rbeta
 Rbeta*
 Rbeta=
-Ris_ub_of
-Ris_lub_of
+Rpiecewise_le

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title><%= title %></title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="../res/<%= css %>" />
+</head>
+<body>
+  <div class="filelist">
+    <ul class="files">
+      <li><a href="../text/lambda.html">text/lambda.miz</a></li>
+      <li><a href="../dict/lambda.html">dict/lambda.voc</a></li>
+    </ul>
+  </div>
+  <div id="container">
+    <div id="background"></div>
+    <% if (sources.length > 1) { %>
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            <% for (var i=0, l=sources.length; i<l; i++) { %>
+              <% var source = sources[i]; %>
+              <a class="source" href="<%= path.basename(destination(source)) %>">
+                <%= path.basename(source) %>
+              </a>
+            <% } %>
+          </div>
+        </li>
+      </ul>
+    <% } %>
+    <ul class="fragments">
+        <% if (!hasTitle) { %>
+          <li id="title">
+              <div class="annotation">
+                  <h1><%= title %></h1>
+              </div>
+          </li>
+        <% } %>
+        <% for (var i=0, l=fragments.length; i<l; i++) { %>
+        <% var fragment = fragments[i]; %>
+        <li>
+            <div class="annotation">
+              <% heading = fragment.docsHtml.match(/^\s*<(h\d)>/) %>
+              <%= fragment.docsHtml %>
+            </div>
+            <% if (fragment.codeText.replace(/\s/gm, '') != '') { %>
+            <div class="content"><%= fragment.codeHtml %></div>
+            <% } %>
+        </li>
+        <% } %>
+    </ul>
+  </div>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"], scale: 90 }
+  });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
