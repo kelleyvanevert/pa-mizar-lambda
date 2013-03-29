@@ -45,7 +45,8 @@ environ
       FUNCT_1, FUNCT_2,
       FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
       ORDERS_1,
-      TREES_2, TREES_1;
+      TREES_2, TREES_1,
+      XTUPLE_0;
 
   ::: Registrations are for clusters (showing that a type exists (is non-empty),
   :::  and automatically adding adjectives)
@@ -58,7 +59,7 @@ environ
       TREES_2, TREES_1,
       FINSET_1;
 
-  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1;
+  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1;
   
   schemes RECDEF_1;
 
@@ -131,18 +132,6 @@ registration
   end;
 end;
 
-theorem
-  ex x st x=x & for y st y=y holds y=y & x=x
-proof
-  set D = {};
-  take D;
-  thus D=D;
-  let y;
-  assume y=y;
-  thus y=y;
-  thus D=D;
-end;
-
 definition
   mode LambdaTerm is LambdaTerm-like DecoratedTree of NAT;
 end;
@@ -157,12 +146,43 @@ reserve M,N,P,Q for LambdaTerm;
 :::  which then together with `LambdaTerm-like` means that it is
 :::  indeed a `LambdaTerm`.
 registration
-  let M,r;
+  let M be LambdaTerm,
+      r be Element of dom M; :: good idea?
 
+  :: NAT-valued is for free when r is an Element of dom M, I think
+  ::  (see [TREES_2]). However, requiring this is unwieldy..
+  ::  See, for instance, (*), below..
   cluster M|r -> NAT-valued LambdaTerm-like;
-  coherence;
-::>       *4,4
+  coherence
+  proof
+    x in rng (M|r) implies x in NAT proof
+      assume x in rng (M|r);
+      then ex y st [y,x] in (M|r) by XTUPLE_0:def 13;
+      then consider y such that [y,x] in (M|r);
+      reconsider y as FinSequence of NAT;
+::>                                    *4
+      [r^y,x] in M;
+::>              *4
+      then
+    A2: x in rng M by XTUPLE_0:def 13;
+      rng M c= NAT by A2, RELAT_1:def 19;
+      hence x in NAT by A2;
+    end;
+    then rng (M|r) c= NAT by TARSKI:def 3;
+    hence M|r is NAT-valued by RELAT_1:def 19;
+    ::proof
+    ::  let x;
+    ::  assume x in rng (M|r);
+    ::  x in NAT;
+   ::   thus rng (M|r) c= NAT;
+    ::end;
+    
+    thus M|r is LambdaTerm-like;
+::>                           *4
+  end;
 end;
+
+reserve r for Element of dom M;
 
 theorem
   (M|r qua DecoratedTree of NAT) is LambdaTerm
@@ -226,15 +246,15 @@ definition
   func SubstituteActiveVar(M,N) -> LambdaTerm means
     :: most things are the same,
     (for r st not (ex p st p is_active_variable_in N &
+::>                                              *102
                            p is_a_prefix_of r)
            holds [r,x] in it iff [r,x] in N
     ) &
     :: except that the active variables are replaced with M
     (for r st r is_active_variable_in N holds it|r = M);
+::>                                 *102
   existence;
-::>       *4
   uniqueness;
-::>        *4
 end;
 
 ::: ### Reduction and conversion
@@ -262,7 +282,9 @@ definition
   let M,N;
 
   pred M beta N means
-    ex p st
+    ex p st :: <--- (*) Element of M, AND of N,
+                         to allow beta_shallow ??
+::>                       *396
       M|p beta_shallow N|p &
       for q st not p is_a_prefix_of q holds
         [r,x] in M iff [r,x] in N;
@@ -586,5 +608,7 @@ end;
 
 ::>
 ::> 4: This inference is not accepted
+::> 102: Unknown predicate
 ::> 103: Unknown functor
 ::> 105: Illegal projection
+::> 396: Formula expected
