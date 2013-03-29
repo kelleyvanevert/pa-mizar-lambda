@@ -137,8 +137,11 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
       FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
       PBOOLE, CARD_3,
       ORDERS_2,
-      TREES_2, TREES_1;
+      TREES_2, TREES_1,
+      FINSET_1;
 
+  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1;
+  
   <span class="keyword">schemes</span> RECDEF_1;
 
   <span class="keyword">requirements</span> BOOLE, SUBSET, NUMERALS, ARITHM, REAL;
@@ -211,7 +214,7 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
   <span class="keyword">let</span> D;
   
   <span class="keyword">attr</span> D <span class="keyword">is</span> LambdaTerm-like <span class="keyword">means</span>
-    (dom D qua Tree) <span class="keyword">is</span> finite &amp;
+    dom D <span class="keyword">is</span> finite &amp;
     <span class="keyword">for</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D <span class="keyword">holds</span>
       r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} &amp;
       r^&lt;*0*&gt; <span class="keyword">in</span> dom D <span class="keyword">implies</span> D.r = 0;
@@ -233,8 +236,28 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
             
             <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
   <span class="keyword">cluster</span> LambdaTerm-like <span class="keyword">for</span> DecoratedTree <span class="keyword">of</span> NAT;
-  <span class="keyword">existence</span>;
-<span class="comment">::&gt;       *4</span>
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> D = { {} } --&gt; 0;
+
+    <span class="keyword">take</span> D;
+    <span class="keyword">thus</span> dom D <span class="keyword">is</span> finite;
+    <span class="keyword">let</span> r <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
+    <span class="keyword">assume</span>
+  A1: r <span class="keyword">in</span> dom D;
+    dom D = { {} } <span class="keyword">by</span> FUNCOP_1:13;
+    <span class="keyword">then</span> r = {} <span class="keyword">by</span> A1, TARSKI:def 1;
+
+    <span class="keyword">then</span> r = &lt;*&gt; {0,1} <span class="keyword">by</span> FINSEQ_1:def 6;
+    <span class="keyword">then</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+
+    <span class="comment">:: TODO</span>
+    <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+<span class="comment">::&gt;      *52</span>
+
+    <span class="keyword">thus</span> D <span class="keyword">is</span> LambdaTerm-like;
+<span class="comment">::&gt;                         *4</span>
+  <span class="keyword">end</span>;
 <span class="keyword">end</span>;
 
 <span class="keyword">definition</span>
@@ -982,6 +1005,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
 
 <span class="comment">::&gt;</span>
 <span class="comment">::&gt; 4: This inference is not accepted</span>
+<span class="comment">::&gt; 52: Invalid assumption</span>
 <span class="comment">::&gt; 103: Unknown functor</span>
 <span class="comment">::&gt; 105: Illegal projection</span></pre></div></div>
             

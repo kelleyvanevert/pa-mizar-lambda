@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # tmp!
-cd /opt/node/lib/node_modules/docco
-cake build
-cd /home/kelley/studie/proof_assistants/ex
+#cd /opt/node/lib/node_modules/docco
+#cake build
+#cd /home/kelley/studie/proof_assistants/ex
 
 # mizar building
 mizf text/lambda.miz > mizf-output
