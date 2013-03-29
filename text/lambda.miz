@@ -103,7 +103,7 @@ definition
     dom D is finite &
     for r st r in dom D holds
       r is FinSequence of {0,1} &
-      r^<*0*> in dom D implies D.r = 0;
+      (r^<*0*> in dom D implies D.r = 0);
 end;
 
 ::: Here, I am having some troubles with Mizar types. I want to follow
@@ -117,7 +117,6 @@ registration
   existence
   proof
     set D = { {} } --> 0;
-
     take D;
     thus dom D is finite;
     let r be FinSequence of NAT;
@@ -125,17 +124,23 @@ registration
   A1: r in dom D;
     dom D = { {} } by FUNCOP_1:13;
     then r = {} by A1, TARSKI:def 1;
-
     then r = <*> {0,1} by FINSEQ_1:def 6;
-    then r is FinSequence of {0,1};
-
-    :: TODO
+    hence r is FinSequence of {0,1};
     assume r^<*0*> in dom D;
-::>      *52
-
-    thus D is LambdaTerm-like;
-::>                         *4
+    thus D.r = 0 by A1, FUNCOP_1:7;
   end;
+end;
+
+theorem
+  ex x st x=x & for y st y=y holds y=y & x=x
+proof
+  set D = {};
+  take D;
+  thus D=D;
+  let y;
+  assume y=y;
+  thus y=y;
+  thus D=D;
 end;
 
 definition
@@ -581,6 +586,5 @@ end;
 
 ::>
 ::> 4: This inference is not accepted
-::> 52: Invalid assumption
 ::> 103: Unknown functor
 ::> 105: Illegal projection

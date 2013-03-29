@@ -217,7 +217,7 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
     dom D <span class="keyword">is</span> finite &amp;
     <span class="keyword">for</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D <span class="keyword">holds</span>
       r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} &amp;
-      r^&lt;*0*&gt; <span class="keyword">in</span> dom D <span class="keyword">implies</span> D.r = 0;
+      (r^&lt;*0*&gt; <span class="keyword">in</span> dom D <span class="keyword">implies</span> D.r = 0);
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -239,7 +239,6 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
   <span class="keyword">existence</span>
   <span class="keyword">proof</span>
     <span class="keyword">set</span> D = { {} } --&gt; 0;
-
     <span class="keyword">take</span> D;
     <span class="keyword">thus</span> dom D <span class="keyword">is</span> finite;
     <span class="keyword">let</span> r <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
@@ -247,17 +246,23 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
   A1: r <span class="keyword">in</span> dom D;
     dom D = { {} } <span class="keyword">by</span> FUNCOP_1:13;
     <span class="keyword">then</span> r = {} <span class="keyword">by</span> A1, TARSKI:def 1;
-
     <span class="keyword">then</span> r = &lt;*&gt; {0,1} <span class="keyword">by</span> FINSEQ_1:def 6;
-    <span class="keyword">then</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
-
-    <span class="comment">:: TODO</span>
+    <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
     <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
-<span class="comment">::&gt;      *52</span>
-
-    <span class="keyword">thus</span> D <span class="keyword">is</span> LambdaTerm-like;
-<span class="comment">::&gt;                         *4</span>
+    <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, FUNCOP_1:7;
   <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">theorem</span>
+  <span class="keyword">ex</span> x <span class="keyword">st</span> x=x &amp; <span class="keyword">for</span> y <span class="keyword">st</span> y=y <span class="keyword">holds</span> y=y &amp; x=x
+<span class="keyword">proof</span>
+  <span class="keyword">set</span> D = {};
+  <span class="keyword">take</span> D;
+  <span class="keyword">thus</span> D=D;
+  <span class="keyword">let</span> y;
+  <span class="keyword">assume</span> y=y;
+  <span class="keyword">thus</span> y=y;
+  <span class="keyword">thus</span> D=D;
 <span class="keyword">end</span>;
 
 <span class="keyword">definition</span>
@@ -1005,7 +1010,6 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
 
 <span class="comment">::&gt;</span>
 <span class="comment">::&gt; 4: This inference is not accepted</span>
-<span class="comment">::&gt; 52: Invalid assumption</span>
 <span class="comment">::&gt; 103: Unknown functor</span>
 <span class="comment">::&gt; 105: Illegal projection</span></pre></div></div>
             
