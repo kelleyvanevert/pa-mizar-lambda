@@ -1,4 +1,4 @@
-::: # Lambda Calculus
+::: # Lambda calculus
 
 ::: Environ originally taken from `finseq_2`. Later, I added trees and orders.
 environ
@@ -69,7 +69,7 @@ environ
 
 begin
 
-::: ## Lambda calculus
+::: ## Syntax and behaviour
 
 reserve T,T1,T2 for Tree,
         D for DecoratedTree,
@@ -205,6 +205,7 @@ proof
   thus thesis;
 end;
 
+::: ### Helper definitions
 ::: Some helper definitions for working with lambda terms.
 definition
   let M,r;
@@ -237,9 +238,47 @@ definition
   let M;
   
   func Abs(M) -> LambdaTerm means
-    it|<*0*> = M & not <*0*> in dom it;
-  existence;
-::>       *4
+    it|<*0*> = M & not <*1*> in dom it;
+  existence
+  proof
+    set T1 = elementary_tree 1;
+    set D1 = T1 --> 0;
+    set r0 = <*0*>;
+  A3: r0 in T1 by TREES_1:28;
+  A4: dom D1 = T1 by FUNCOP_1:13;
+    then
+  A2: r0 in dom D1 by A3;
+    set D = D1 with-replacement (r0, M);
+    
+    D is NAT-valued;
+::>               *4
+    then
+  A7: D is DecoratedTree of NAT;
+
+  A8: D is LambdaTerm-like
+    proof
+      set domM = dom M;
+      reconsider domM as finite Tree by A4, Def1;
+      set domD1 = dom D1;
+      reconsider domD1 as finite Tree by FUNCOP_1:13;
+      r0 is Element of domD1 by A2;
+      then
+    A5: domD1 with-replacement (r0, domM) is finite;
+    A9: dom D = domD1 with-replacement (r0, domM) by A2, TREES_2:def 11;
+      hence
+    A6: dom D is finite by A5;
+      
+    end;
+::>   *70
+
+    reconsider D as LambdaTerm by A7, A8;
+    take D;
+
+    thus D|<*0*> = M;
+::>                *4
+    thus not <*1*> in dom D;
+::>                       *4
+  end;
   uniqueness;
 ::>        *4
 end;
@@ -631,5 +670,6 @@ end;
 
 ::>
 ::> 4: This inference is not accepted
+::> 70: Something remains to be proved
 ::> 103: Unknown functor
 ::> 105: Illegal projection

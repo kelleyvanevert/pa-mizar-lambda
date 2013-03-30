@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-
+<!DOCTYPE HTML>
 <html>
 <head>
   <title><%= title %></title>
@@ -8,31 +7,32 @@
   <link rel="stylesheet" media="all" href="../res/<%= css %>" />
 </head>
 <body>
-  <div class="filelist">
-    <ul class="files">
-      <li><a href="../text/lambda.html">text/lambda.miz</a></li>
-      <li><a href="../dict/lambda.html">dict/lambda.voc</a></li>
-    </ul>
-  </div>
   <div id="container">
-    <div id="background"></div>
-    <% if (sources.length > 1) { %>
-      <ul id="jump_to">
-        <li>
-          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
-          <a class="small" href="javascript:void(0);">+</a>
-          <div id="jump_wrapper">
-          <div id="jump_page">
-            <% for (var i=0, l=sources.length; i<l; i++) { %>
-              <% var source = sources[i]; %>
-              <a class="source" href="<%= path.basename(destination(source)) %>">
-                <%= path.basename(source) %>
-              </a>
-            <% } %>
-          </div>
-        </li>
+    <div class="sidebar">
+      <ul class="files">
+        <li><a href="../text/lambda.html">text/lambda.miz</a></li>
+        <li><a href="../dict/lambda.html">dict/lambda.voc</a></li>
       </ul>
-    <% } %>
+      <% var printlevel = function (hn) {
+        %><li><a href="#<%= hn %>"><span class="hn"><%= hn %></span> <%= structure[hn] %></a><%
+        if (structure[hn + ".1"]) {
+          %><ul><%
+          var i = 0;
+          while (structure[hn + "." + (++i)]) {
+            printlevel(hn + "." + i);
+          }
+          %></ul><%
+        }
+        %></li><%
+      }; %>
+      <a class="hd" href="#top"><%= title %></a>
+      <ul class="index">
+        <% var i = 0; while (structure[++i]) { %>
+        <% printlevel(i); %>
+        <% } %>
+      </ul>
+    </div>
+    <div id="background"></div>
     <ul class="fragments">
         <% if (!hasTitle) { %>
           <li id="title">

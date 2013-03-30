@@ -9,9 +9,11 @@
 #cat mizf-output-summary
 
 mizf text/lambda.miz
-notify-send 'Done!'
 
 # docs building
+cd /opt/node/lib/node_modules/docco
+cake build
+cd /home/kelley/studie/proof_assistants/ex
 docco text/lambda.miz --output text --layout proof-assistants
 docco dict/lambda.voc --output dict --layout proof-assistants
 

@@ -1,22 +1,31 @@
-<!DOCTYPE html>
-
+<!DOCTYPE HTML>
 <html>
 <head>
-  <title>Lambda Calculus</title>
+  <title>Lambda calculus</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="../res/docco.css" />
 </head>
 <body>
-  <div class="filelist">
-    <ul class="files">
-      <li><a href="../text/lambda.html">text/lambda.miz</a></li>
-      <li><a href="../dict/lambda.html">dict/lambda.voc</a></li>
-    </ul>
-  </div>
   <div id="container">
+    <div class="sidebar">
+      <ul class="files">
+        <li><a href="../text/lambda.html">text/lambda.miz</a></li>
+        <li><a href="../dict/lambda.html">dict/lambda.voc</a></li>
+      </ul>
+      
+      <a class="hd" href="#top">Lambda calculus</a>
+      <ul class="index">
+        
+        <li><a href="#1"><span class="hn">1</span> Syntax and behaviour</a><ul><li><a href="#1.1"><span class="hn">1.1</span> Lambda terms</a></li><li><a href="#1.2"><span class="hn">1.2</span> Helper definitions</a></li><li><a href="#1.3"><span class="hn">1.3</span> Reduction and conversion</a></li></ul></li>
+        
+        <li><a href="#2"><span class="hn">2</span> CPO&#39;s</a><ul><li><a href="#2.1"><span class="hn">2.1</span> (Least) upper bounds</a></li><li><a href="#2.2"><span class="hn">2.2</span> Directed sets</a></li><li><a href="#2.3"><span class="hn">2.3</span> Completeness</a></li><li><a href="#2.4"><span class="hn">2.4</span> Bottom element</a></li><li><a href="#2.5"><span class="hn">2.5</span> The CPO structure</a></li><li><a href="#2.6"><span class="hn">2.6</span> Continuity</a><ul><li><a href="#2.6.1"><span class="hn">2.6.1</span> Monotonicity</a></li><li><a href="#2.6.2"><span class="hn">2.6.2</span> Continuity</a></li><li><a href="#2.6.3"><span class="hn">2.6.3</span> Continuous function space</a></li><li><a href="#2.6.4"><span class="hn">2.6.4</span> The powerset CPO</a></li></ul></li></ul></li>
+        
+        <li><a href="#3"><span class="hn">3</span> Graph Models</a></li>
+        
+      </ul>
+    </div>
     <div id="background"></div>
-    
     <ul class="fragments">
         
         
@@ -24,7 +33,7 @@
         <li>
             <div class="annotation">
               
-              <h1 id="">Lambda Calculus</h1>
+              <h1 id="">Lambda calculus</h1>
 
             </div>
             
@@ -166,7 +175,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
         <li>
             <div class="annotation">
               
-              <h2 id="1"><a class="headnumber" href="#1">1</a> Lambda calculus</h2>
+              <h2 id="1"><a class="headnumber" href="#1">1</a> Syntax and behaviour</h2>
 
             </div>
             
@@ -351,6 +360,16 @@ The definition of <code>|</code> that we are using is the definition
         <li>
             <div class="annotation">
               
+              <h3 id="1.2"><a class="headnumber" href="#1.2">1.2</a> Helper definitions</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
               <p>Some helper definitions for working with lambda terms.</p>
 
             </div>
@@ -395,9 +414,47 @@ The definition of <code>|</code> that we are using is the definition
   <span class="keyword">let</span> M;
   
   <span class="keyword">func</span> Abs(M) -&gt; LambdaTerm <span class="keyword">means</span>
-    it|&lt;*0*&gt; = M &amp; <span class="keyword">not</span> &lt;*0*&gt; <span class="keyword">in</span> dom it;
-  <span class="keyword">existence</span>;
-<span class="comment">::&gt;       *4</span>
+    it|&lt;*0*&gt; = M &amp; <span class="keyword">not</span> &lt;*1*&gt; <span class="keyword">in</span> dom it;
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> T1 = elementary_tree 1;
+    <span class="keyword">set</span> D1 = T1 --&gt; 0;
+    <span class="keyword">set</span> r0 = &lt;*0*&gt;;
+  A3: r0 <span class="keyword">in</span> T1 <span class="keyword">by</span> TREES_1:28;
+  A4: dom D1 = T1 <span class="keyword">by</span> FUNCOP_1:13;
+    <span class="keyword">then</span>
+  A2: r0 <span class="keyword">in</span> dom D1 <span class="keyword">by</span> A3;
+    <span class="keyword">set</span> D = D1 with-replacement (r0, M);
+    
+    D <span class="keyword">is</span> NAT-valued;
+<span class="comment">::&gt;               *4</span>
+    <span class="keyword">then</span>
+  A7: D <span class="keyword">is</span> DecoratedTree <span class="keyword">of</span> NAT;
+
+  A8: D <span class="keyword">is</span> LambdaTerm-like
+    <span class="keyword">proof</span>
+      <span class="keyword">set</span> domM = dom M;
+      <span class="keyword">reconsider</span> domM <span class="keyword">as</span> finite Tree <span class="keyword">by</span> A4, Def1;
+      <span class="keyword">set</span> domD1 = dom D1;
+      <span class="keyword">reconsider</span> domD1 <span class="keyword">as</span> finite Tree <span class="keyword">by</span> FUNCOP_1:13;
+      r0 <span class="keyword">is</span> Element <span class="keyword">of</span> domD1 <span class="keyword">by</span> A2;
+      <span class="keyword">then</span>
+    A5: domD1 with-replacement (r0, domM) <span class="keyword">is</span> finite;
+    A9: dom D = domD1 with-replacement (r0, domM) <span class="keyword">by</span> A2, TREES_2:def 11;
+      <span class="keyword">hence</span>
+    A6: dom D <span class="keyword">is</span> finite <span class="keyword">by</span> A5;
+      
+    <span class="keyword">end</span>;
+<span class="comment">::&gt;   *70</span>
+
+    <span class="keyword">reconsider</span> D <span class="keyword">as</span> LambdaTerm <span class="keyword">by</span> A7, A8;
+    <span class="keyword">take</span> D;
+
+    <span class="keyword">thus</span> D|&lt;*0*&gt; = M;
+<span class="comment">::&gt;                *4</span>
+    <span class="keyword">thus</span> <span class="keyword">not</span> &lt;*1*&gt; <span class="keyword">in</span> dom D;
+<span class="comment">::&gt;                       *4</span>
+  <span class="keyword">end</span>;
   <span class="keyword">uniqueness</span>;
 <span class="comment">::&gt;        *4</span>
 <span class="keyword">end</span>;
@@ -438,7 +495,7 @@ The definition of <code>|</code> that we are using is the definition
         <li>
             <div class="annotation">
               
-              <h3 id="1.2"><a class="headnumber" href="#1.2">1.2</a> Reduction and conversion</h3>
+              <h3 id="1.3"><a class="headnumber" href="#1.3">1.3</a> Reduction and conversion</h3>
 
             </div>
             
@@ -1064,6 +1121,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
 
 <span class="comment">::&gt;</span>
 <span class="comment">::&gt; 4: This inference is not accepted</span>
+<span class="comment">::&gt; 70: Something remains to be proved</span>
 <span class="comment">::&gt; 103: Unknown functor</span>
 <span class="comment">::&gt; 105: Illegal projection</span></pre></div></div>
             
