@@ -139,9 +139,20 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
       PBOOLE, CARD_3,
       ORDERS_2,
       TREES_2, TREES_1,
-      FINSET_1;
+      FINSET_1;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Load theorem en definition labels</p>
 
-  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1;
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
+      TREES_1, TREES_2, XBOOLE_0;
   
   <span class="keyword">schemes</span> RECDEF_1;
 
@@ -168,7 +179,8 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">reserve</span> D <span class="keyword">for</span> DecoratedTree,
+            <div class="content"><div class='highlight'><pre><span class="keyword">reserve</span> T,T1,T2 <span class="keyword">for</span> Tree,
+        D <span class="keyword">for</span> DecoratedTree,
         p,q,r <span class="keyword">for</span> FinSequence <span class="keyword">of</span> NAT,
         x,y <span class="keyword">for</span> <span class="keyword">set</span>;</pre></div></div>
             
@@ -215,6 +227,7 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
   <span class="keyword">let</span> D;
   
   <span class="keyword">attr</span> D <span class="keyword">is</span> LambdaTerm-like <span class="keyword">means</span>
+    :Def1:
     dom D <span class="keyword">is</span> finite &amp;
     <span class="keyword">for</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D <span class="keyword">holds</span>
       r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} &amp;
@@ -269,47 +282,58 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
               <p>Let Mizar know that <code>M|r</code> is also a <code>LambdaTerm</code>.
 The definition of <code>|</code> that we are using is the definition
  that operates on (and returns) a <code>DecoratedTree</code>. Showing
- that retricting a <code>LambdaTerm</code> produces a <code>NAT-valued</code> result
- ensures that the result is then a <code>DecoratedTree of NAT</code>;
- which then together with <code>LambdaTerm-like</code> means that it is
- indeed a <code>LambdaTerm</code>.</p>
+ that retricting a <code>LambdaTerm</code> produces a <code>LambdaTerm-like</code>
+ result ensures us that the result is a <code>LambdaTerm</code>.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
   <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
-      r <span class="keyword">be</span> Element <span class="keyword">of</span> dom M; <span class="comment">:: good idea?</span>
+      r <span class="keyword">be</span> Element <span class="keyword">of</span> dom M;
 
-  <span class="comment">:: NAT-valued is for free when r is an Element of dom M, I think</span>
-  <span class="comment">::  (see [TREES_2]). However, requiring this is unwieldy..</span>
-  <span class="comment">::  See, for instance, (*), below..</span>
-  <span class="keyword">cluster</span> M|r -&gt; NAT-valued LambdaTerm-like;
+  <span class="keyword">cluster</span> M|r -&gt; LambdaTerm-like;
   <span class="keyword">coherence</span>
   <span class="keyword">proof</span>
-    x <span class="keyword">in</span> rng (M|r) <span class="keyword">implies</span> x <span class="keyword">in</span> NAT <span class="keyword">proof</span>
-      <span class="keyword">assume</span> x <span class="keyword">in</span> rng (M|r);
-      <span class="keyword">then</span> <span class="keyword">ex</span> y <span class="keyword">st</span> [y,x] <span class="keyword">in</span> (M|r) <span class="keyword">by</span> XTUPLE_0:def 13;
-      <span class="keyword">then</span> <span class="keyword">consider</span> y <span class="keyword">such</span> <span class="keyword">that</span> [y,x] <span class="keyword">in</span> (M|r);
-      <span class="keyword">reconsider</span> y <span class="keyword">as</span> FinSequence <span class="keyword">of</span> NAT;
-<span class="comment">::&gt;                                    *4</span>
-      [r^y,x] <span class="keyword">in</span> M;
-<span class="comment">::&gt;              *4</span>
-      <span class="keyword">then</span>
-    A2: x <span class="keyword">in</span> rng M <span class="keyword">by</span> XTUPLE_0:def 13;
-      rng M c= NAT <span class="keyword">by</span> A2, RELAT_1:def 19;
-      <span class="keyword">hence</span> x <span class="keyword">in</span> NAT <span class="keyword">by</span> A2;
+    <span class="keyword">thus</span> dom (M|r) <span class="keyword">is</span> finite <span class="keyword">proof</span>
+      dom M <span class="keyword">is</span> finite <span class="keyword">by</span> Def1;
+      <span class="keyword">then</span> (dom M)|r <span class="keyword">is</span> finite;
+      <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> TREES_2:def 10;
     <span class="keyword">end</span>;
-    <span class="keyword">then</span> rng (M|r) c= NAT <span class="keyword">by</span> TARSKI:def 3;
-    <span class="keyword">hence</span> M|r <span class="keyword">is</span> NAT-valued <span class="keyword">by</span> RELAT_1:def 19;
-    <span class="comment">::proof</span>
-    <span class="comment">::  let x;</span>
-    <span class="comment">::  assume x in rng (M|r);</span>
-    <span class="comment">::  x in NAT;</span>
-   <span class="comment">::   thus rng (M|r) c= NAT;</span>
-    <span class="comment">::end;</span>
-    
-    <span class="keyword">thus</span> M|r <span class="keyword">is</span> LambdaTerm-like;
-<span class="comment">::&gt;                           *4</span>
+
+    <span class="keyword">let</span> p <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
+    <span class="keyword">assume</span>
+  A3: p <span class="keyword">in</span> dom (M|r);
+    <span class="keyword">thus</span> p <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">proof</span>
+      dom (M|r) = (dom M)|r <span class="keyword">by</span> TREES_2:def 10;
+      <span class="keyword">then</span> p <span class="keyword">in</span> (dom M)|r <span class="keyword">by</span> A3;
+      <span class="keyword">then</span> r^p <span class="keyword">in</span> dom M <span class="keyword">by</span> TREES_1:def 6;
+      <span class="keyword">then</span> r^p <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> Def1;
+      <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> FINSEQ_1:36;
+    <span class="keyword">end</span>;
+
+    <span class="comment">:: r^p^&lt;*0*&gt;</span>
+    <span class="keyword">set</span> p0 = p^&lt;*0*&gt;;
+    <span class="keyword">set</span> rp = r^p;
+    <span class="keyword">assume</span>
+  A4: p0 <span class="keyword">in</span> dom (M|r);
+    <span class="keyword">thus</span> (M|r).p = 0 <span class="keyword">proof</span>
+      dom (M|r) <span class="keyword">is</span> Tree-like;
+      <span class="keyword">then</span>
+    A5: p0 <span class="keyword">in</span> dom (M|r) <span class="keyword">by</span> A4, TREES_1:21;
+      <span class="keyword">then</span> <span class="keyword">reconsider</span> p0 <span class="keyword">as</span> Element <span class="keyword">of</span> dom (M|r);
+      <span class="keyword">reconsider</span> p0 <span class="keyword">as</span> Element <span class="keyword">of</span> (dom M)|r <span class="keyword">by</span> TREES_2:def 10;
+      p0 <span class="keyword">in</span> (dom M)|r;
+      <span class="keyword">then</span> r^p0 <span class="keyword">in</span> dom M <span class="keyword">by</span> TREES_1:def 6;
+      <span class="keyword">then</span>
+    A6: rp^&lt;*0*&gt; <span class="keyword">in</span> dom M <span class="keyword">by</span> FINSEQ_1:32;
+      <span class="keyword">then</span> rp <span class="keyword">in</span> dom M <span class="keyword">by</span> TREES_1:21;
+      <span class="keyword">then</span> M.rp = 0 <span class="keyword">by</span> A6, Def1;
+      <span class="keyword">then</span>
+    A8: M.(r^p) = 0;
+      p <span class="keyword">in</span> (dom M)|r <span class="keyword">by</span> A3, TREES_2:def 10;
+      <span class="keyword">then</span> (M|r).p = M.(r^p) <span class="keyword">by</span> TREES_2:def 10;
+      <span class="keyword">hence</span> (M|r).p = 0 <span class="keyword">by</span> A8, TREES_2:def 10;
+    <span class="keyword">end</span>;
   <span class="keyword">end</span>;
 <span class="keyword">end</span>;
 
@@ -394,16 +418,18 @@ The definition of <code>|</code> that we are using is the definition
 
   <span class="keyword">func</span> SubstituteActiveVar(M,N) -&gt; LambdaTerm <span class="keyword">means</span>
     <span class="comment">:: most things are the same,</span>
-    (<span class="keyword">for</span> r <span class="keyword">st</span> <span class="keyword">not</span> (<span class="keyword">ex</span> p <span class="keyword">st</span> p is_active_variable_in N &amp;
-<span class="comment">::&gt;                                              *102</span>
-                           p is_a_prefix_of r)
+    (<span class="keyword">for</span> r <span class="keyword">st</span> <span class="keyword">not</span> (<span class="keyword">ex</span> p <span class="keyword">being</span> Element <span class="keyword">of</span> dom N
+                      <span class="keyword">st</span> p is_active_variable_in N &amp; p is_a_prefix_of r)
            <span class="keyword">holds</span> [r,x] <span class="keyword">in</span> it <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N
     ) &amp;
     <span class="comment">:: except that the active variables are replaced with M</span>
-    (<span class="keyword">for</span> r <span class="keyword">st</span> r is_active_variable_in N <span class="keyword">holds</span> it|r = M);
-<span class="comment">::&gt;                                 *102</span>
+    (<span class="keyword">for</span> r <span class="keyword">being</span> Element <span class="keyword">of</span> dom N
+            <span class="keyword">st</span> r is_active_variable_in N
+            <span class="keyword">holds</span> it|r = M);
   <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
   <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -449,6 +475,11 @@ The definition of <code>|</code> that we are using is the definition
               
               <p>Then we extend this ordinary one-step beta reduction, that is,
  any subterm is also allowed to reduce.</p>
+<p>Note that I had to use a work-around here, where I have two
+ set-theoretically identical elements <code>p</code> and <code>q</code>, but considered
+ in Mizar as having different types to enable the two <code>|</code> operations
+ to work. I also tried defining something like <code>Element of (dom M),(dom N)</code>,
+ but this is extremely difficult, if not impossible.</p>
 
             </div>
             
@@ -456,12 +487,13 @@ The definition of <code>|</code> that we are using is the definition
   <span class="keyword">let</span> M,N;
 
   <span class="keyword">pred</span> M beta N <span class="keyword">means</span>
-    <span class="keyword">ex</span> p <span class="keyword">st</span> <span class="comment">:: &lt;--- (*) Element of M, AND of N,</span>
-                         to allow beta_shallow ??
-<span class="comment">::&gt;                       *396</span>
-      M|p beta_shallow N|p &amp;
-      <span class="keyword">for</span> q <span class="keyword">st</span> <span class="keyword">not</span> p is_a_prefix_of q <span class="keyword">holds</span>
-        [r,x] <span class="keyword">in</span> M <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N;
+    <span class="keyword">ex</span>
+      p <span class="keyword">being</span> Element <span class="keyword">of</span> dom M,
+      q <span class="keyword">being</span> Element <span class="keyword">of</span> dom N <span class="keyword">st</span>
+        p = q &amp;
+        M|p beta_shallow N|q &amp;
+        <span class="keyword">for</span> q <span class="keyword">st</span> <span class="keyword">not</span> p is_a_prefix_of q <span class="keyword">holds</span>
+          [r,x] <span class="keyword">in</span> M <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N;
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -1032,10 +1064,8 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
 
 <span class="comment">::&gt;</span>
 <span class="comment">::&gt; 4: This inference is not accepted</span>
-<span class="comment">::&gt; 102: Unknown predicate</span>
 <span class="comment">::&gt; 103: Unknown functor</span>
-<span class="comment">::&gt; 105: Illegal projection</span>
-<span class="comment">::&gt; 396: Formula expected</span></pre></div></div>
+<span class="comment">::&gt; 105: Illegal projection</span></pre></div></div>
             
         </li>
         

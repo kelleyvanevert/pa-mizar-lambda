@@ -59,7 +59,9 @@ environ
       TREES_2, TREES_1,
       FINSET_1;
 
-  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1;
+  ::: Load theorem en definition labels
+  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
+      TREES_1, TREES_2, XBOOLE_0;
   
   schemes RECDEF_1;
 
@@ -69,7 +71,8 @@ begin
 
 ::: ## Lambda calculus
 
-reserve D for DecoratedTree,
+reserve T,T1,T2 for Tree,
+        D for DecoratedTree,
         p,q,r for FinSequence of NAT,
         x,y for set;
 
@@ -101,6 +104,7 @@ definition
   let D;
   
   attr D is LambdaTerm-like means
+    :Def1:
     dom D is finite &
     for r st r in dom D holds
       r is FinSequence of {0,1} &
@@ -141,44 +145,55 @@ reserve M,N,P,Q for LambdaTerm;
 ::: Let Mizar know that `M|r` is also a `LambdaTerm`.
 ::: The definition of `|` that we are using is the definition
 :::  that operates on (and returns) a `DecoratedTree`. Showing
-:::  that retricting a `LambdaTerm` produces a `NAT-valued` result
-:::  ensures that the result is then a `DecoratedTree of NAT`;
-:::  which then together with `LambdaTerm-like` means that it is
-:::  indeed a `LambdaTerm`.
+:::  that retricting a `LambdaTerm` produces a `LambdaTerm-like`
+:::  result ensures us that the result is a `LambdaTerm`.
 registration
   let M be LambdaTerm,
-      r be Element of dom M; :: good idea?
+      r be Element of dom M;
 
-  :: NAT-valued is for free when r is an Element of dom M, I think
-  ::  (see [TREES_2]). However, requiring this is unwieldy..
-  ::  See, for instance, (*), below..
-  cluster M|r -> NAT-valued LambdaTerm-like;
+  cluster M|r -> LambdaTerm-like;
   coherence
   proof
-    x in rng (M|r) implies x in NAT proof
-      assume x in rng (M|r);
-      then ex y st [y,x] in (M|r) by XTUPLE_0:def 13;
-      then consider y such that [y,x] in (M|r);
-      reconsider y as FinSequence of NAT;
-::>                                    *4
-      [r^y,x] in M;
-::>              *4
-      then
-    A2: x in rng M by XTUPLE_0:def 13;
-      rng M c= NAT by A2, RELAT_1:def 19;
-      hence x in NAT by A2;
+    thus dom (M|r) is finite proof
+      dom M is finite by Def1;
+      then (dom M)|r is finite;
+      hence thesis by TREES_2:def 10;
     end;
-    then rng (M|r) c= NAT by TARSKI:def 3;
-    hence M|r is NAT-valued by RELAT_1:def 19;
-    ::proof
-    ::  let x;
-    ::  assume x in rng (M|r);
-    ::  x in NAT;
-   ::   thus rng (M|r) c= NAT;
-    ::end;
-    
-    thus M|r is LambdaTerm-like;
-::>                           *4
+
+    let p be FinSequence of NAT;
+    assume
+  A3: p in dom (M|r);
+    thus p is FinSequence of {0,1} proof
+      dom (M|r) = (dom M)|r by TREES_2:def 10;
+      then p in (dom M)|r by A3;
+      then r^p in dom M by TREES_1:def 6;
+      then r^p is FinSequence of {0,1} by Def1;
+      hence thesis by FINSEQ_1:36;
+    end;
+
+    :: r^p^<*0*>
+    set p0 = p^<*0*>;
+    set rp = r^p;
+    assume
+  A4: p0 in dom (M|r);
+    thus (M|r).p = 0 proof
+      dom (M|r) is Tree-like;
+      then
+    A5: p0 in dom (M|r) by A4, TREES_1:21;
+      then reconsider p0 as Element of dom (M|r);
+      reconsider p0 as Element of (dom M)|r by TREES_2:def 10;
+      p0 in (dom M)|r;
+      then r^p0 in dom M by TREES_1:def 6;
+      then
+    A6: rp^<*0*> in dom M by FINSEQ_1:32;
+      then rp in dom M by TREES_1:21;
+      then M.rp = 0 by A6, Def1;
+      then
+    A8: M.(r^p) = 0;
+      p in (dom M)|r by A3, TREES_2:def 10;
+      then (M|r).p = M.(r^p) by TREES_2:def 10;
+      hence (M|r).p = 0 by A8, TREES_2:def 10;
+    end;
   end;
 end;
 
@@ -245,16 +260,18 @@ definition
 
   func SubstituteActiveVar(M,N) -> LambdaTerm means
     :: most things are the same,
-    (for r st not (ex p st p is_active_variable_in N &
-::>                                              *102
-                           p is_a_prefix_of r)
+    (for r st not (ex p being Element of dom N
+                      st p is_active_variable_in N & p is_a_prefix_of r)
            holds [r,x] in it iff [r,x] in N
     ) &
     :: except that the active variables are replaced with M
-    (for r st r is_active_variable_in N holds it|r = M);
-::>                                 *102
+    (for r being Element of dom N
+            st r is_active_variable_in N
+            holds it|r = M);
   existence;
+::>       *4
   uniqueness;
+::>        *4
 end;
 
 ::: ### Reduction and conversion
@@ -275,19 +292,25 @@ definition
       :: Q === N[x:=M]
       Q = SubstituteActiveVar(N,M);
 end;
-
 ::: Then we extend this ordinary one-step beta reduction, that is,
 :::  any subterm is also allowed to reduce.
+
+::: Note that I had to use a work-around here, where I have two
+:::  set-theoretically identical elements `p` and `q`, but considered
+:::  in Mizar as having different types to enable the two `|` operations
+:::  to work. I also tried defining something like `Element of (dom M),(dom N)`,
+:::  but this is extremely difficult, if not impossible.
 definition
   let M,N;
 
   pred M beta N means
-    ex p st :: <--- (*) Element of M, AND of N,
-                         to allow beta_shallow ??
-::>                       *396
-      M|p beta_shallow N|p &
-      for q st not p is_a_prefix_of q holds
-        [r,x] in M iff [r,x] in N;
+    ex
+      p being Element of dom M,
+      q being Element of dom N st
+        p = q &
+        M|p beta_shallow N|q &
+        for q st not p is_a_prefix_of q holds
+          [r,x] in M iff [r,x] in N;
 end;
 
 ::: We close the relation under transitivity and reflexivity
@@ -608,7 +631,5 @@ end;
 
 ::>
 ::> 4: This inference is not accepted
-::> 102: Unknown predicate
 ::> 103: Unknown functor
 ::> 105: Illegal projection
-::> 396: Formula expected
