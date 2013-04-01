@@ -1,0 +1,1150 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Dokko</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="../style.css" />
+</head>
+<body>
+
+<div class="sidebar-container">
+  <div class="sidebar">
+    <select class="files" onchange="window.location = this.options[this.selectedIndex].value;">
+      
+      <option selected="selected"
+        value="../text/lambda.miz.html">
+        text/lambda.miz
+      </option>
+      
+      <option 
+        value="../dict/lambda.voc.html">
+        dict/lambda.voc
+      </option>
+      
+    </select>
+    <p class="title"><a href="#doc">Lambda calculus</a></p>
+    
+    <ul>
+      
+      <li>
+        <a href="#doc.1">
+          <span class="id">1</span>
+          <span class="title">Syntax and behaviour</span>
+        </a>
+        
+        <ul>
+      
+      <li>
+        <a href="#doc.1.1">
+          <span class="id">1.1</span>
+          <span class="title">Lambda terms</span>
+        </a>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.1.2">
+          <span class="id">1.2</span>
+          <span class="title">Helper definitions</span>
+        </a>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.1.3">
+          <span class="id">1.3</span>
+          <span class="title">Reduction and conversion</span>
+        </a>
+        
+      </li>
+      
+    </ul>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.2">
+          <span class="id">2</span>
+          <span class="title">CPO's</span>
+        </a>
+        
+        <ul>
+      
+      <li>
+        <a href="#doc.2.1">
+          <span class="id">2.1</span>
+          <span class="title">(Least) upper bounds</span>
+        </a>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.2.2">
+          <span class="id">2.2</span>
+          <span class="title">Directed sets</span>
+        </a>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.2.3">
+          <span class="id">2.3</span>
+          <span class="title">Completeness</span>
+        </a>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.2.4">
+          <span class="id">2.4</span>
+          <span class="title">Bottom element</span>
+        </a>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.2.5">
+          <span class="id">2.5</span>
+          <span class="title">The CPO structure</span>
+        </a>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.2.6">
+          <span class="id">2.6</span>
+          <span class="title">Continuity</span>
+        </a>
+        
+        <ul>
+      
+      <li>
+        <a href="#doc.2.6.1">
+          <span class="id">2.6.1</span>
+          <span class="title">Monotonicity</span>
+        </a>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.2.6.2">
+          <span class="id">2.6.2</span>
+          <span class="title">Continuity</span>
+        </a>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.2.6.3">
+          <span class="id">2.6.3</span>
+          <span class="title">Continuous function space</span>
+        </a>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.2.6.4">
+          <span class="id">2.6.4</span>
+          <span class="title">The powerset CPO</span>
+        </a>
+        
+      </li>
+      
+    </ul>
+        
+      </li>
+      
+    </ul>
+        
+      </li>
+      
+      <li>
+        <a href="#doc.3">
+          <span class="id">3</span>
+          <span class="title">Graph Models</span>
+        </a>
+        
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<table class="content">
+  
+  <tr>
+    <td class=""><h1 id="doc">
+  <a class="hn" href="#doc"></a>
+  Lambda calculus
+</h1></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Environ originally taken from <code>finseq_2</code>. Later, I added trees and orders.</p>
+</td>
+    <td class=""><pre>environ
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Vocabularies are basically for Mizar&#39;s lexer.</p>
+</td>
+    <td class=""><pre>  vocabularies LAMBDA,
+      FINSET_1,
+      NUMBERS,
+      NAT_1, XBOOLE_0, SUBSET_1, FINSEQ_1, XXREAL_0, CARD_1,
+      ARYTM_1, ARYTM_3, TARSKI, ORDINAL4, FUNCOP_1,
+      RELAT_2, RELAT_1,
+      FUNCT_1, FUNCT_2,
+      ZFMISC_1, PARTFUN1,
+      ORDERS_2, ORDERS_1,
+      FINSEQ_2, PBOOLE, CARD_3, VALUED_1,
+      TREES_2, TREES_1;
+  </pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Radix type specifications
+ But it also helped [175 unknown attribute format] error with [finite set]</p>
+</td>
+    <td class=""><pre>  notations FINSET_1,
+      TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
+      NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
+      RELAT_2, RELSET_1,
+      FUNCT_1, FUNCT_2,
+      FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+      TREES_2, TREES_1,
+      ORDERS_1, ORDERS_2,
+      XXREAL_0, VALUED_1,
+      RECDEF_1;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> For modes? (unknown mode format resolved)</p>
+</td>
+    <td class=""><pre>  constructors RELAT_2, RELAT_1,
+      PARTFUN1, BINOP_1, DOMAIN_1,
+      FUNCT_1, FUNCT_2, FUNCT_3,
+      FUNCOP_1,
+      RELSET_1,
+      SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+      TREES_2, TREES_1,
+      ORDERS_1, ORDERS_2,
+      RECDEF_1;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Definition are for automatically unfolding predicates in the thesis you are proving</p>
+</td>
+    <td class=""><pre>  definitions TARSKI,
+      FUNCT_1, FUNCT_2,
+      FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
+      ORDERS_1,
+      TREES_2, TREES_1,
+      XTUPLE_0;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Registrations are for clusters (showing that a type exists (is non-empty),
+  and automatically adding adjectives)</p>
+</td>
+    <td class=""><pre>  registrations XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
+      RELAT_2, RELAT_1,
+      FUNCT_1, FUNCT_2,
+      FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
+      PBOOLE, CARD_3,
+      ORDERS_2,
+      TREES_2, TREES_1,
+      FINSET_1;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Load theorem en definition labels</p>
+</td>
+    <td class=""><pre>  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
+      TREES_1, TREES_2, XBOOLE_0;
+  
+  schemes RECDEF_1;
+
+  requirements BOOLE, SUBSET, NUMERALS, ARITHM, REAL;
+
+begin
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h2 id="doc.1">
+  <a class="hn" href="#doc.1">1</a>
+  Syntax and behaviour
+</h2></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre>
+reserve T,T1,T2 for Tree,
+        D for DecoratedTree,
+        p,q,r for FinSequence of NAT,
+        x,y for set;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h3 id="doc.1.1">
+  <a class="hn" href="#doc.1.1">1.1</a>
+  Lambda terms
+</h3></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> A <em>lambda term</em> is identified with it&#39;s AST (abstract
+  syntax tree). More precisely, we identify a lambda term
+  with a finite decorated tree.
+ The nodes of the tree denote either application, abstraction
+  or a variable. Using <em>De Bruijn</em> variable indexing, we decorate
+  variables with their De Bruijn index (a natural nuber). Note
+  that we needn&#39;t explicitly annotate the type of a node,
+  as the three types of nodes differ in how many children they must
+  have: an application always has two children, an abstraction but one,
+  and variables don&#39;t have any. So it suffices to decorate application
+  and abstraction nodes with some default value (say, $0$).</p>
+</td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> In Mizar, a <code>Tree</code> is a non-empty subset of <code>NAT*</code>, so a set of finite
+  sequences of natural numbers, such that certain logical properties hold.
+ Every such sequence denotes a node in the tree, and can be interpreted
+  as a <em>path specification</em> (how to get there, from the top). We see, then,
+  that lambda term trees are a specific subset of general trees, in which
+  only finite sequences of $\{0,1\}$ are used to denote nodes, nodes
+  with children are decorated with a $0$, and is also finite in height.
+ By <em>decorating</em> a node <code>r</code> with a number <code>n</code>, we mean that <code>M.r = n</code>.
+ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents the lambda term.</p>
+</td>
+    <td class=""><pre>
+definition
+  let D;
+  
+  attr D is LambdaTerm-like means
+    :Def1:
+    dom D is finite &
+    for r st r in dom D holds
+      r is FinSequence of {0,1} &
+      (r^<*0*> in dom D implies D.r = 0);
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Here, I am having some troubles with Mizar types. I want to follow
+  the general MML pattern of first defining an attribute <code>LambdaTerm-like</code>,
+  and then a mode <code>LambdaTerm</code> which is simply a <code>LambdaTerm-like DecoratedTree
+  of NAT</code>. But then first, I must show that this is a existence cluster, and thus
+  I must show that such a decoratedtree actually exists...</p>
+</td>
+    <td class=""><pre>
+registration
+  cluster LambdaTerm-like for DecoratedTree of NAT;
+  existence
+  proof
+    set D = { {} } --> 0;
+    take D;
+    thus dom D is finite;
+    let r be FinSequence of NAT;
+    assume
+  A1: r in dom D;
+    dom D = { {} } by FUNCOP_1:13;
+    then r = {} by A1, TARSKI:def 1;
+    then r = <*> {0,1} by FINSEQ_1:def 6;
+    hence r is FinSequence of {0,1};
+    assume r^<*0*> in dom D;
+    thus D.r = 0 by A1, FUNCOP_1:7;
+  end;
+end;
+
+definition
+  mode LambdaTerm is LambdaTerm-like DecoratedTree of NAT;
+end;
+
+reserve M,N,P,Q for LambdaTerm;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Let Mizar know that <code>M|r</code> is also a <code>LambdaTerm</code>.
+ The definition of <code>|</code> that we are using is the definition
+  that operates on (and returns) a <code>DecoratedTree</code>. Showing
+  that retricting a <code>LambdaTerm</code> produces a <code>LambdaTerm-like</code>
+  result ensures us that the result is a <code>LambdaTerm</code>.</p>
+</td>
+    <td class=""><pre>registration
+  let M be LambdaTerm,
+      r be Element of dom M;
+
+  cluster M|r -> LambdaTerm-like;
+  coherence
+  proof
+    thus dom (M|r) is finite proof
+      dom M is finite by Def1;
+      then (dom M)|r is finite;
+      hence thesis by TREES_2:def 10;
+    end;
+
+    let p be FinSequence of NAT;
+    assume
+  A3: p in dom (M|r);
+    thus p is FinSequence of {0,1} proof
+      dom (M|r) = (dom M)|r by TREES_2:def 10;
+      then p in (dom M)|r by A3;
+      then r^p in dom M by TREES_1:def 6;
+      then r^p is FinSequence of {0,1} by Def1;
+      hence thesis by FINSEQ_1:36;
+    end;
+
+    :: r^p^<*0*>
+    set p0 = p^<*0*>;
+    set rp = r^p;
+    assume
+  A4: p0 in dom (M|r);
+    thus (M|r).p = 0 proof
+      dom (M|r) is Tree-like;
+      then
+    A5: p0 in dom (M|r) by A4, TREES_1:21;
+      then reconsider p0 as Element of dom (M|r);
+      reconsider p0 as Element of (dom M)|r by TREES_2:def 10;
+      p0 in (dom M)|r;
+      then r^p0 in dom M by TREES_1:def 6;
+      then
+    A6: rp^<*0*> in dom M by FINSEQ_1:32;
+      then rp in dom M by TREES_1:21;
+      then M.rp = 0 by A6, Def1;
+      then
+    A8: M.(r^p) = 0;
+      p in (dom M)|r by A3, TREES_2:def 10;
+      then (M|r).p = M.(r^p) by TREES_2:def 10;
+      hence (M|r).p = 0 by A8, TREES_2:def 10;
+    end;
+  end;
+end;
+
+reserve r for Element of dom M;
+
+theorem
+  (M|r qua DecoratedTree of NAT) is LambdaTerm
+proof
+  thus thesis;
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h3 id="doc.1.2">
+  <a class="hn" href="#doc.1.2">1.2</a>
+  Helper definitions
+</h3></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Some helper definitions for working with lambda terms.</p>
+</td>
+    <td class=""><pre>definition
+  let M,r;
+  
+  pred r is_variable_in M means
+    not r^<*0*> in dom M;
+
+  pred r is_abstraction_in M means
+    r^<*0*> in dom M & not r^<*1*> in dom M;
+
+  pred r is_application_in M means
+    r^<*0*> in dom M & r^<*1*> in dom M;
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> By $r$ being an <em>active variable</em> of some term $M$ (or more precisely,
+  a path identifying an active variable), I mean that if $\lambda M$ were
+  to be applied to some other term $N$, we would substitute this variable
+  by $M$.</p>
+</td>
+    <td class=""><pre>definition
+  let M,r;
+  
+  pred r is_active_variable_in M means
+    r is_variable_in M &
+    M.r = card { p where p is Element of dom M
+                 : p is_a_proper_prefix_of r &
+                   p is_abstraction_in M };
+end;
+
+definition
+  let M;
+  
+  func Abs(M) -> LambdaTerm means
+    it|<*0*> = M & not <*1*> in dom it;
+  existence
+  proof
+    set T1 = elementary_tree 1;
+    set D1 = T1 --> 0;
+    set r0 = <*0*>;
+  A3: r0 in T1 by TREES_1:28;
+  A4: dom D1 = T1 by FUNCOP_1:13;
+    then
+  A2: r0 in dom D1 by A3;
+    set D = D1 with-replacement (r0, M);
+    
+    D is NAT-valued;
+::>               *4
+    then
+  A7: D is DecoratedTree of NAT;
+
+  A8: D is LambdaTerm-like
+    proof
+      set domM = dom M;
+      reconsider domM as finite Tree by A4, Def1;
+      set domD1 = dom D1;
+      reconsider domD1 as finite Tree by FUNCOP_1:13;
+      r0 is Element of domD1 by A2;
+      then
+    A5: domD1 with-replacement (r0, domM) is finite;
+    A9: dom D = domD1 with-replacement (r0, domM) by A2, TREES_2:def 11;
+      hence
+    A6: dom D is finite by A5;
+      
+    end;
+::>   *70
+
+    reconsider D as LambdaTerm by A7, A8;
+    take D;
+
+    thus D|<*0*> = M;
+::>                *4
+    thus not <*1*> in dom D;
+::>                       *4
+  end;
+  uniqueness;
+::>        *4
+end;
+
+definition
+  let M,N;
+
+  func App(M,N) -> LambdaTerm means
+    it|<*0*> = M & it|<*1*> = N;
+  existence;
+::>       *4
+  uniqueness;
+::>        *4
+end;
+
+definition
+  let M,N;
+
+  func SubstituteActiveVar(M,N) -> LambdaTerm means
+    :: most things are the same,
+    (for r st not (ex p being Element of dom N
+                      st p is_active_variable_in N & p is_a_prefix_of r)
+           holds [r,x] in it iff [r,x] in N
+    ) &
+    :: except that the active variables are replaced with M
+    (for r being Element of dom N
+            st r is_active_variable_in N
+            holds it|r = M);
+  existence;
+::>       *4
+  uniqueness;
+::>        *4
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h3 id="doc.1.3">
+  <a class="hn" href="#doc.1.3">1.3</a>
+  Reduction and conversion
+</h3></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> First I define <em>shallow</em> one-step beta substitution, which only
+  states (the De Bruijn equivalent of)
+  $(\lambda x.N)M \to_{\beta} N[x:=M]$.</p>
+</td>
+    <td class=""><pre>
+definition
+  let P,Q;
+  
+  :: P === (\x.N)M --> N[x:=M] === Q
+  pred P beta_shallow Q means
+    ex M,N st
+      :: P === (\x.N)M
+      P = App(Abs(N),M) &
+
+      :: Q === N[x:=M]
+      Q = SubstituteActiveVar(N,M);
+end;</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Then we extend this ordinary one-step beta reduction, that is,
+  any subterm is also allowed to reduce.</p>
+</td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Note that I had to use a work-around here, where I have two
+  set-theoretically identical elements <code>p</code> and <code>q</code>, but considered
+  in Mizar as having different types to enable the two <code>|</code> operations
+  to work. I also tried defining something like <code>Element of (dom M),(dom N)</code>,
+  but this is extremely difficult, if not impossible.</p>
+</td>
+    <td class=""><pre>definition
+  let M,N;
+
+  pred M beta N means
+    ex
+      p being Element of dom M,
+      q being Element of dom N st
+        p = q &
+        M|p beta_shallow N|q &
+        for q st not p is_a_prefix_of q holds
+          [r,x] in M iff [r,x] in N;
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> We close the relation under transitivity and reflexivity
+  to get the full beta reduction relation.</p>
+</td>
+    <td class=""><pre>definition
+  let M,N;
+  
+  pred M beta* N means
+    M = N or
+    ex P st M beta P & P beta N;
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> And then close under symmetry to get beta conversion.</p>
+</td>
+    <td class=""><pre>definition
+  let M,N;
+  
+  pred M beta= N means
+    M beta* N or N beta* M;
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h2 id="doc.2">
+  <a class="hn" href="#doc.2">2</a>
+  CPO&#39;s
+</h2></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre>
+reserve x,y,z,z2 for set;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> We start off by defining
+  a mode for partial orders upon some set <code>D</code>. I don&#39;t really
+  get why de Mizar guys wrote their order definitions the way
+  they did (in <code>ORDERS_1</code>, <code>ORDERS_2</code>, etc...)</p>
+</td>
+    <td class=""><pre>
+definition
+  let D be set;
+  mode PartialOrder of D is transitive reflexive antisymmetric (Relation of D);
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h3 id="doc.2.1">
+  <a class="hn" href="#doc.2.1">2.1</a>
+  (Least) upper bounds
+</h3></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> An element $u$ of $D$ is an <em>upper bound</em> of a
+  subset $X\subseteq D$ iff for all $x\in X$,
+  $x\sqsubseteq u$.</p>
+</td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> I often encountered *100 errors (also elsewhere, but most notably)
+  here. Note: a *100 error occurs when not all loci (which are variables
+  introduced by the <code>let</code> statement) are used <em>in the attribute name</em>.
+ &quot;Transitive&quot; usage <em>is</em> allowed: in the below definition of
+  upper bounds, the variable <code>D</code> is not explicitly stated in the name
+  of the attribute, however it is used in the <code>let</code> introduction rule of
+  <code>R</code>, <code>X</code> and <code>u</code>, so it is allowed.
+ However, I had to explicitly add <code>R</code> to the attribute name, because even
+  though it is used in the defining formula, it is not included in the
+  introductory rules of <code>D</code>, <code>X</code> or <code>u</code>.</p>
+</td>
+    <td class=""><pre>definition
+  let D be set,
+      R be PartialOrder of D,
+      X be Subset of D,
+      u be Element of D;
+
+  attr u is X,R-ub means
+    for x st x in X holds [x,u] in R;
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Least upper bounds</p>
+</td>
+    <td class=""><pre>definition
+  let D be set,
+      R be PartialOrder of D,
+      X be Subset of D,
+      u be Element of D;
+
+  attr u is X,R-lub means
+    u is X,R-ub &
+    for u2 being Element of D st u2 is X,R-ub holds
+      [u,u2] in R;
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h3 id="doc.2.2">
+  <a class="hn" href="#doc.2.2">2.2</a>
+  Directed sets
+</h3></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> If $D$ is a set, and $R$ a partial order on $D$,
+  then an $X\subseteq D$ is called <em>directed</em> iff
+  for all $x,y \in X$, there is some $z \in X$,
+  such that $x\sqsubseteq z$ and $y\sqsubseteq z$.</p>
+</td>
+    <td class=""><pre>definition
+  let D be set,
+      R be PartialOrder of D,
+      X be Subset of D;
+
+  attr X is R-directed means
+    for x,y st x in X & y in X holds
+      ex z st
+        z in X & [x,z] in R & [y,z] in R;
+end;
+
+registration
+  let D be set,
+      R be PartialOrder of D;
+
+  cluster R-directed for Subset of D;
+  existence;
+::>       *4
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h3 id="doc.2.3">
+  <a class="hn" href="#doc.2.3">2.3</a>
+  Completeness
+</h3></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> A partial ordered set is complete iff every directed set has
+  a least upper bound.</p>
+</td>
+    <td class=""><pre>definition
+  let D be set,
+      R be PartialOrder of D;
+
+  attr R is complete means
+    for X being R-directed Subset of D holds
+      ex u being Element of D st u is X,R-lub;
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> Here again, what I want to express is that such complete partial
+  orders exist, not that for every $D$, any partial order is $D$-complete,
+  or something weird like that...</p>
+<p> What are the precise semantics of these clusters?</p>
+</td>
+    <td class=""><pre>registration
+  let D be set;
+
+  cluster complete for PartialOrder of D;
+  existence;
+::>       *4
+end;
+
+definition
+  let D be set,
+      R be complete PartialOrder of D,
+      X be R-directed Subset of D;
+
+  func LUB(X) -> Element of D means
+    it is X,R-lub;
+  existence;
+::>       *4
+  uniqueness;
+::>        *4
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h3 id="doc.2.4">
+  <a class="hn" href="#doc.2.4">2.4</a>
+  Bottom element
+</h3></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre>definition
+  let D be set,
+      R be PartialOrder of D,
+      b be Element of D;
+
+  attr b is R-bottom means
+    for y st y in D holds [b,y] in R;
+end;
+
+registration
+  let D be set,
+      R be PartialOrder of D;
+
+  cluster R-bottom for Element of D;
+  existence;
+::>       *4
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h3 id="doc.2.5">
+  <a class="hn" href="#doc.2.5">2.5</a>
+  The CPO structure
+</h3></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre>definition
+  struct CPO (#
+    carrier -> set,
+    BinRel -> complete PartialOrder of (the carrier),
+    Bot -> (the BinRel)-bottom Element of the carrier
+  #);
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h3 id="doc.2.6">
+  <a class="hn" href="#doc.2.6">2.6</a>
+  Continuity
+</h3></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h4 id="doc.2.6.1">
+  <a class="hn" href="#doc.2.6.1">2.6.1</a>
+  Monotonicity
+</h4></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre>definition
+  let D,E be CPO,
+      f be Function of (the carrier of D),(the carrier of E);
+
+  attr f is monotone means
+    for x,y st [x,y] in (the BinRel of D) holds
+      [f.x,f.y] in (the BinRel of E);
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h4 id="doc.2.6.2">
+  <a class="hn" href="#doc.2.6.2">2.6.2</a>
+  Continuity
+</h4></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre>definition
+  let D,E be CPO,
+      f be Function of (the carrier of D),(the carrier of E);
+
+  attr f is continuous means
+    f is monotone &
+    for X being (the BinRel of D)-directed
+                Subset of (the carrier of D)
+      holds
+        f.LUB(X) = LUB(f.:X);
+::>                  *103
+::                 This is indeed somewhat complicated,
+::                  why would it necessarily be directed,
+::                  and thus eligible for LUB ?
+end;
+
+registration
+  let D,E be CPO;
+
+  cluster continuous for Function of (the carrier of D),(the carrier of E);
+  existence;
+::>       *4
+end;
+
+definition
+  let D,E be CPO;
+
+  mode ContinuousFunc of D,E is continuous Function of
+    (the carrier of D),(the carrier of E);
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h4 id="doc.2.6.3">
+  <a class="hn" href="#doc.2.6.3">2.6.3</a>
+  Continuous function space
+</h4></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre>definition
+  let D,E be CPO;
+
+  func ContinuousFuncs(D,E) -> set means
+    x in it iff x is ContinuousFunc of D,E;
+  existence;
+::>       *4
+  uniqueness;
+::>        *4
+end;
+
+definition
+  let D,E be CPO,
+      f,g be ContinuousFunc of D,E;
+
+  pred f piecewise_le g means
+    for x being Element of D holds
+      [f.x, g.x] in (the BinRel of E);
+end;
+
+theorem
+  for D,E being CPO holds
+    CPO(# ContinuousFuncs(D,E),
+          { [f,g] where f,g is ContinuousFunc of D,E : f piecewise_le g },
+          {} #) is CPO
+::>           *105
+proof
+  thus thesis;
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h4 id="doc.2.6.4">
+  <a class="hn" href="#doc.2.6.4">2.6.4</a>
+  The powerset CPO
+</h4></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre>definition
+  let A be non empty set;
+
+  func SubsetRelation(A) -> Relation of bool A means
+    [x,y] in it iff x is Subset of y;
+  existence;
+::>       *4
+  uniqueness;
+::>        *4
+end;
+
+theorem
+  for A being non empty set holds
+    CPO(# bool A, SubsetRelation(A), {} #) is CPO
+::>                                      *105
+proof
+  thus thesis;
+end;
+
+
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><h2 id="doc.3">
+  <a class="hn" href="#doc.3">3</a>
+  Graph Models
+</h2></td>
+    <td class=""><pre></pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""></td>
+    <td class=""><pre>
+definition
+  let Bn be non empty set;
+  func BnNext(Bn) -> set equals Bn \/ [: Bn*, Bn :];
+  coherence;
+end;
+
+definition
+  let A be non empty set;
+  func Web(A) -> set equals A;
+  :: TODO inductive construction
+  coherence;
+end;
+
+theorem
+  for A being non empty set holds
+    id Web(A) is one-to-one
+proof
+  thus thesis;
+end;
+</pre></td>
+  </tr>
+  
+  <tr>
+    <td class=""><p> What does this registration actually state?</p>
+<ol>
+<li>For any infinite set $B$, there is some one-to-one function that
+ embeds $B^*\times B$ into $B$.</li>
+<li><p>There are at least certain infinite sets $B$ for which
+ such an embedding is possible.</p>
+<p>I only need the second statement, and proving it shouldn&#39;t be too
+much trouble. (It would simply require
+doing the infinite recursive construction of $B=Web(A)$ for some
+non-empty set $A$). I don&#39;t even know for sure if the first
+statement holds.</p>
+<p>If the first is the case, then how to I define the second statement
+in Mizar? And how do I then define the graph model struct, below,
+without being able to use the <code>one-to-one</code> adjective?</p>
+</li>
+</ol>
+</td>
+    <td class=""><pre>registration
+  let B be infinite set;
+  cluster one-to-one for Function of [:B*,B:],B;
+  :: TODO show that such an embedding is possible, by above construction
+  existence;
+::>       *4
+end;
+
+:: Graph models
+definition
+  struct GraphModel (#
+    carrier -> infinite set,
+    c -> one-to-one (Function of
+      [:(the carrier)*, the carrier:], the carrier)
+  #);
+end;
+
+
+::>
+::> 4: This inference is not accepted
+::> 70: Something remains to be proved
+::> 103: Unknown functor
+::> 105: Illegal projection
+</pre></td>
+  </tr>
+  
+</table>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"], scale: 90 }
+  });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!--script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+</body>
+</html>

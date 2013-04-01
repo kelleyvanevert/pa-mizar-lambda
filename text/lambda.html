@@ -9,12 +9,22 @@
 <body>
   <div id="container">
     <div class="sidebar">
+      <!--<select class="files" onchange="window.location = this.options[this.selectedIndex].value;">
+        <option value="../text/lambda.html"
+          selected>text/lambda.miz</li>
+        <option value="../dict/lambda.html"
+          >dict/lambda.voc</li>
+      </select>
+      -->
       <ul class="files">
-        <li><a href="../text/lambda.html">text/lambda.miz</a></li>
-        <li><a href="../dict/lambda.html">dict/lambda.voc</a></li>
+        <li class="miz active">
+          <a href="#top">lambda.miz</a>
+        </li>
+        <li class="voc ">
+          <a href="../dict/lambda.html">lambda.voc</a>
+        </li>
       </ul>
       
-      <a class="hd" href="#top">Lambda calculus</a>
       <ul class="index">
         
         <li><a href="#1"><span class="hn">1</span> Syntax and behaviour</a><ul><li><a href="#1.1"><span class="hn">1.1</span> Lambda terms</a></li><li><a href="#1.2"><span class="hn">1.2</span> Helper definitions</a></li><li><a href="#1.3"><span class="hn">1.3</span> Reduction and conversion</a></li></ul></li>
@@ -26,7 +36,7 @@
       </ul>
     </div>
     <div id="background"></div>
-    <ul class="fragments">
+    <ul class="fragments" id="top">
         
         
         
@@ -1143,5 +1153,15 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
   });
 </script>
 <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+$(function () {
+  var layout = function () {
+    $(".sidebar").css({ left: - $("body").scrollLeft() });
+  };
+  $(window).resize(layout).scroll(layout);
+  layout();
+});
+</script>
 </body>
 </html>

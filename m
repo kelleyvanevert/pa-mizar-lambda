@@ -11,9 +11,11 @@
 mizf text/lambda.miz
 
 # docs building
-cd /opt/node/lib/node_modules/docco
-cake build
-cd /home/kelley/studie/proof_assistants/ex
+#cd /opt/node/lib/node_modules/docco
+#cake build
+#cd /home/kelley/studie/proof_assistants/ex
 docco text/lambda.miz --output text --layout proof-assistants
 docco dict/lambda.voc --output dict --layout proof-assistants
+
+dokko -v */lambda.{miz,voc}
 

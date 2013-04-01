@@ -9,9 +9,20 @@
 <body>
   <div id="container">
     <div class="sidebar">
+      <!--<select class="files" onchange="window.location = this.options[this.selectedIndex].value;">
+        <option value="../text/lambda.html"
+          <%=(sources[0].slice(-3) == "miz" ? selected="selected" : "")%>>text/lambda.miz</li>
+        <option value="../dict/lambda.html"
+          <%=(sources[0].slice(-3) == "voc" ? selected="selected" : "")%>>dict/lambda.voc</li>
+      </select>
+      -->
       <ul class="files">
-        <li><a href="../text/lambda.html">text/lambda.miz</a></li>
-        <li><a href="../dict/lambda.html">dict/lambda.voc</a></li>
+        <li class="miz <%=(sources[0].slice(-3) == "miz" ? "active" : "")%>">
+          <a href="<%=(sources[0].slice(-3) == "miz" ? "#top" : "../text/lambda.html")%>">lambda.miz</a>
+        </li>
+        <li class="voc <%=(sources[0].slice(-3) == "voc" ? "active" : "")%>">
+          <a href="<%=(sources[0].slice(-3) == "voc" ? "#top" : "../dict/lambda.html")%>">lambda.voc</a>
+        </li>
       </ul>
       <% var printlevel = function (hn) {
         %><li><a href="#<%= hn %>"><span class="hn"><%= hn %></span> <%= structure[hn] %></a><%
@@ -25,7 +36,6 @@
         }
         %></li><%
       }; %>
-      <a class="hd" href="#top"><%= title %></a>
       <ul class="index">
         <% var i = 0; while (structure[++i]) { %>
         <% printlevel(i); %>
@@ -33,7 +43,7 @@
       </ul>
     </div>
     <div id="background"></div>
-    <ul class="fragments">
+    <ul class="fragments" id="top">
         <% if (!hasTitle) { %>
           <li id="title">
               <div class="annotation">
@@ -69,5 +79,15 @@
   });
 </script>
 <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+$(function () {
+  var layout = function () {
+    $(".sidebar").css({ left: - $("body").scrollLeft() });
+  };
+  $(window).resize(layout).scroll(layout);
+  layout();
+});
+</script>
 </body>
 </html>

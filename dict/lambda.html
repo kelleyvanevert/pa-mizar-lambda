@@ -9,12 +9,22 @@
 <body>
   <div id="container">
     <div class="sidebar">
+      <!--<select class="files" onchange="window.location = this.options[this.selectedIndex].value;">
+        <option value="../text/lambda.html"
+          >text/lambda.miz</li>
+        <option value="../dict/lambda.html"
+          selected>dict/lambda.voc</li>
+      </select>
+      -->
       <ul class="files">
-        <li><a href="../text/lambda.html">text/lambda.miz</a></li>
-        <li><a href="../dict/lambda.html">dict/lambda.voc</a></li>
+        <li class="miz ">
+          <a href="../text/lambda.html">lambda.miz</a>
+        </li>
+        <li class="voc active">
+          <a href="#top">lambda.voc</a>
+        </li>
       </ul>
       
-      <a class="hd" href="#top">Lambda Calculus</a>
       <ul class="index">
         
         <li><a href="#1"><span class="hn">1</span> Functors</a></li>
@@ -32,7 +42,7 @@
       </ul>
     </div>
     <div id="background"></div>
-    <ul class="fragments">
+    <ul class="fragments" id="top">
         
         
         
@@ -222,5 +232,15 @@ Rpiecewise_le</pre></div></div>
   });
 </script>
 <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+$(function () {
+  var layout = function () {
+    $(".sidebar").css({ left: - $("body").scrollLeft() });
+  };
+  $(window).resize(layout).scroll(layout);
+  layout();
+});
+</script>
 </body>
 </html>
