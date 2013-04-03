@@ -1,0 +1,50 @@
+::: # Lambda calculus
+
+
+::: ## Functors
+::: s/^ *func (?:\([^\)]*\))?([^\(]+).*$/O$1/
+
+::: ## Selectors
+::: s/^ *([a-zA-Z]+) ->.*$/U$1/
+
+::: ## Structures
+::: s/^ *struct ([a-zA-Z-]+).*$/G$1/
+
+::: ## Attributes
+::: s/^ *attr [a-zA-Z] is (?:(?:[a-zA-Z],)*[a-zA-Z](?=-))?([a-zA-Z-]+) .*$/V$1/
+
+::: ## Modes
+::: s/^ *mode ([a-zA-Z-]+).*$/M$1/
+
+::: ## Predicates
+::: s/^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/R$1/
+
+::: Automatically created, and self referential!
+
+:::    #!/bin/bash
+:::    
+:::    functors='s/^ *func (?:\([^\)]*\))?([^\(]+).*$/O$1/'
+:::    selectors='s/^ *([a-zA-Z]+) ->.*$/U$1/'
+:::    structures='s/^ *struct ([a-zA-Z-]+).*$/G$1/'
+:::    attributes='s/^ *attr [a-zA-Z] is (?:(?:[a-zA-Z],)*[a-zA-Z](?=-))?([a-zA-Z-]+) .*$/V$1/'
+:::    modes='s/^ *mode ([a-zA-Z-]+).*$/M$1/'
+:::    predicates='s/^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/R$1/'
+:::    
+:::    # record the following to the vocabulary file...
+:::    {
+:::      echo "::: # Lambda calculus"
+:::      echo ""
+:::      for x in "functors" "selectors" "structures" "attributes" "modes" "predicates"; do
+:::        echo ""
+:::        echo "::: ## `echo $x | sed -e 's/^./\U&\E/g'`"
+:::        echo "::: ${!x}"
+:::        perl -ne "${!x} && print" lambda.miz
+:::      done
+:::    
+:::      # then include this script, too
+:::      #  because that's simply awesome ;)
+:::      echo ""
+:::      echo "::: Automatically created, and self referential!"
+:::      echo ""
+:::      cat m | head -27 | sed 's/^/:::    /'
+:::    } > lambda.voc

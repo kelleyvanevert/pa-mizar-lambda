@@ -61,7 +61,7 @@ environ
 
   ::: Load theorem en definition labels
   theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
-      TREES_1, TREES_2, XBOOLE_0;
+      TREES_1, TREES_2, XBOOLE_0, SUBSET_1, RELAT_2;
   
   schemes RECDEF_1;
 
@@ -440,13 +440,79 @@ definition
         z in X & [x,z] in R & [y,z] in R;
 end;
 
+::: this registration is actually useless..
 registration
   let D be set,
       R be PartialOrder of D;
 
   cluster R-directed for Subset of D;
-  existence;
-::>       *4
+  existence
+  proof
+    set X = {};
+    reconsider X as Subset of D by SUBSET_1:1;
+    take X;
+    thus X is R-directed
+    proof
+      assume not (for x,y st x in X & y in X holds
+      ex z st
+        z in X & [x,z] in R & [y,z] in R);
+      then consider x,y such that
+    A1: x in X & y in X and
+    A2: not (ex z st z in X & [x,z] in R & [y,z] in R);
+      x in X by A1;
+      then ex x st x in X;
+      hence contradiction by XBOOLE_0:def 1;
+    end;
+  end;
+end;
+
+registration
+  let D be non empty set,
+      R be PartialOrder of D;
+
+  cluster R-directed for non empty Subset of D;
+  existence
+  proof
+    ex d being set st d in D by XBOOLE_0:def 1;
+    then consider d being set such that
+  A1: d in D;
+    set X = {d};
+    d is Element of D by A1;
+    then X is Subset of D by SUBSET_1:33;
+    then reconsider X as non empty Subset of D;
+    take X;
+    thus X is R-directed
+    proof
+      assume not (for x,y st x in X & y in X holds
+      ex z st
+        z in X & [x,z] in R & [y,z] in R);
+      then consider x,y such that
+    A2: x in X & y in X and
+    A3: not (ex z st z in X & [x,z] in R & [y,z] in R);
+      per cases;
+      suppose x = y;
+        :: idea: use x = y = d to show that
+        ::  ex d, because [x,d] = [x,x] in R by reflexivity, ..
+        thus contradiction;
+::>                      *1
+      end;
+      suppose x <> y;
+        per cases;
+        suppose x = d;
+          :: idea: then d <> y, but both in X,
+          ::  but that contradicts X being a singleton
+          thus contradiction;
+::>                        *1
+        end;
+        suppose x <> d;
+          :: idea: then d <> x, but both in X,
+          ::  but that contradicts X being a singleton
+          thus contradiction;
+::>                        *1
+        end;
+      end;
+    end;
+  end;
 end;
 
 ::: ### Completeness
@@ -454,11 +520,11 @@ end;
 ::: A partial ordered set is complete iff every directed set has
 :::  a least upper bound.
 definition
-  let D be set,
+  let D be non empty set,
       R be PartialOrder of D;
 
   attr R is complete means
-    for X being R-directed Subset of D holds
+    for X being R-directed non empty Subset of D holds
       ex u being Element of D st u is X,R-lub;
 end;
 
@@ -468,15 +534,24 @@ end;
 :::
 ::: What are the precise semantics of these clusters?
 registration
-  let D be set;
+  let D be non empty set;
 
   cluster complete for PartialOrder of D;
-  existence;
-::>       *4
+  existence
+  proof
+    set I = id D;
+    reconsider I as PartialOrder of D;
+    take I;
+    thus I is complete
+    proof
+      let X be I-directed Subset of D;
+::>                            *56
+    end;
+  end;
 end;
 
 definition
-  let D be set,
+  let D be non empty set,
       R be complete PartialOrder of D,
       X be R-directed Subset of D;
 
@@ -510,7 +585,7 @@ end;
 ::: ### The CPO structure
 definition
   struct CPO (#
-    carrier -> set,
+    carrier -> non empty set,
     BinRel -> complete PartialOrder of (the carrier),
     Bot -> (the BinRel)-bottom Element of the carrier
   #);
@@ -669,7 +744,9 @@ end;
 
 
 ::>
+::> 1: It is not true
 ::> 4: This inference is not accepted
+::> 56: Disagreement of types
 ::> 70: Something remains to be proved
 ::> 103: Unknown functor
 ::> 105: Illegal projection

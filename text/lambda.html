@@ -171,7 +171,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
-      TREES_1, TREES_2, XBOOLE_0;
+      TREES_1, TREES_2, XBOOLE_0, SUBSET_1, RELAT_2;
   
   <span class="keyword">schemes</span> RECDEF_1;
 
@@ -734,15 +734,90 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
     <span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
       <span class="keyword">ex</span> z <span class="keyword">st</span>
         z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R;
-<span class="keyword">end</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>this registration is actually useless..</p>
 
-<span class="keyword">registration</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
   <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
 
   <span class="keyword">cluster</span> R-directed <span class="keyword">for</span> Subset <span class="keyword">of</span> D;
-  <span class="keyword">existence</span>;
-<span class="comment">::&gt;       *4</span>
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> X = {};
+    <span class="keyword">reconsider</span> X <span class="keyword">as</span> Subset <span class="keyword">of</span> D <span class="keyword">by</span> SUBSET_1:1;
+    <span class="keyword">take</span> X;
+    <span class="keyword">thus</span> X <span class="keyword">is</span> R-directed
+    <span class="keyword">proof</span>
+      <span class="keyword">assume</span> <span class="keyword">not</span> (<span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
+      <span class="keyword">ex</span> z <span class="keyword">st</span>
+        z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+      <span class="keyword">then</span> <span class="keyword">consider</span> x,y <span class="keyword">such</span> <span class="keyword">that</span>
+    A1: x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">and</span>
+    A2: <span class="keyword">not</span> (<span class="keyword">ex</span> z <span class="keyword">st</span> z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+      x <span class="keyword">in</span> X <span class="keyword">by</span> A1;
+      <span class="keyword">then</span> <span class="keyword">ex</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X;
+      <span class="keyword">hence</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> XBOOLE_0:def 1;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> non empty <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
+
+  <span class="keyword">cluster</span> R-directed <span class="keyword">for</span> non empty Subset <span class="keyword">of</span> D;
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">ex</span> d <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">st</span> d <span class="keyword">in</span> D <span class="keyword">by</span> XBOOLE_0:def 1;
+    <span class="keyword">then</span> <span class="keyword">consider</span> d <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">such</span> <span class="keyword">that</span>
+  A1: d <span class="keyword">in</span> D;
+    <span class="keyword">set</span> X = {d};
+    d <span class="keyword">is</span> Element <span class="keyword">of</span> D <span class="keyword">by</span> A1;
+    <span class="keyword">then</span> X <span class="keyword">is</span> Subset <span class="keyword">of</span> D <span class="keyword">by</span> SUBSET_1:33;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> X <span class="keyword">as</span> non empty Subset <span class="keyword">of</span> D;
+    <span class="keyword">take</span> X;
+    <span class="keyword">thus</span> X <span class="keyword">is</span> R-directed
+    <span class="keyword">proof</span>
+      <span class="keyword">assume</span> <span class="keyword">not</span> (<span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
+      <span class="keyword">ex</span> z <span class="keyword">st</span>
+        z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+      <span class="keyword">then</span> <span class="keyword">consider</span> x,y <span class="keyword">such</span> <span class="keyword">that</span>
+    A2: x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">and</span>
+    A3: <span class="keyword">not</span> (<span class="keyword">ex</span> z <span class="keyword">st</span> z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+      <span class="keyword">per</span> <span class="keyword">cases</span>;
+      <span class="keyword">suppose</span> x = y;
+        <span class="comment">:: idea: use x = y = d to show that</span>
+        <span class="comment">::  ex d, because [x,d] = [x,x] in R by reflexivity, ..</span>
+        <span class="keyword">thus</span> <span class="keyword">contradiction</span>;
+<span class="comment">::&gt;                      *1</span>
+      <span class="keyword">end</span>;
+      <span class="keyword">suppose</span> x &lt;&gt; y;
+        <span class="keyword">per</span> <span class="keyword">cases</span>;
+        <span class="keyword">suppose</span> x = d;
+          <span class="comment">:: idea: then d &lt;&gt; y, but both in X,</span>
+          <span class="comment">::  but that contradicts X being a singleton</span>
+          <span class="keyword">thus</span> <span class="keyword">contradiction</span>;
+<span class="comment">::&gt;                        *1</span>
+        <span class="keyword">end</span>;
+        <span class="keyword">suppose</span> x &lt;&gt; d;
+          <span class="comment">:: idea: then d &lt;&gt; x, but both in X,</span>
+          <span class="comment">::  but that contradicts X being a singleton</span>
+          <span class="keyword">thus</span> <span class="keyword">contradiction</span>;
+<span class="comment">::&gt;                        *1</span>
+        <span class="keyword">end</span>;
+      <span class="keyword">end</span>;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -767,11 +842,11 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
-  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+  <span class="keyword">let</span> D <span class="keyword">be</span> non empty <span class="keyword">set</span>,
       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
 
   <span class="keyword">attr</span> R <span class="keyword">is</span> complete <span class="keyword">means</span>
-    <span class="keyword">for</span> X <span class="keyword">being</span> R-directed Subset <span class="keyword">of</span> D <span class="keyword">holds</span>
+    <span class="keyword">for</span> X <span class="keyword">being</span> R-directed non empty Subset <span class="keyword">of</span> D <span class="keyword">holds</span>
       <span class="keyword">ex</span> u <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u <span class="keyword">is</span> X,R-lub;
 <span class="keyword">end</span>;</pre></div></div>
             
@@ -789,15 +864,24 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
-  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>;
+  <span class="keyword">let</span> D <span class="keyword">be</span> non empty <span class="keyword">set</span>;
 
   <span class="keyword">cluster</span> complete <span class="keyword">for</span> PartialOrder <span class="keyword">of</span> D;
-  <span class="keyword">existence</span>;
-<span class="comment">::&gt;       *4</span>
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> I = id D;
+    <span class="keyword">reconsider</span> I <span class="keyword">as</span> PartialOrder <span class="keyword">of</span> D;
+    <span class="keyword">take</span> I;
+    <span class="keyword">thus</span> I <span class="keyword">is</span> complete
+    <span class="keyword">proof</span>
+      <span class="keyword">let</span> X <span class="keyword">be</span> I-directed Subset <span class="keyword">of</span> D;
+<span class="comment">::&gt;                            *56</span>
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
 <span class="keyword">end</span>;
 
 <span class="keyword">definition</span>
-  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+  <span class="keyword">let</span> D <span class="keyword">be</span> non empty <span class="keyword">set</span>,
       R <span class="keyword">be</span> complete PartialOrder <span class="keyword">of</span> D,
       X <span class="keyword">be</span> R-directed Subset <span class="keyword">of</span> D;
 
@@ -867,7 +951,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
             
             <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
   <span class="keyword">struct</span> CPO (#
-    carrier -&gt; <span class="keyword">set</span>,
+    carrier -&gt; non empty <span class="keyword">set</span>,
     BinRel -&gt; complete PartialOrder <span class="keyword">of</span> (the carrier),
     Bot -&gt; (the BinRel)-bottom Element <span class="keyword">of</span> the carrier
   #);
@@ -1130,7 +1214,9 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
 
 
 <span class="comment">::&gt;</span>
+<span class="comment">::&gt; 1: It is not true</span>
 <span class="comment">::&gt; 4: This inference is not accepted</span>
+<span class="comment">::&gt; 56: Disagreement of types</span>
 <span class="comment">::&gt; 70: Something remains to be proved</span>
 <span class="comment">::&gt; 103: Unknown functor</span>
 <span class="comment">::&gt; 105: Illegal projection</span></pre></div></div>

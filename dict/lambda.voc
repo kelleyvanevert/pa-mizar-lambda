@@ -1,54 +1,54 @@
-::: # Lambda Calculus
+::: # Lambda calculus
+::: (This file was automatically created.)
 
 ::: ## Functors
-OActiveVar
-OG
-OF
-OWeb
-OBnNext
-OApp
+::: `perl -ne "s/^ *func (?:\([^\)]*\))?([^\(]+).*$/O$1/ && print" text/lambda.miz | sort -u`
 OAbs
-OVar
-OSubstituteActiveVar
-OLAMBDA_TERMS
+OApp
+OBnNext
+OContinuousFuncs
 OLUB
 OSubsetRelation
-OContinuousFuncs
+OSubstituteActiveVar
+OWeb
 
 ::: ## Selectors
-Uc
-Ucarrier
+::: `perl -ne "s/^ *([a-zA-Z]+) ->.*$/U$1/ && print" text/lambda.miz | sort -u`
 UBinRel
 UBot
+Uc
+Ucarrier
 
 ::: ## Structures
-GGraphModel
+::: `perl -ne "s/^ *struct ([a-zA-Z-]+).*$/G$1/ && print" text/lambda.miz | sort -u`
 GCPO
+GGraphModel
 
 ::: ## Attributes
-VLambdaTerm-like
-VSuperSimple
-V-directed
-Vcomplete
+::: `perl -ne "s/^ *attr [a-zA-Z] is (?:(?:[a-zA-Z],)*[a-zA-Z](?=-))?([a-zA-Z-]+) .*$/V$1/ && print" text/lambda.miz | sort -u`
 V-bottom
-Vmonotone
+Vcomplete
 Vcontinuous
+V-directed
+VLambdaTerm-like
 V-lub
+Vmonotone
 V-ub
 
 ::: ## Modes
+::: `perl -ne "s/^ *mode ([a-zA-Z-]+).*$/M$1/ && print" text/lambda.miz | sort -u`
+MContinuousFunc
 MLambdaTerm
 MPartialOrder
-MContinuousFunc
 
 ::: ## Predicates
-Ris_variable_in
-Ris_active_variable_in
-Ris_abstraction_in
-Ris_application_in
-Rbeta_shallow
+::: `perl -ne "s/^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/R$1/ && print" text/lambda.miz | sort -u`
 Rbeta
-Rbeta2
-Rbeta*
 Rbeta=
+Rbeta*
+Rbeta_shallow
+Ris_abstraction_in
+Ris_active_variable_in
+Ris_application_in
+Ris_variable_in
 Rpiecewise_le

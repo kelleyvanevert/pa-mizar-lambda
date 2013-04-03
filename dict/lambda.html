@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Lambda Calculus</title>
+  <title>Lambda calculus</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="../res/docco.css" />
@@ -49,7 +49,7 @@
         <li>
             <div class="annotation">
               
-              <h1 id="">Lambda Calculus</h1>
+              <h1 id="">Lambda calculus</h1>
 
             </div>
             
@@ -59,7 +59,8 @@
         <li>
             <div class="annotation">
               
-              <h2 id="1"><a class="headnumber" href="#1">1</a> Functors</h2>
+              <p>(This file was automatically created.)</p>
+<h2 id="1"><a class="headnumber" href="#1">1</a> Functors</h2>
 
             </div>
             
@@ -69,22 +70,18 @@
         <li>
             <div class="annotation">
               
-              
+              <p><code>perl -ne &quot;s/^ *func (?:\([^\)]*\))?([^\(]+).*$/O$1/ &amp;&amp; print&quot; text/lambda.miz | sort -u</code></p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>OActiveVar
-OG
-OF
-OWeb
-OBnNext
+            <div class="content"><div class='highlight'><pre>OAbs
 OApp
-OAbs
-OVar
-OSubstituteActiveVar
-OLAMBDA_TERMS
+OBnNext
+OContinuousFuncs
 OLUB
 OSubsetRelation
-OContinuousFuncs</pre></div></div>
+OSubstituteActiveVar
+OWeb</pre></div></div>
             
         </li>
         
@@ -102,13 +99,14 @@ OContinuousFuncs</pre></div></div>
         <li>
             <div class="annotation">
               
-              
+              <p><code>perl -ne &quot;s/^ *([a-zA-Z]+) -&gt;.*$/U$1/ &amp;&amp; print&quot; text/lambda.miz | sort -u</code></p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>Uc
-Ucarrier
-UBinRel
-UBot</pre></div></div>
+            <div class="content"><div class='highlight'><pre>UBinRel
+UBot
+Uc
+Ucarrier</pre></div></div>
             
         </li>
         
@@ -126,11 +124,12 @@ UBot</pre></div></div>
         <li>
             <div class="annotation">
               
-              
+              <p><code>perl -ne &quot;s/^ *struct ([a-zA-Z-]+).*$/G$1/ &amp;&amp; print&quot; text/lambda.miz | sort -u</code></p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>GGraphModel
-GCPO</pre></div></div>
+            <div class="content"><div class='highlight'><pre>GCPO
+GGraphModel</pre></div></div>
             
         </li>
         
@@ -148,17 +147,17 @@ GCPO</pre></div></div>
         <li>
             <div class="annotation">
               
-              
+              <p><code>perl -ne &quot;s/^ *attr [a-zA-Z] is (?:(?:[a-zA-Z],)*[a-zA-Z](?=-))?([a-zA-Z-]+) .*$/V$1/ &amp;&amp; print&quot; text/lambda.miz | sort -u</code></p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>VLambdaTerm-like
-VSuperSimple
-V-directed
+            <div class="content"><div class='highlight'><pre>V-bottom
 Vcomplete
-V-bottom
-Vmonotone
 Vcontinuous
+V-directed
+VLambdaTerm-like
 V-lub
+Vmonotone
 V-ub</pre></div></div>
             
         </li>
@@ -177,12 +176,13 @@ V-ub</pre></div></div>
         <li>
             <div class="annotation">
               
-              
+              <p><code>perl -ne &quot;s/^ *mode ([a-zA-Z-]+).*$/M$1/ &amp;&amp; print&quot; text/lambda.miz | sort -u</code></p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>MLambdaTerm
-MPartialOrder
-MContinuousFunc</pre></div></div>
+            <div class="content"><div class='highlight'><pre>MContinuousFunc
+MLambdaTerm
+MPartialOrder</pre></div></div>
             
         </li>
         
@@ -200,18 +200,18 @@ MContinuousFunc</pre></div></div>
         <li>
             <div class="annotation">
               
-              
+              <p><code>perl -ne &quot;s/^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/R$1/ &amp;&amp; print&quot; text/lambda.miz | sort -u</code></p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>Ris_variable_in
-Ris_active_variable_in
-Ris_abstraction_in
-Ris_application_in
-Rbeta_shallow
-Rbeta
-Rbeta2
-Rbeta*
+            <div class="content"><div class='highlight'><pre>Rbeta
 Rbeta=
+Rbeta*
+Rbeta_shallow
+Ris_abstraction_in
+Ris_active_variable_in
+Ris_application_in
+Ris_variable_in
 Rpiecewise_le</pre></div></div>
             
         </li>

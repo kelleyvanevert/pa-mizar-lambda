@@ -102,7 +102,8 @@
   </tr>
   
   <tr>
-    <td class=""></td>
+    <td class=""><p> perl -ne &#39;s/^ <em>func (?:([^)]</em>))?([^(]+).*$/O$1/ &amp;&amp; print&#39; lambda.miz</p>
+</td>
     <td class=""><pre>OActiveVar
 OG
 OF
@@ -128,7 +129,8 @@ OContinuousFuncs
   </tr>
   
   <tr>
-    <td class=""></td>
+    <td class=""><p> perl -ne &#39;s/^ <em>([a-zA-Z]+) -&gt;.</em>$/U$1/ &amp;&amp; print&#39; lambda.miz</p>
+</td>
     <td class=""><pre>Uc
 Ucarrier
 UBinRel
@@ -145,7 +147,8 @@ UBot
   </tr>
   
   <tr>
-    <td class=""></td>
+    <td class=""><p> perl -ne &#39;s/^ <em>struct ([a-zA-Z-]+).</em>$/G$1/ &amp;&amp; print&#39; lambda.miz</p>
+</td>
     <td class=""><pre>GGraphModel
 GCPO
 </pre></td>
@@ -160,7 +163,8 @@ GCPO
   </tr>
   
   <tr>
-    <td class=""></td>
+    <td class=""><p> perl -ne &#39;s/^ <em>attr [a-zA-Z] is (?:(?:[a-zA-Z],)</em><a href="?=-">a-zA-Z</a>)?([a-zA-Z-]+) .*$/V$1/ &amp;&amp; print&#39; lambda.miz</p>
+</td>
     <td class=""><pre>VLambdaTerm-like
 VSuperSimple
 V-directed
@@ -182,7 +186,8 @@ V-ub
   </tr>
   
   <tr>
-    <td class=""></td>
+    <td class=""><p> perl -ne &#39;s/^ <em>mode ([a-zA-Z-]+).</em>$/M$1/ &amp;&amp; print&#39; lambda.miz</p>
+</td>
     <td class=""><pre>MLambdaTerm
 MPartialOrder
 MContinuousFunc
@@ -198,7 +203,8 @@ MContinuousFunc
   </tr>
   
   <tr>
-    <td class=""></td>
+    <td class=""><p> perl -ne &#39;s/^ <em>pred (?:[a-zA-Z] )</em>([^ ]{2,}) .*$/R$1/ &amp;&amp; print&#39; lambda.miz</p>
+</td>
     <td class=""><pre>Ris_variable_in
 Ris_active_variable_in
 Ris_abstraction_in
