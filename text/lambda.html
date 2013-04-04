@@ -27,7 +27,7 @@
       
       <ul class="index">
         
-        <li><a href="#1"><span class="hn">1</span> Syntax and behaviour</a><ul><li><a href="#1.1"><span class="hn">1.1</span> Lambda terms</a></li><li><a href="#1.2"><span class="hn">1.2</span> Helper definitions</a></li><li><a href="#1.3"><span class="hn">1.3</span> Reduction and conversion</a></li></ul></li>
+        <li><a href="#1"><span class="hn">1</span> Syntax and behaviour</a><ul><li><a href="#1.1"><span class="hn">1.1</span> Lambda terms</a></li><li><a href="#1.2"><span class="hn">1.2</span> Helper definitions</a><ul><li><a href="#1.2.1"><span class="hn">1.2.1</span> Variable occurences</a></li><li><a href="#1.2.2"><span class="hn">1.2.2</span> Abstraction and application</a></li></ul></li><li><a href="#1.3"><span class="hn">1.3</span> Reduction and conversion</a></li></ul></li>
         
         <li><a href="#2"><span class="hn">2</span> CPO&#39;s</a><ul><li><a href="#2.1"><span class="hn">2.1</span> (Least) upper bounds</a></li><li><a href="#2.2"><span class="hn">2.2</span> Directed sets</a></li><li><a href="#2.3"><span class="hn">2.3</span> Completeness</a></li><li><a href="#2.4"><span class="hn">2.4</span> Bottom element</a></li><li><a href="#2.5"><span class="hn">2.5</span> The CPO structure</a></li><li><a href="#2.6"><span class="hn">2.6</span> Continuity</a><ul><li><a href="#2.6.1"><span class="hn">2.6.1</span> Monotonicity</a></li><li><a href="#2.6.2"><span class="hn">2.6.2</span> Continuity</a></li><li><a href="#2.6.3"><span class="hn">2.6.3</span> Continuous function space</a></li><li><a href="#2.6.4"><span class="hn">2.6.4</span> The powerset CPO</a></li></ul></li></ul></li>
         
@@ -70,16 +70,16 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="keyword">vocabularies</span> LAMBDA,
-      FINSET_1,
-      NUMBERS,
-      NAT_1, XBOOLE_0, SUBSET_1, FINSEQ_1, XXREAL_0, CARD_1,
-      ARYTM_1, ARYTM_3, TARSKI, ORDINAL4, FUNCOP_1,
-      RELAT_2, RELAT_1,
-      FUNCT_1, FUNCT_2,
-      ZFMISC_1, PARTFUN1,
-      ORDERS_2, ORDERS_1,
-      FINSEQ_2, PBOOLE, CARD_3, VALUED_1,
-      TREES_2, TREES_1;</pre></div></div>
+    FINSET_1,
+    NUMBERS,
+    NAT_1, XBOOLE_0, SUBSET_1, FINSEQ_1, XXREAL_0, CARD_1,
+    ARYTM_1, ARYTM_3, TARSKI, ORDINAL4, FUNCOP_1,
+    RELAT_2, RELAT_1,
+    FUNCT_1, FUNCT_2,
+    ZFMISC_1, PARTFUN1,
+    ORDERS_2, ORDERS_1,
+    FINSEQ_2, PBOOLE, CARD_3, VALUED_1,
+    TREES_4, TREES_3, TREES_2, TREES_1;</pre></div></div>
             
         </li>
         
@@ -93,15 +93,15 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="keyword">notations</span> FINSET_1,
-      TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
-      NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
-      RELAT_2, RELSET_1,
-      FUNCT_1, FUNCT_2,
-      FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
-      TREES_2, TREES_1,
-      ORDERS_1, ORDERS_2,
-      XXREAL_0, VALUED_1,
-      RECDEF_1;</pre></div></div>
+    TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
+    NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
+    RELAT_2, RELSET_1,
+    FUNCT_1, FUNCT_2,
+    FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+    TREES_4, TREES_3, TREES_2, TREES_1,
+    ORDERS_1, ORDERS_2,
+    XXREAL_0, VALUED_1,
+    RECDEF_1;</pre></div></div>
             
         </li>
         
@@ -114,14 +114,14 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="keyword">constructors</span> RELAT_2, RELAT_1,
-      PARTFUN1, BINOP_1, DOMAIN_1,
-      FUNCT_1, FUNCT_2, FUNCT_3,
-      FUNCOP_1,
-      RELSET_1,
-      SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
-      TREES_2, TREES_1,
-      ORDERS_1, ORDERS_2,
-      RECDEF_1;</pre></div></div>
+    PARTFUN1, BINOP_1, DOMAIN_1,
+    FUNCT_1, FUNCT_2, FUNCT_3,
+    FUNCOP_1,
+    RELSET_1,
+    SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+    TREES_4, TREES_3, TREES_2, TREES_1,
+    ORDERS_1, ORDERS_2,
+    RECDEF_1;</pre></div></div>
             
         </li>
         
@@ -134,11 +134,11 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="keyword">definitions</span> TARSKI,
-      FUNCT_1, FUNCT_2,
-      FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
-      ORDERS_1,
-      TREES_2, TREES_1,
-      XTUPLE_0;</pre></div></div>
+    FUNCT_1, FUNCT_2,
+    FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
+    ORDERS_1,
+    TREES_4, TREES_3, TREES_2, TREES_1,
+    XTUPLE_0;</pre></div></div>
             
         </li>
         
@@ -152,13 +152,13 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="keyword">registrations</span> XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
-      RELAT_2, RELAT_1,
-      FUNCT_1, FUNCT_2,
-      FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
-      PBOOLE, CARD_3,
-      ORDERS_2,
-      TREES_2, TREES_1,
-      FINSET_1;</pre></div></div>
+    RELAT_2, RELAT_1,
+    FUNCT_1, FUNCT_2,
+    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
+    PBOOLE, CARD_3,
+    ORDERS_2,
+    TREES_4, TREES_3, TREES_2, TREES_1,
+    FINSET_1;</pre></div></div>
             
         </li>
         
@@ -171,7 +171,8 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
-      TREES_1, TREES_2, XBOOLE_0, SUBSET_1, RELAT_2;
+    TREES_4, TREES_3, TREES_2, TREES_1,
+    XBOOLE_0, SUBSET_1, RELAT_2;
   
   <span class="keyword">schemes</span> RECDEF_1;
 
@@ -201,7 +202,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             <div class="content"><div class='highlight'><pre><span class="keyword">reserve</span> T,T1,T2 <span class="keyword">for</span> Tree,
         D <span class="keyword">for</span> DecoratedTree,
         p,q,r <span class="keyword">for</span> FinSequence <span class="keyword">of</span> NAT,
-        x,y <span class="keyword">for</span> <span class="keyword">set</span>;</pre></div></div>
+        x,y,X,Y <span class="keyword">for</span> <span class="keyword">set</span>;</pre></div></div>
             
         </li>
         
@@ -268,12 +269,12 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
-  <span class="keyword">cluster</span> LambdaTerm-like <span class="keyword">for</span> DecoratedTree <span class="keyword">of</span> NAT;
-  <span class="keyword">existence</span>
+  <span class="keyword">cluster</span> { {} } --&gt; 0 -&gt; LambdaTerm-like;
+  <span class="keyword">coherence</span>
   <span class="keyword">proof</span>
     <span class="keyword">set</span> D = { {} } --&gt; 0;
-    <span class="keyword">take</span> D;
-    <span class="keyword">thus</span> dom D <span class="keyword">is</span> finite;
+    dom D = { {} } <span class="keyword">by</span> FUNCOP_1:13;
+    <span class="keyword">hence</span> dom D <span class="keyword">is</span> finite;
     <span class="keyword">let</span> r <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
     <span class="keyword">assume</span>
   A1: r <span class="keyword">in</span> dom D;
@@ -283,6 +284,45 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
     <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
     <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
     <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, FUNCOP_1:7;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">cluster</span> { &lt;*&gt; NAT } -&gt; Tree-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    { &lt;*&gt; NAT } = { {} } <span class="keyword">by</span> FINSEQ_1:def 6;
+    <span class="keyword">thus</span> { &lt;*&gt; NAT } <span class="keyword">is</span> Tree-like;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">cluster</span> { &lt;*&gt; NAT } --&gt; 0 -&gt; LambdaTerm-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    { &lt;*&gt; NAT } = { {} } <span class="keyword">by</span> FINSEQ_1:def 6;
+    <span class="keyword">thus</span> { &lt;*&gt; NAT } --&gt; 0 <span class="keyword">is</span> LambdaTerm-like;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>TODO some more of these simple trees, for easy usage
+ later on, when defining application and abstraction.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">cluster</span> LambdaTerm-like <span class="keyword">for</span> DecoratedTree <span class="keyword">of</span> NAT;
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> D = { {} } --&gt; 0;
+    <span class="keyword">take</span> D;
+    <span class="keyword">thus</span> D <span class="keyword">is</span> LambdaTerm-like;
   <span class="keyword">end</span>;
 <span class="keyword">end</span>;
 
@@ -354,14 +394,6 @@ The definition of <code>|</code> that we are using is the definition
       <span class="keyword">hence</span> (M|r).p = 0 <span class="keyword">by</span> A8, TREES_2:def 10;
     <span class="keyword">end</span>;
   <span class="keyword">end</span>;
-<span class="keyword">end</span>;
-
-<span class="keyword">reserve</span> r <span class="keyword">for</span> Element <span class="keyword">of</span> dom M;
-
-<span class="keyword">theorem</span>
-  (M|r qua DecoratedTree <span class="keyword">of</span> NAT) <span class="keyword">is</span> LambdaTerm
-<span class="keyword">proof</span>
-  <span class="keyword">thus</span> <span class="keyword">thesis</span>;
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -381,7 +413,17 @@ The definition of <code>|</code> that we are using is the definition
             <div class="annotation">
               
               <p>Some helper definitions for working with lambda terms.</p>
+<h4 id="1.2.1"><a class="headnumber" href="#1.2.1">1.2.1</a> Variable occurences</h4>
 
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
@@ -418,9 +460,125 @@ The definition of <code>|</code> that we are using is the definition
     M.r = card { p where p <span class="keyword">is</span> Element <span class="keyword">of</span> dom M
                  : p is_a_proper_prefix_of r &amp;
                    p is_abstraction_in M };
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h4 id="1.2.2"><a class="headnumber" href="#1.2.2">1.2.2</a> Abstraction and application</h4>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>To build functors for application and abstraction, we need
+ to be able to easily compose lambda terms. So first let us
+ prove some basic properties of composed trees.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">reserve</span> X <span class="keyword">for</span> <span class="keyword">set</span>,
+        D1,D2 <span class="keyword">for</span> DecoratedTree,
+        p <span class="keyword">for</span> Element <span class="keyword">of</span> dom D1;
+
+<span class="keyword">theorem</span> Th1:
+  D1 <span class="keyword">is</span> X-valued &amp; D2 <span class="keyword">is</span> Y-valued <span class="keyword">implies</span>
+    D1 with-replacement (p,D2) <span class="keyword">is</span> (X \/ Y)-valued
+<span class="keyword">proof</span>
+  <span class="keyword">assume</span>
+A4: D1 <span class="keyword">is</span> X-valued;
+  <span class="keyword">assume</span>
+A5: D2 <span class="keyword">is</span> Y-valued;
+  <span class="keyword">set</span> D = D1 with-replacement (p,D2);
+  <span class="keyword">set</span> T = dom D;
+  rng D c= X \/ Y
+  <span class="keyword">proof</span>
+    <span class="keyword">let</span> x <span class="keyword">be</span> <span class="keyword">set</span>;
+    <span class="keyword">assume</span> x <span class="keyword">in</span> rng D;
+    <span class="keyword">then</span> <span class="keyword">ex</span> q <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">st</span> [q,x] <span class="keyword">in</span> D <span class="keyword">by</span> XTUPLE_0:def 13;
+    <span class="keyword">then</span> <span class="keyword">consider</span> q <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">such</span> <span class="keyword">that</span>
+  A1: [q,x] <span class="keyword">in</span> D;
+  A2: q <span class="keyword">in</span> T <span class="keyword">by</span> A1, XTUPLE_0:def 12;
+    T <span class="keyword">is</span> Tree <span class="keyword">by</span> TREES_2:def 8;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> q <span class="keyword">as</span> FinSequence <span class="keyword">of</span> NAT <span class="keyword">by</span> A2, TREES_1:19;
+  A13: T = dom D1 with-replacement (p, dom D2) <span class="keyword">by</span> TREES_2:def 11;
+    <span class="keyword">then</span>
+  A3: ((<span class="keyword">not</span> p is_a_prefix_of q &amp; D.q = D1.q) <span class="keyword">or</span>
+      (<span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r &amp; D.q = D2.r)) <span class="keyword">by</span> A2, TREES_2:def 11;
+    <span class="keyword">per</span> <span class="keyword">cases</span>;
+    <span class="keyword">suppose</span>
+    A6: (<span class="keyword">not</span> p is_a_prefix_of q &amp; D.q = D1.q);
+      [q,x] <span class="keyword">in</span> D <span class="keyword">by</span> A1;
+      <span class="keyword">then</span> D.q = x <span class="keyword">by</span> A2, FUNCT_1:def 2;
+      <span class="keyword">then</span>
+    A7: D1.q = x <span class="keyword">by</span> A6;
+    A12: q <span class="keyword">in</span> dom D1
+      <span class="keyword">proof</span>
+      A14: (q <span class="keyword">in</span> dom D1 &amp; <span class="keyword">not</span> p is_a_proper_prefix_of q <span class="keyword">or</span>
+          <span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r) <span class="keyword">by</span> A2, A13, TREES_1:def 9;
+        <span class="keyword">per</span> <span class="keyword">cases</span>;
+        <span class="keyword">suppose</span> q <span class="keyword">in</span> dom D1 &amp; <span class="keyword">not</span> p is_a_proper_prefix_of q;
+          <span class="keyword">hence</span> q <span class="keyword">in</span> dom D1;
+        <span class="keyword">end</span>;
+        <span class="keyword">suppose</span> <span class="keyword">not</span> (q <span class="keyword">in</span> dom D1 &amp; <span class="keyword">not</span> p is_a_proper_prefix_of q);
+          <span class="keyword">then</span> <span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r <span class="keyword">by</span> A14;
+          <span class="keyword">then</span>
+        A15: p is_a_prefix_of q <span class="keyword">by</span> TREES_1:1;
+          <span class="keyword">assume</span> <span class="keyword">not</span> q <span class="keyword">in</span> dom D1;
+          <span class="keyword">thus</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> A6, A15;
+        <span class="keyword">end</span>;
+      <span class="keyword">end</span>;
+      [q,x] <span class="keyword">in</span> D1 <span class="keyword">by</span> A7, A12, FUNCT_1:def 2;
+      <span class="keyword">then</span>
+    A8: x <span class="keyword">in</span> rng D1 <span class="keyword">by</span> XTUPLE_0:def 13;
+      rng D1 c= X <span class="keyword">by</span> A4, RELAT_1:def 19;
+      <span class="keyword">then</span> x <span class="keyword">in</span> X <span class="keyword">by</span> A8;
+      <span class="keyword">hence</span> x <span class="keyword">in</span> (X \/ Y) <span class="keyword">by</span> XBOOLE_0:def 3;
+    <span class="keyword">end</span>;
+    <span class="keyword">suppose</span> <span class="keyword">not</span> (<span class="keyword">not</span> p is_a_prefix_of q &amp; D.q = D1.q);
+      <span class="keyword">then</span> (<span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r &amp; D.q = D2.r) <span class="keyword">by</span> A3;
+      <span class="keyword">then</span> <span class="keyword">consider</span> r <span class="keyword">such</span> <span class="keyword">that</span>
+    A9: r <span class="keyword">in</span> dom D2 &amp; q = p^r &amp; D.q = D2.r;
+      [q,x] <span class="keyword">in</span> D <span class="keyword">by</span> A1;
+      <span class="keyword">then</span> D.q = x <span class="keyword">by</span> A2, FUNCT_1:def 2;
+      <span class="keyword">then</span> D2.r = x <span class="keyword">by</span> A9;
+      <span class="keyword">then</span> [r,x] <span class="keyword">in</span> D2 <span class="keyword">by</span> A9, FUNCT_1:def 2;
+      <span class="keyword">then</span>
+    A11: x <span class="keyword">in</span> rng D2 <span class="keyword">by</span> XTUPLE_0:def 13;
+      rng D2 c= Y <span class="keyword">by</span> A5, RELAT_1:def 19;
+      <span class="keyword">then</span> x <span class="keyword">in</span> Y <span class="keyword">by</span> A11;
+      <span class="keyword">hence</span> x <span class="keyword">in</span> (X \/ Y) <span class="keyword">by</span> XBOOLE_0:def 3;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
+  <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> RELAT_1:def 19;
 <span class="keyword">end</span>;
 
-<span class="keyword">definition</span>
+<span class="keyword">reserve</span> p <span class="keyword">for</span> Element <span class="keyword">of</span> dom P;
+<span class="keyword">theorem</span> Th2:
+  P with-replacement (p,Q) <span class="keyword">is</span> LambdaTerm-like
+<span class="keyword">proof</span>
+  <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<span class="comment">::&gt;         *4</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Then we can define abstraction and application</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
   <span class="keyword">let</span> M;
   
   <span class="keyword">func</span> Abs(M) -&gt; LambdaTerm <span class="keyword">means</span>
@@ -435,13 +593,11 @@ The definition of <code>|</code> that we are using is the definition
     <span class="keyword">then</span>
   A2: r0 <span class="keyword">in</span> dom D1 <span class="keyword">by</span> A3;
     <span class="keyword">set</span> D = D1 with-replacement (r0, M);
-    
-    D <span class="keyword">is</span> NAT-valued;
-<span class="comment">::&gt;               *4</span>
-    <span class="keyword">then</span>
-  A7: D <span class="keyword">is</span> DecoratedTree <span class="keyword">of</span> NAT;
+    D <span class="keyword">is</span> (NAT \/ NAT)-valued <span class="keyword">by</span> A2, Th1;
+    <span class="keyword">then</span> D <span class="keyword">is</span> NAT-valued <span class="keyword">by</span> XBOOLE_0:def 3;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> D <span class="keyword">as</span> DecoratedTree <span class="keyword">of</span> NAT;
 
-  A8: D <span class="keyword">is</span> LambdaTerm-like
+    D <span class="keyword">is</span> LambdaTerm-like
     <span class="keyword">proof</span>
       <span class="keyword">set</span> domM = dom M;
       <span class="keyword">reconsider</span> domM <span class="keyword">as</span> finite Tree <span class="keyword">by</span> A4, Def1;
@@ -456,8 +612,7 @@ The definition of <code>|</code> that we are using is the definition
       
     <span class="keyword">end</span>;
 <span class="comment">::&gt;   *70</span>
-
-    <span class="keyword">reconsider</span> D <span class="keyword">as</span> LambdaTerm <span class="keyword">by</span> A7, A8;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> D <span class="keyword">as</span> LambdaTerm;
     <span class="keyword">take</span> D;
 
     <span class="keyword">thus</span> D|&lt;*0*&gt; = M;
