@@ -1,0 +1,1640 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Lambda calculus</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="../res/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div class="sidebar">
+      <ul class="files">
+        <li class="abs ">
+          <a href="../text/lambda.abs.html">.abs</a>
+        </li>
+        <li class="miz active">
+          <a href="#top">.miz</a>
+        </li>
+        <li class="voc ">
+          <a href="../dict/lambda.voc.html">.voc</a>
+        </li>
+      </ul>
+      
+      <ul class="index">
+        
+        <li><a href="#1"><span class="hn">1</span> Syntax and behaviour</a><ul><li><a href="#1.1"><span class="hn">1.1</span> Lambda terms</a><ul><li><a href="#1.1.1"><span class="hn">1.1.1</span> Preservation under operations</a></li></ul></li><li><a href="#1.2"><span class="hn">1.2</span> Helper definitions</a><ul><li><a href="#1.2.1"><span class="hn">1.2.1</span> Variable occurences</a></li><li><a href="#1.2.2"><span class="hn">1.2.2</span> Abstraction and application</a></li></ul></li><li><a href="#1.3"><span class="hn">1.3</span> Reduction and conversion</a></li></ul></li>
+        
+        <li><a href="#2"><span class="hn">2</span> CPO&#39;s</a><ul><li><a href="#2.1"><span class="hn">2.1</span> (Least) upper bounds</a></li><li><a href="#2.2"><span class="hn">2.2</span> Directed sets</a></li><li><a href="#2.3"><span class="hn">2.3</span> Completeness</a></li><li><a href="#2.4"><span class="hn">2.4</span> Bottom element</a></li><li><a href="#2.5"><span class="hn">2.5</span> The CPO structure</a></li><li><a href="#2.6"><span class="hn">2.6</span> Continuity</a><ul><li><a href="#2.6.1"><span class="hn">2.6.1</span> Monotonicity</a></li><li><a href="#2.6.2"><span class="hn">2.6.2</span> Continuity</a></li><li><a href="#2.6.3"><span class="hn">2.6.3</span> Continuous function space</a></li><li><a href="#2.6.4"><span class="hn">2.6.4</span> The powerset CPO</a></li></ul></li></ul></li>
+        
+        <li><a href="#3"><span class="hn">3</span> Graph Models</a></li>
+        
+      </ul>
+    </div>
+    <div id="background"></div>
+    <ul class="fragments" id="top">
+        
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h1 id="">Lambda calculus</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Environ originally taken from <code>finseq_2</code>. Later, I added trees and orders.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">environ</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Vocabularies are basically for Mizar&#39;s lexer.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">vocabularies</span> LAMBDA,
+    FINSET_1,
+    NUMBERS,
+    NAT_1, XBOOLE_0, SUBSET_1, FINSEQ_1, XXREAL_0, CARD_1,
+    ARYTM_1, ARYTM_3, TARSKI, ORDINAL4, FUNCOP_1,
+    RELAT_2, RELAT_1,
+    FUNCT_1, FUNCT_2,
+    ZFMISC_1, PARTFUN1,
+    ORDERS_2, ORDERS_1,
+    FINSEQ_2, PBOOLE, CARD_3, VALUED_1,
+    TREES_4, TREES_3, TREES_2, TREES_1;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Radix type specifications
+But it also helped [175 unknown attribute format] error with [finite set]</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">notations</span> FINSET_1,
+    TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
+    NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
+    RELAT_2, RELSET_1,
+    FUNCT_1, FUNCT_2,
+    FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+    TREES_4, TREES_3, TREES_2, TREES_1,
+    ORDERS_1, ORDERS_2,
+    XXREAL_0, VALUED_1,
+    RECDEF_1;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>For modes? (unknown mode format resolved)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">constructors</span> RELAT_2, RELAT_1,
+    PARTFUN1, BINOP_1, DOMAIN_1,
+    FUNCT_1, FUNCT_2, FUNCT_3,
+    FUNCOP_1,
+    RELSET_1,
+    SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+    TREES_4, TREES_3, TREES_2, TREES_1,
+    ORDERS_1, ORDERS_2,
+    RECDEF_1,
+    FINSET_1,
+    ENUMSET1;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Definition are for automatically unfolding predicates in the thesis you are proving</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">definitions</span> TARSKI,
+    FUNCT_1, FUNCT_2,
+    FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
+    ORDERS_1,
+    TREES_4, TREES_3, TREES_2, TREES_1,
+    XTUPLE_0;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Registrations are for clusters (showing that a type exists (is non-empty),
+ and automatically adding adjectives)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">registrations</span> XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
+    RELAT_2, RELAT_1,
+    FUNCT_1, FUNCT_2,
+    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
+    PBOOLE, CARD_3,
+    ORDERS_2,
+    TREES_4, TREES_3, TREES_2, TREES_1,
+    FINSET_1;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Load theorem en definition labels</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
+    TREES_4, TREES_3, TREES_2, TREES_1,
+    XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1;
+  
+  <span class="keyword">schemes</span> RECDEF_1;
+
+  <span class="keyword">requirements</span> BOOLE, SUBSET, NUMERALS, ARITHM, REAL;
+
+<span class="keyword">begin</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h2 id="1"><a class="headnumber" href="#1">1</a> Syntax and behaviour</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">reserve</span> T,T1,T2 <span class="keyword">for</span> Tree,
+        D <span class="keyword">for</span> DecoratedTree,
+        p,q,r <span class="keyword">for</span> FinSequence <span class="keyword">of</span> NAT,
+        x,y,X,Y <span class="keyword">for</span> <span class="keyword">set</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h3 id="1.1"><a class="headnumber" href="#1.1">1.1</a> Lambda terms</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>A <em>lambda term</em> is identified with it&#39;s AST (abstract
+ syntax tree). More precisely, we identify a lambda term
+ with a finite decorated tree.
+The nodes of the tree denote either application, abstraction
+ or a variable. Using <em>De Bruijn</em> variable indexing, we decorate
+ variables with their De Bruijn index (a natural nuber). Note
+ that we needn&#39;t explicitly annotate the type of a node,
+ as the three types of nodes differ in how many children they must
+ have: an application always has two children, an abstraction but one,
+ and variables don&#39;t have any. So it suffices to decorate application
+ and abstraction nodes with some default value (say, $0$).</p>
+<p>In Mizar, a <code>Tree</code> is a non-empty subset of <code>NAT*</code>, so a set of finite
+ sequences of natural numbers, such that certain logical properties hold.
+Every such sequence denotes a node in the tree, and can be interpreted
+ as a <em>path specification</em> (how to get there, from the top). We see, then,
+ that lambda term trees are a specific subset of general trees, in which
+ only finite sequences of $\{0,1\}$ are used to denote nodes, nodes
+ with children are decorated with a $0$, and is also finite in height.
+By <em>decorating</em> a node <code>r</code> with a number <code>n</code>, we mean that <code>M.r = n</code>.
+Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents the lambda term.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D;
+  
+  <span class="keyword">attr</span> D <span class="keyword">is</span> LambdaTerm-like <span class="keyword">means</span>
+    :Def1:
+    dom D <span class="keyword">is</span> finite &amp;
+    <span class="keyword">for</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D <span class="keyword">holds</span>
+      r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} &amp;
+      (r^&lt;*0*&gt; <span class="keyword">in</span> dom D <span class="keyword">implies</span> D.r = 0);
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Some simple <code>LambdaTerm-like</code> things.</p>
+<p>TODO: some more of these simple trees, for easy usage
+ later on, when defining application and abstraction.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">cluster</span> { {} } --&gt; 0 -&gt; LambdaTerm-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> D = { {} } --&gt; 0;
+    dom D = { {} } <span class="keyword">by</span> FUNCOP_1:13;
+    <span class="keyword">hence</span> dom D <span class="keyword">is</span> finite;
+    <span class="keyword">let</span> r <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
+    <span class="keyword">assume</span>
+  A1: r <span class="keyword">in</span> dom D;
+    dom D = { {} } <span class="keyword">by</span> FUNCOP_1:13;
+    <span class="keyword">then</span> r = {} <span class="keyword">by</span> A1, TARSKI:def 1;
+    <span class="keyword">then</span> r = &lt;*&gt; {0,1} <span class="keyword">by</span> FINSEQ_1:def 6;
+    <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+    <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+    <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, FUNCOP_1:7;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">cluster</span> { &lt;*&gt; NAT } -&gt; Tree-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    { &lt;*&gt; NAT } = { {} } <span class="keyword">by</span> FINSEQ_1:def 6;
+    <span class="keyword">thus</span> { &lt;*&gt; NAT } <span class="keyword">is</span> Tree-like;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">cluster</span> { &lt;*&gt; NAT } --&gt; 0 -&gt; LambdaTerm-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    { &lt;*&gt; NAT } = { {} } <span class="keyword">by</span> FINSEQ_1:def 6;
+    <span class="keyword">thus</span> { &lt;*&gt; NAT } --&gt; 0 <span class="keyword">is</span> LambdaTerm-like;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">cluster</span> { {}, &lt;*0*&gt; } -&gt; Tree-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> T = { {}, &lt;*0*&gt; };
+    T = elementary_tree 1 <span class="keyword">by</span> TREES_1:51;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+    T <span class="keyword">is</span> Tree-like;
+    <span class="keyword">hence</span> { {}, &lt;*0*&gt; } <span class="keyword">is</span> Tree-like;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">cluster</span> { {}, &lt;*0*&gt; } --&gt; 0 -&gt; LambdaTerm-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> T = { {}, &lt;*0*&gt; };
+  A6: T <span class="keyword">is</span> finite;
+    <span class="keyword">set</span> D = T --&gt; 0;
+  A2: dom D = T <span class="keyword">by</span> FUNCOP_1:13;
+    <span class="keyword">hence</span> dom D <span class="keyword">is</span> finite <span class="keyword">by</span> A6;
+    <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+    <span class="keyword">let</span> r <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
+    <span class="keyword">assume</span>
+  A1: r <span class="keyword">in</span> dom D;
+    <span class="keyword">then</span>
+  A3: r = {} <span class="keyword">or</span> r = &lt;*0*&gt; <span class="keyword">by</span> A1, A2, TARSKI:def 2;
+    <span class="keyword">per</span> <span class="keyword">cases</span>;
+    <span class="keyword">suppose</span> r = {};
+      <span class="keyword">then</span> r = &lt;*&gt; {0,1} <span class="keyword">by</span> FINSEQ_1:def 6;
+      <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+      <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+      <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, FUNCOP_1:7;
+    <span class="keyword">end</span>;
+    <span class="keyword">suppose</span>
+    A5: <span class="keyword">not</span> r = {};
+      <span class="keyword">set</span> ZeroOne = {0,1};
+      <span class="keyword">reconsider</span> ZeroOne <span class="keyword">as</span> non empty <span class="keyword">set</span>;
+      <span class="keyword">set</span> Zero = 0;
+      Zero <span class="keyword">in</span> {0,1} <span class="keyword">by</span> TARSKI:def 2;
+      <span class="keyword">then</span> <span class="keyword">reconsider</span> Zero <span class="keyword">as</span> Element <span class="keyword">of</span> ZeroOne;
+    A4: &lt;*Zero*&gt; <span class="keyword">is</span> FinSequence <span class="keyword">of</span> ZeroOne;
+      r = &lt;*0*&gt; <span class="keyword">by</span> A3, A5
+       .= &lt;*Zero*&gt;;
+      <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> A4;
+      <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+      <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, FUNCOP_1:7;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">cluster</span> { {}, &lt;*0*&gt;, &lt;*1*&gt; } -&gt; Tree-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> T = { {}, &lt;*0*&gt;, &lt;*1*&gt; };
+    T = elementary_tree 2 <span class="keyword">by</span> TREES_1:53;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+    T <span class="keyword">is</span> Tree-like;
+    <span class="keyword">hence</span> { {}, &lt;*0*&gt;, &lt;*1*&gt; } <span class="keyword">is</span> Tree-like;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">cluster</span> { {}, &lt;*0*&gt;, &lt;*1*&gt; } --&gt; 0 -&gt; LambdaTerm-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> T = { {}, &lt;*0*&gt;, &lt;*1*&gt; };
+  A6: T <span class="keyword">is</span> finite;
+    <span class="keyword">set</span> D = T --&gt; 0;
+  A2: dom D = T <span class="keyword">by</span> FUNCOP_1:13;
+    <span class="keyword">hence</span> dom D <span class="keyword">is</span> finite <span class="keyword">by</span> A6;
+    <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+    <span class="keyword">let</span> r <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
+    <span class="keyword">assume</span>
+  A1: r <span class="keyword">in</span> dom D;
+    <span class="keyword">then</span>
+  A3: r = {} <span class="keyword">or</span> r = &lt;*0*&gt; <span class="keyword">or</span> r = &lt;*1*&gt; <span class="keyword">by</span> A1, A2, ENUMSET1:def 1;
+    <span class="keyword">per</span> <span class="keyword">cases</span>;
+    <span class="keyword">suppose</span> r = {};
+      <span class="keyword">then</span> r = &lt;*&gt; {0,1} <span class="keyword">by</span> FINSEQ_1:def 6;
+      <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+      <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+      <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, FUNCOP_1:7;
+    <span class="keyword">end</span>;
+    <span class="keyword">suppose</span>
+    A5: r = &lt;*0*&gt;;
+      <span class="keyword">set</span> ZeroOne = {0,1};
+      <span class="keyword">reconsider</span> ZeroOne <span class="keyword">as</span> non empty <span class="keyword">set</span>;
+      <span class="keyword">set</span> Zero = 0;
+      Zero <span class="keyword">in</span> {0,1} <span class="keyword">by</span> TARSKI:def 2;
+      <span class="keyword">then</span> <span class="keyword">reconsider</span> Zero <span class="keyword">as</span> Element <span class="keyword">of</span> ZeroOne;
+    A4: &lt;*Zero*&gt; <span class="keyword">is</span> FinSequence <span class="keyword">of</span> ZeroOne;
+      r = &lt;*0*&gt; <span class="keyword">by</span> A5
+       .= &lt;*Zero*&gt;;
+      <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> A4;
+      <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+      <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, FUNCOP_1:7;
+    <span class="keyword">end</span>;
+    <span class="keyword">suppose</span> <span class="keyword">not</span> (r = {} <span class="keyword">or</span> r = &lt;*0*&gt;);
+      <span class="keyword">then</span>
+    A7: r = &lt;*1*&gt; <span class="keyword">by</span> A3;
+      <span class="keyword">set</span> ZeroOne = {0,1};
+      <span class="keyword">reconsider</span> ZeroOne <span class="keyword">as</span> non empty <span class="keyword">set</span>;
+      <span class="keyword">set</span> One = 1;
+      One <span class="keyword">in</span> {0,1} <span class="keyword">by</span> TARSKI:def 2;
+      <span class="keyword">then</span> <span class="keyword">reconsider</span> One <span class="keyword">as</span> Element <span class="keyword">of</span> ZeroOne;
+    A4: &lt;*One*&gt; <span class="keyword">is</span> FinSequence <span class="keyword">of</span> ZeroOne;
+      r = &lt;*1*&gt; <span class="keyword">by</span> A7
+       .= &lt;*One*&gt;;
+      <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+      <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+      <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, FUNCOP_1:7;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>And then we can easily define a <code>LambdaTerm-like</code> cluster,
+ and make a mode <code>LambdaTerm</code> out of it.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">cluster</span> LambdaTerm-like <span class="keyword">for</span> DecoratedTree <span class="keyword">of</span> NAT;
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> D = { {} } --&gt; 0;
+    <span class="keyword">take</span> D;
+    <span class="keyword">thus</span> D <span class="keyword">is</span> LambdaTerm-like;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">mode</span> LambdaTerm <span class="keyword">is</span> LambdaTerm-like DecoratedTree <span class="keyword">of</span> NAT;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">func</span> PreAbstractionTerm -&gt; LambdaTerm <span class="keyword">equals</span>
+    { {}, &lt;*0*&gt; } --&gt; 0;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> T = { {}, &lt;*0*&gt; };
+    <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+    <span class="keyword">set</span> D = T --&gt; 0;
+    <span class="keyword">reconsider</span> D <span class="keyword">as</span> DecoratedTree <span class="keyword">of</span> NAT;
+    D <span class="keyword">is</span> LambdaTerm-like;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> D <span class="keyword">as</span> LambdaTerm;
+    D <span class="keyword">is</span> LambdaTerm;
+    <span class="keyword">hence</span> { {}, &lt;*0*&gt; } --&gt; 0 <span class="keyword">is</span> LambdaTerm;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">func</span> PreApplicationTerm -&gt; LambdaTerm <span class="keyword">equals</span>
+    { {}, &lt;*0*&gt;, &lt;*1*&gt; } --&gt; 0;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> T = { {}, &lt;*0*&gt;, &lt;*1*&gt; };
+    <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+    <span class="keyword">set</span> D = T --&gt; 0;
+    <span class="keyword">reconsider</span> D <span class="keyword">as</span> DecoratedTree <span class="keyword">of</span> NAT;
+    D <span class="keyword">is</span> LambdaTerm-like;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> D <span class="keyword">as</span> LambdaTerm;
+    D <span class="keyword">is</span> LambdaTerm;
+    <span class="keyword">hence</span> { {}, &lt;*0*&gt;, &lt;*1*&gt; } --&gt; 0 <span class="keyword">is</span> LambdaTerm;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">reserve</span> M,N,P,Q <span class="keyword">for</span> LambdaTerm;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h4 id="1.1.1"><a class="headnumber" href="#1.1.1">1.1.1</a> Preservation under operations</h4>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p><code>LambdaTerm</code>s are preserved under taking subterms, and composing
+ terms. We&#39;ll register this knowledge in the type system.</p>
+<p>Let Mizar know that <code>M|r</code> is also a <code>LambdaTerm</code>.
+The definition of <code>|</code> that we are using is the definition
+ that operates on (and returns) a <code>DecoratedTree</code>. Showing
+ that retricting a <code>LambdaTerm</code> produces a <code>LambdaTerm-like</code>
+ result ensures us that the result is a <code>LambdaTerm</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+      r <span class="keyword">be</span> Element <span class="keyword">of</span> dom M;
+
+  <span class="keyword">cluster</span> M|r -&gt; LambdaTerm-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">thus</span> dom (M|r) <span class="keyword">is</span> finite <span class="keyword">proof</span>
+      dom M <span class="keyword">is</span> finite <span class="keyword">by</span> Def1;
+      <span class="keyword">then</span> (dom M)|r <span class="keyword">is</span> finite;
+      <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> TREES_2:def 10;
+    <span class="keyword">end</span>;
+
+    <span class="keyword">let</span> p <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
+    <span class="keyword">assume</span>
+  A3: p <span class="keyword">in</span> dom (M|r);
+    <span class="keyword">thus</span> p <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">proof</span>
+      dom (M|r) = (dom M)|r <span class="keyword">by</span> TREES_2:def 10;
+      <span class="keyword">then</span> p <span class="keyword">in</span> (dom M)|r <span class="keyword">by</span> A3;
+      <span class="keyword">then</span> r^p <span class="keyword">in</span> dom M <span class="keyword">by</span> TREES_1:def 6;
+      <span class="keyword">then</span> r^p <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> Def1;
+      <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> FINSEQ_1:36;
+    <span class="keyword">end</span>;
+
+    <span class="comment">:: r^p^&lt;*0*&gt;</span>
+    <span class="keyword">set</span> p0 = p^&lt;*0*&gt;;
+    <span class="keyword">set</span> rp = r^p;
+    <span class="keyword">assume</span>
+  A4: p0 <span class="keyword">in</span> dom (M|r);
+    <span class="keyword">thus</span> (M|r).p = 0 <span class="keyword">proof</span>
+      dom (M|r) <span class="keyword">is</span> Tree-like;
+      <span class="keyword">then</span>
+    A5: p0 <span class="keyword">in</span> dom (M|r) <span class="keyword">by</span> A4, TREES_1:21;
+      <span class="keyword">then</span> <span class="keyword">reconsider</span> p0 <span class="keyword">as</span> Element <span class="keyword">of</span> dom (M|r);
+      <span class="keyword">reconsider</span> p0 <span class="keyword">as</span> Element <span class="keyword">of</span> (dom M)|r <span class="keyword">by</span> TREES_2:def 10;
+      p0 <span class="keyword">in</span> (dom M)|r;
+      <span class="keyword">then</span> r^p0 <span class="keyword">in</span> dom M <span class="keyword">by</span> TREES_1:def 6;
+      <span class="keyword">then</span>
+    A6: rp^&lt;*0*&gt; <span class="keyword">in</span> dom M <span class="keyword">by</span> FINSEQ_1:32;
+      <span class="keyword">then</span> rp <span class="keyword">in</span> dom M <span class="keyword">by</span> TREES_1:21;
+      <span class="keyword">then</span> M.rp = 0 <span class="keyword">by</span> A6, Def1;
+      <span class="keyword">then</span>
+    A8: M.(r^p) = 0;
+      p <span class="keyword">in</span> (dom M)|r <span class="keyword">by</span> A3, TREES_2:def 10;
+      <span class="keyword">then</span> (M|r).p = M.(r^p) <span class="keyword">by</span> TREES_2:def 10;
+      <span class="keyword">hence</span> (M|r).p = 0 <span class="keyword">by</span> A8, TREES_2:def 10;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Let Mizar know that <code>P with-replacement (p,Q)</code> is also a <code>LambdaTerm</code>.
+First we prove a slightly more general theorem about the ranges of
+ composed <code>DecoratedTree</code>s, and add this knowledge to the type system.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">reserve</span> X <span class="keyword">for</span> <span class="keyword">set</span>,
+        D1,D2 <span class="keyword">for</span> DecoratedTree,
+        p <span class="keyword">for</span> Element <span class="keyword">of</span> dom D1;
+
+<span class="keyword">theorem</span> Th1:
+  D1 <span class="keyword">is</span> X-valued &amp; D2 <span class="keyword">is</span> Y-valued <span class="keyword">implies</span>
+    D1 with-replacement (p,D2) <span class="keyword">is</span> (X \/ Y)-valued
+<span class="keyword">proof</span>
+  <span class="keyword">assume</span>
+A4: D1 <span class="keyword">is</span> X-valued;
+  <span class="keyword">assume</span>
+A5: D2 <span class="keyword">is</span> Y-valued;
+  <span class="keyword">set</span> D = D1 with-replacement (p,D2);
+  <span class="keyword">set</span> T = dom D;
+  rng D c= X \/ Y
+  <span class="keyword">proof</span>
+    <span class="keyword">let</span> x <span class="keyword">be</span> <span class="keyword">set</span>;
+    <span class="keyword">assume</span> x <span class="keyword">in</span> rng D;
+    <span class="keyword">then</span> <span class="keyword">ex</span> q <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">st</span> [q,x] <span class="keyword">in</span> D <span class="keyword">by</span> XTUPLE_0:def 13;
+    <span class="keyword">then</span> <span class="keyword">consider</span> q <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">such</span> <span class="keyword">that</span>
+  A1: [q,x] <span class="keyword">in</span> D;
+  A2: q <span class="keyword">in</span> T <span class="keyword">by</span> A1, XTUPLE_0:def 12;
+    T <span class="keyword">is</span> Tree <span class="keyword">by</span> TREES_2:def 8;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> q <span class="keyword">as</span> FinSequence <span class="keyword">of</span> NAT <span class="keyword">by</span> A2, TREES_1:19;
+  A13: T = dom D1 with-replacement (p, dom D2) <span class="keyword">by</span> TREES_2:def 11;
+    <span class="keyword">then</span>
+  A3: ((<span class="keyword">not</span> p is_a_prefix_of q &amp; D.q = D1.q) <span class="keyword">or</span>
+      (<span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r &amp; D.q = D2.r)) <span class="keyword">by</span> A2, TREES_2:def 11;
+    <span class="keyword">per</span> <span class="keyword">cases</span>;
+    <span class="keyword">suppose</span>
+    A6: (<span class="keyword">not</span> p is_a_prefix_of q &amp; D.q = D1.q);
+      [q,x] <span class="keyword">in</span> D <span class="keyword">by</span> A1;
+      <span class="keyword">then</span> D.q = x <span class="keyword">by</span> A2, FUNCT_1:def 2;
+      <span class="keyword">then</span>
+    A7: D1.q = x <span class="keyword">by</span> A6;
+    A12: q <span class="keyword">in</span> dom D1
+      <span class="keyword">proof</span>
+      A14: (q <span class="keyword">in</span> dom D1 &amp; <span class="keyword">not</span> p is_a_proper_prefix_of q <span class="keyword">or</span>
+          <span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r) <span class="keyword">by</span> A2, A13, TREES_1:def 9;
+        <span class="keyword">per</span> <span class="keyword">cases</span>;
+        <span class="keyword">suppose</span> q <span class="keyword">in</span> dom D1 &amp; <span class="keyword">not</span> p is_a_proper_prefix_of q;
+          <span class="keyword">hence</span> q <span class="keyword">in</span> dom D1;
+        <span class="keyword">end</span>;
+        <span class="keyword">suppose</span> <span class="keyword">not</span> (q <span class="keyword">in</span> dom D1 &amp; <span class="keyword">not</span> p is_a_proper_prefix_of q);
+          <span class="keyword">then</span> <span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r <span class="keyword">by</span> A14;
+          <span class="keyword">then</span>
+        A15: p is_a_prefix_of q <span class="keyword">by</span> TREES_1:1;
+          <span class="keyword">assume</span> <span class="keyword">not</span> q <span class="keyword">in</span> dom D1;
+          <span class="keyword">thus</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> A6, A15;
+        <span class="keyword">end</span>;
+      <span class="keyword">end</span>;
+      [q,x] <span class="keyword">in</span> D1 <span class="keyword">by</span> A7, A12, FUNCT_1:def 2;
+      <span class="keyword">then</span>
+    A8: x <span class="keyword">in</span> rng D1 <span class="keyword">by</span> XTUPLE_0:def 13;
+      rng D1 c= X <span class="keyword">by</span> A4, RELAT_1:def 19;
+      <span class="keyword">then</span> x <span class="keyword">in</span> X <span class="keyword">by</span> A8;
+      <span class="keyword">hence</span> x <span class="keyword">in</span> (X \/ Y) <span class="keyword">by</span> XBOOLE_0:def 3;
+    <span class="keyword">end</span>;
+    <span class="keyword">suppose</span> <span class="keyword">not</span> (<span class="keyword">not</span> p is_a_prefix_of q &amp; D.q = D1.q);
+      <span class="keyword">then</span> (<span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r &amp; D.q = D2.r) <span class="keyword">by</span> A3;
+      <span class="keyword">then</span> <span class="keyword">consider</span> r <span class="keyword">such</span> <span class="keyword">that</span>
+    A9: r <span class="keyword">in</span> dom D2 &amp; q = p^r &amp; D.q = D2.r;
+      [q,x] <span class="keyword">in</span> D <span class="keyword">by</span> A1;
+      <span class="keyword">then</span> D.q = x <span class="keyword">by</span> A2, FUNCT_1:def 2;
+      <span class="keyword">then</span> D2.r = x <span class="keyword">by</span> A9;
+      <span class="keyword">then</span> [r,x] <span class="keyword">in</span> D2 <span class="keyword">by</span> A9, FUNCT_1:def 2;
+      <span class="keyword">then</span>
+    A11: x <span class="keyword">in</span> rng D2 <span class="keyword">by</span> XTUPLE_0:def 13;
+      rng D2 c= Y <span class="keyword">by</span> A5, RELAT_1:def 19;
+      <span class="keyword">then</span> x <span class="keyword">in</span> Y <span class="keyword">by</span> A11;
+      <span class="keyword">hence</span> x <span class="keyword">in</span> (X \/ Y) <span class="keyword">by</span> XBOOLE_0:def 3;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
+  <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> RELAT_1:def 19;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">let</span> P,Q <span class="keyword">be</span> LambdaTerm,
+      p <span class="keyword">be</span> Element <span class="keyword">of</span> dom P;
+
+  <span class="keyword">cluster</span> P with-replacement (p,Q) -&gt; NAT-valued;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+  A1: P <span class="keyword">is</span> NAT-valued <span class="keyword">by</span> Def1;
+  A2: Q <span class="keyword">is</span> NAT-valued <span class="keyword">by</span> Def1;
+    P with-replacement (p,Q) <span class="keyword">is</span> (NAT \/ NAT)-valued <span class="keyword">by</span> A1, A2, Th1;
+    <span class="keyword">hence</span> P with-replacement (p,Q) <span class="keyword">is</span> NAT-valued <span class="keyword">by</span> XBOOLE_0:def 3;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">reserve</span> R <span class="keyword">for</span> DecoratedTree,
+        p <span class="keyword">for</span> Element <span class="keyword">of</span> dom P;
+
+<span class="keyword">theorem</span> Th2:
+  P with-replacement (p,Q) <span class="keyword">is</span> LambdaTerm-like
+<span class="keyword">proof</span>
+  <span class="keyword">set</span> R = P with-replacement (p,Q);
+  <span class="keyword">thus</span> dom R <span class="keyword">is</span> finite
+  <span class="keyword">proof</span>
+  A1: dom P <span class="keyword">is</span> finite <span class="keyword">by</span> Def1;
+  A2: dom Q <span class="keyword">is</span> finite <span class="keyword">by</span> Def1;
+    dom R = (dom P) with-replacement (p,dom Q) <span class="keyword">by</span> TREES_2:def 11;
+    <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> A1, A2;
+  <span class="keyword">end</span>;
+
+  <span class="keyword">let</span> r;
+  <span class="keyword">assume</span>
+A3: r <span class="keyword">in</span> dom R;
+  <span class="keyword">thus</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1}
+  <span class="keyword">proof</span>
+    dom R = (dom P) with-replacement (p,dom Q) <span class="keyword">by</span> TREES_2:def 11;
+    <span class="keyword">then</span>
+  A4: ((r <span class="keyword">in</span> dom P &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r) <span class="keyword">or</span>
+      (<span class="keyword">ex</span> q <span class="keyword">st</span> q <span class="keyword">in</span> dom Q &amp; r = p^q)) <span class="keyword">by</span> A3, TREES_1:def 9;
+    <span class="keyword">per</span> <span class="keyword">cases</span>;
+    <span class="keyword">suppose</span> (r <span class="keyword">in</span> dom P &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r);
+      <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> Def1;
+    <span class="keyword">end</span>;
+    <span class="keyword">suppose</span> <span class="keyword">not</span> (r <span class="keyword">in</span> dom P &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r);
+      <span class="keyword">then</span> (<span class="keyword">ex</span> q <span class="keyword">st</span> q <span class="keyword">in</span> dom Q &amp; r = p^q) <span class="keyword">by</span> A4;
+      <span class="keyword">then</span> <span class="keyword">consider</span> q <span class="keyword">such</span> <span class="keyword">that</span>
+    A5: q <span class="keyword">in</span> dom Q &amp; r = p^q;
+      q <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> A5, Def1;
+      <span class="keyword">then</span> <span class="keyword">reconsider</span> q <span class="keyword">as</span> FinSequence <span class="keyword">of</span> {0,1};
+      p <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> Def1;
+      <span class="keyword">then</span> <span class="keyword">reconsider</span> p <span class="keyword">as</span> FinSequence <span class="keyword">of</span> {0,1};
+      p^q <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+      <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> A5;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
+  <span class="keyword">set</span> r0 = r^&lt;*0*&gt;;
+  <span class="keyword">assume</span>
+A6: r0 <span class="keyword">in</span> dom R;
+  <span class="keyword">thus</span> R.r = 0; <span class="comment">:: TODO</span>
+<span class="comment">::&gt;          *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">let</span> P,Q <span class="keyword">be</span> LambdaTerm,
+      p <span class="keyword">be</span> Element <span class="keyword">of</span> dom P;
+
+  <span class="keyword">cluster</span> P with-replacement (p,Q) -&gt; LambdaTerm-like;
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">thus</span> <span class="keyword">thesis</span> <span class="keyword">by</span> Th2;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> P <span class="keyword">be</span> LambdaTerm,
+      p <span class="keyword">be</span> Element <span class="keyword">of</span> dom P,
+      Q <span class="keyword">be</span> LambdaTerm;
+
+  <span class="keyword">redefine</span> <span class="keyword">func</span> P with-replacement (p,Q) -&gt; LambdaTerm;
+  <span class="keyword">coherence</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h3 id="1.2"><a class="headnumber" href="#1.2">1.2</a> Helper definitions</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Some helper definitions for working with lambda terms.</p>
+<h4 id="1.2.1"><a class="headnumber" href="#1.2.1">1.2.1</a> Variable occurences</h4>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M,r;
+  
+  <span class="keyword">pred</span> r is_variable_in M <span class="keyword">means</span>
+    <span class="keyword">not</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom M;
+
+  <span class="keyword">pred</span> r is_abstraction_in M <span class="keyword">means</span>
+    r^&lt;*0*&gt; <span class="keyword">in</span> dom M &amp; <span class="keyword">not</span> r^&lt;*1*&gt; <span class="keyword">in</span> dom M;
+
+  <span class="keyword">pred</span> r is_application_in M <span class="keyword">means</span>
+    r^&lt;*0*&gt; <span class="keyword">in</span> dom M &amp; r^&lt;*1*&gt; <span class="keyword">in</span> dom M;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>By $r$ being an <em>active variable</em> of some term $M$ (or more precisely,
+ a path identifying an active variable), I mean that if $\lambda M$ were
+ to be applied to some other term $N$, we would substitute this variable
+ by $M$.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M,r;
+  
+  <span class="keyword">pred</span> r is_active_variable_in M <span class="keyword">means</span>
+    r is_variable_in M &amp;
+    M.r = card { p where p <span class="keyword">is</span> Element <span class="keyword">of</span> dom M
+                 : p is_a_proper_prefix_of r &amp;
+                   p is_abstraction_in M };
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h4 id="1.2.2"><a class="headnumber" href="#1.2.2">1.2.2</a> Abstraction and application</h4>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Then we can define abstraction and application</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M;
+  
+  <span class="keyword">func</span> Abs(M) -&gt; LambdaTerm <span class="keyword">means</span>
+    it|&lt;*0*&gt; = M &amp; <span class="keyword">not</span> &lt;*1*&gt; <span class="keyword">in</span> dom it;
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> e = &lt;*0*&gt;;
+    dom PreAbstractionTerm = { {}, &lt;*0*&gt; } <span class="keyword">by</span> FUNCOP_1:13;
+    <span class="keyword">then</span> &lt;*0*&gt; <span class="keyword">in</span> dom PreAbstractionTerm <span class="keyword">by</span> TARSKI:def 2;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> e <span class="keyword">as</span> Element <span class="keyword">of</span> dom PreAbstractionTerm;
+    <span class="keyword">set</span> D = PreAbstractionTerm with-replacement (e, M);
+
+    <span class="keyword">take</span> D;
+    <span class="keyword">thus</span> D|&lt;*0*&gt; = M;
+<span class="comment">::&gt;                *4</span>
+    <span class="keyword">thus</span> <span class="keyword">not</span> &lt;*1*&gt; <span class="keyword">in</span> dom D;
+<span class="comment">::&gt;                       *4</span>
+  <span class="keyword">end</span>;
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> M,N;
+
+  <span class="keyword">func</span> App(M,N) -&gt; LambdaTerm <span class="keyword">means</span>
+    it|&lt;*0*&gt; = M &amp; it|&lt;*1*&gt; = N;
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> e0 = &lt;*0*&gt;;
+    dom PreApplicationTerm = { {}, &lt;*0*&gt;, &lt;*1*&gt; } <span class="keyword">by</span> FUNCOP_1:13;
+    <span class="keyword">then</span> &lt;*0*&gt; <span class="keyword">in</span> dom PreApplicationTerm <span class="keyword">by</span> ENUMSET1:def 1;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> e0 <span class="keyword">as</span> Element <span class="keyword">of</span> dom PreApplicationTerm;
+    <span class="keyword">set</span> preD = PreApplicationTerm with-replacement (e0, M);
+    preD <span class="keyword">is</span> LambdaTerm;
+
+    <span class="keyword">set</span> e1 = &lt;*1*&gt;;
+  A1: dom preD = (dom PreApplicationTerm) with-replacement (e0, dom M)
+      <span class="keyword">by</span> TREES_2:def 11;
+    dom PreApplicationTerm = { {}, &lt;*0*&gt;, &lt;*1*&gt; } <span class="keyword">by</span> FUNCOP_1:13;
+    <span class="keyword">then</span>
+  A2: &lt;*1*&gt; <span class="keyword">in</span> dom PreApplicationTerm <span class="keyword">by</span> ENUMSET1:def 1;
+    <span class="keyword">not</span> e0 is_a_proper_prefix_of e1;
+<span class="comment">::&gt;                               *4</span>
+    <span class="keyword">then</span> &lt;*1*&gt; <span class="keyword">in</span> dom preD <span class="keyword">by</span> A1, A2, TREES_1:def 9;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> e1 <span class="keyword">as</span> Element <span class="keyword">of</span> dom preD;
+    <span class="keyword">set</span> D = preD with-replacement (e1, N);
+    D <span class="keyword">is</span> LambdaTerm;
+    
+    <span class="keyword">take</span> D;
+    <span class="keyword">thus</span> D|&lt;*0*&gt; = M;
+<span class="comment">::&gt;                *4</span>
+    <span class="keyword">thus</span> D|&lt;*1*&gt; = N;
+<span class="comment">::&gt;                *4</span>
+  <span class="keyword">end</span>;
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> M,N;
+
+  <span class="keyword">func</span> SubstituteActiveVar(M,N) -&gt; LambdaTerm <span class="keyword">means</span>
+    <span class="comment">:: most things are the same,</span>
+    (<span class="keyword">for</span> r <span class="keyword">st</span> <span class="keyword">not</span> (<span class="keyword">ex</span> p <span class="keyword">being</span> Element <span class="keyword">of</span> dom N
+                      <span class="keyword">st</span> p is_active_variable_in N &amp; p is_a_prefix_of r)
+           <span class="keyword">holds</span> [r,x] <span class="keyword">in</span> it <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N
+    ) &amp;
+    <span class="comment">:: except that the active variables are replaced with M</span>
+    (<span class="keyword">for</span> r <span class="keyword">being</span> Element <span class="keyword">of</span> dom N
+            <span class="keyword">st</span> r is_active_variable_in N
+            <span class="keyword">holds</span> it|r = M);
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h3 id="1.3"><a class="headnumber" href="#1.3">1.3</a> Reduction and conversion</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>First I define <em>shallow</em> one-step beta substitution, which only
+ states (the De Bruijn equivalent of)
+ $(\lambda x.N)M \to_{\beta} N[x:=M]$.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> P,Q;
+  
+  <span class="comment">:: P === (\x.N)M --&gt; N[x:=M] === Q</span>
+  <span class="keyword">pred</span> P beta_shallow Q <span class="keyword">means</span>
+    <span class="keyword">ex</span> M,N <span class="keyword">st</span>
+      <span class="comment">:: P === (\x.N)M</span>
+      P = App(Abs(N),M) &amp;
+
+      <span class="comment">:: Q === N[x:=M]</span>
+      Q = SubstituteActiveVar(N,M);
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Then we extend this ordinary one-step beta reduction, that is,
+ any subterm is also allowed to reduce.</p>
+<p>Note that I had to use a work-around here, where I have two
+ set-theoretically identical elements <code>p</code> and <code>q</code>, but considered
+ in Mizar as having different types to enable the two <code>|</code> operations
+ to work. I also tried defining something like <code>Element of (dom M),(dom N)</code>,
+ but this is extremely difficult, if not impossible.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M,N;
+
+  <span class="keyword">pred</span> M beta N <span class="keyword">means</span>
+    <span class="keyword">ex</span>
+      p <span class="keyword">being</span> Element <span class="keyword">of</span> dom M,
+      q <span class="keyword">being</span> Element <span class="keyword">of</span> dom N <span class="keyword">st</span>
+        p = q &amp;
+        M|p beta_shallow N|q &amp;
+        <span class="keyword">for</span> q <span class="keyword">st</span> <span class="keyword">not</span> p is_a_prefix_of q <span class="keyword">holds</span>
+          [r,x] <span class="keyword">in</span> M <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>We close the relation under transitivity and reflexivity
+ to get the full beta reduction relation.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M,N;
+  
+  <span class="keyword">pred</span> M beta* N <span class="keyword">means</span>
+    M = N <span class="keyword">or</span>
+    <span class="keyword">ex</span> P <span class="keyword">st</span> M beta P &amp; P beta N;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>And then close under symmetry to get beta conversion.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> M,N;
+  
+  <span class="keyword">pred</span> M beta= N <span class="keyword">means</span>
+    M beta* N <span class="keyword">or</span> N beta* M;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h2 id="2"><a class="headnumber" href="#2">2</a> CPO&#39;s</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">reserve</span> x,y,z,z2 <span class="keyword">for</span> <span class="keyword">set</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>We start off by defining
+ a mode for partial orders upon some set <code>D</code>. I don&#39;t really
+ get why de Mizar guys wrote their order definitions the way
+ they did (in <code>ORDERS_1</code>, <code>ORDERS_2</code>, etc...)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>;
+  <span class="keyword">mode</span> PartialOrder <span class="keyword">of</span> D <span class="keyword">is</span> transitive reflexive antisymmetric (Relation <span class="keyword">of</span> D);
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h3 id="2.1"><a class="headnumber" href="#2.1">2.1</a> (Least) upper bounds</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>An element $u$ of $D$ is an <em>upper bound</em> of a
+ subset $X\subseteq D$ iff for all $x\in X$,
+ $x\sqsubseteq u$.</p>
+<p>I often encountered *100 errors (also elsewhere, but most notably)
+ here. Note: a *100 error occurs when not all loci (which are variables
+ introduced by the <code>let</code> statement) are used <em>in the attribute name</em>.
+&quot;Transitive&quot; usage <em>is</em> allowed: in the below definition of
+ upper bounds, the variable <code>D</code> is not explicitly stated in the name
+ of the attribute, however it is used in the <code>let</code> introduction rule of
+ <code>R</code>, <code>X</code> and <code>u</code>, so it is allowed.
+However, I had to explicitly add <code>R</code> to the attribute name, because even
+ though it is used in the defining formula, it is not included in the
+ introductory rules of <code>D</code>, <code>X</code> or <code>u</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+      X <span class="keyword">be</span> Subset <span class="keyword">of</span> D,
+      u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+
+  <span class="keyword">attr</span> u <span class="keyword">is</span> X,R-ub <span class="keyword">means</span>
+    <span class="keyword">for</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X <span class="keyword">holds</span> [x,u] <span class="keyword">in</span> R;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Least upper bounds</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+      X <span class="keyword">be</span> Subset <span class="keyword">of</span> D,
+      u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+
+  <span class="keyword">attr</span> u <span class="keyword">is</span> X,R-lub <span class="keyword">means</span>
+    u <span class="keyword">is</span> X,R-ub &amp;
+    <span class="keyword">for</span> u2 <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u2 <span class="keyword">is</span> X,R-ub <span class="keyword">holds</span>
+      [u,u2] <span class="keyword">in</span> R;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h3 id="2.2"><a class="headnumber" href="#2.2">2.2</a> Directed sets</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>If $D$ is a set, and $R$ a partial order on $D$,
+ then an $X\subseteq D$ is called <em>directed</em> iff
+ for all $x,y \in X$, there is some $z \in X$,
+ such that $x\sqsubseteq z$ and $y\sqsubseteq z$.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+      X <span class="keyword">be</span> Subset <span class="keyword">of</span> D;
+
+  <span class="keyword">attr</span> X <span class="keyword">is</span> R-directed <span class="keyword">means</span>
+    <span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
+      <span class="keyword">ex</span> z <span class="keyword">st</span>
+        z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>this registration is actually useless..</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
+
+  <span class="keyword">cluster</span> R-directed <span class="keyword">for</span> Subset <span class="keyword">of</span> D;
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> X = {};
+    <span class="keyword">reconsider</span> X <span class="keyword">as</span> Subset <span class="keyword">of</span> D <span class="keyword">by</span> SUBSET_1:1;
+    <span class="keyword">take</span> X;
+    <span class="keyword">thus</span> X <span class="keyword">is</span> R-directed
+    <span class="keyword">proof</span>
+      <span class="keyword">assume</span> <span class="keyword">not</span> (<span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
+      <span class="keyword">ex</span> z <span class="keyword">st</span>
+        z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+      <span class="keyword">then</span> <span class="keyword">consider</span> x,y <span class="keyword">such</span> <span class="keyword">that</span>
+    A1: x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">and</span>
+    A2: <span class="keyword">not</span> (<span class="keyword">ex</span> z <span class="keyword">st</span> z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+      x <span class="keyword">in</span> X <span class="keyword">by</span> A1;
+      <span class="keyword">then</span> <span class="keyword">ex</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X;
+      <span class="keyword">hence</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> XBOOLE_0:def 1;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> non empty <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
+
+  <span class="keyword">cluster</span> R-directed <span class="keyword">for</span> non empty Subset <span class="keyword">of</span> D;
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">ex</span> d <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">st</span> d <span class="keyword">in</span> D <span class="keyword">by</span> XBOOLE_0:def 1;
+    <span class="keyword">then</span> <span class="keyword">consider</span> d <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">such</span> <span class="keyword">that</span>
+  A1: d <span class="keyword">in</span> D;
+    <span class="keyword">set</span> X = {d};
+    d <span class="keyword">is</span> Element <span class="keyword">of</span> D <span class="keyword">by</span> A1;
+    <span class="keyword">then</span> X <span class="keyword">is</span> Subset <span class="keyword">of</span> D <span class="keyword">by</span> SUBSET_1:33;
+    <span class="keyword">then</span> <span class="keyword">reconsider</span> X <span class="keyword">as</span> non empty Subset <span class="keyword">of</span> D;
+    <span class="keyword">take</span> X;
+    <span class="keyword">thus</span> X <span class="keyword">is</span> R-directed
+    <span class="keyword">proof</span>
+      <span class="keyword">assume</span> <span class="keyword">not</span> (<span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
+      <span class="keyword">ex</span> z <span class="keyword">st</span>
+        z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+      <span class="keyword">then</span> <span class="keyword">consider</span> x,y <span class="keyword">such</span> <span class="keyword">that</span>
+    A2: x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">and</span>
+    A3: <span class="keyword">not</span> (<span class="keyword">ex</span> z <span class="keyword">st</span> z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+      <span class="keyword">per</span> <span class="keyword">cases</span>;
+      <span class="keyword">suppose</span> x = y;
+        <span class="comment">:: idea: use x = y = d to show that</span>
+        <span class="comment">::  ex d, because [x,d] = [x,x] in R by reflexivity, ..</span>
+        <span class="keyword">thus</span> <span class="keyword">contradiction</span>;
+<span class="comment">::&gt;                      *1</span>
+      <span class="keyword">end</span>;
+      <span class="keyword">suppose</span> x &lt;&gt; y;
+        <span class="keyword">per</span> <span class="keyword">cases</span>;
+        <span class="keyword">suppose</span> x = d;
+          <span class="comment">:: idea: then d &lt;&gt; y, but both in X,</span>
+          <span class="comment">::  but that contradicts X being a singleton</span>
+          <span class="keyword">thus</span> <span class="keyword">contradiction</span>;
+<span class="comment">::&gt;                        *1</span>
+        <span class="keyword">end</span>;
+        <span class="keyword">suppose</span> x &lt;&gt; d;
+          <span class="comment">:: idea: then d &lt;&gt; x, but both in X,</span>
+          <span class="comment">::  but that contradicts X being a singleton</span>
+          <span class="keyword">thus</span> <span class="keyword">contradiction</span>;
+<span class="comment">::&gt;                        *1</span>
+        <span class="keyword">end</span>;
+      <span class="keyword">end</span>;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h3 id="2.3"><a class="headnumber" href="#2.3">2.3</a> Completeness</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>A partial ordered set is complete iff every directed set has
+ a least upper bound.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> non empty <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
+
+  <span class="keyword">attr</span> R <span class="keyword">is</span> complete <span class="keyword">means</span>
+    <span class="keyword">for</span> X <span class="keyword">being</span> R-directed non empty Subset <span class="keyword">of</span> D <span class="keyword">holds</span>
+      <span class="keyword">ex</span> u <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u <span class="keyword">is</span> X,R-lub;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Here again, what I want to express is that such complete partial
+ orders exist, not that for every $D$, any partial order is $D$-complete,
+ or something weird like that...</p>
+<p>What are the precise semantics of these clusters?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> non empty <span class="keyword">set</span>;
+
+  <span class="keyword">cluster</span> complete <span class="keyword">for</span> PartialOrder <span class="keyword">of</span> D;
+  <span class="keyword">existence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> I = id D;
+    <span class="keyword">reconsider</span> I <span class="keyword">as</span> PartialOrder <span class="keyword">of</span> D;
+    <span class="keyword">take</span> I;
+    <span class="keyword">thus</span> I <span class="keyword">is</span> complete
+    <span class="keyword">proof</span>
+      <span class="keyword">let</span> X <span class="keyword">be</span> I-directed Subset <span class="keyword">of</span> D;
+<span class="comment">::&gt;                            *56</span>
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> non empty <span class="keyword">set</span>,
+      R <span class="keyword">be</span> complete PartialOrder <span class="keyword">of</span> D,
+      X <span class="keyword">be</span> R-directed Subset <span class="keyword">of</span> D;
+
+  <span class="keyword">func</span> LUB(X) -&gt; Element <span class="keyword">of</span> D <span class="keyword">means</span>
+    it <span class="keyword">is</span> X,R-lub;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h3 id="2.4"><a class="headnumber" href="#2.4">2.4</a> Bottom element</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+      b <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+
+  <span class="keyword">attr</span> b <span class="keyword">is</span> R-bottom <span class="keyword">means</span>
+    <span class="keyword">for</span> y <span class="keyword">st</span> y <span class="keyword">in</span> D <span class="keyword">holds</span> [b,y] <span class="keyword">in</span> R;
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">let</span> D <span class="keyword">be</span> <span class="keyword">set</span>,
+      R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
+
+  <span class="keyword">cluster</span> R-bottom <span class="keyword">for</span> Element <span class="keyword">of</span> D;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h3 id="2.5"><a class="headnumber" href="#2.5">2.5</a> The CPO structure</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">struct</span> CPO (#
+    carrier -&gt; non empty <span class="keyword">set</span>,
+    BinRel -&gt; complete PartialOrder <span class="keyword">of</span> (the carrier),
+    Bot -&gt; (the BinRel)-bottom Element <span class="keyword">of</span> the carrier
+  #);
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h3 id="2.6"><a class="headnumber" href="#2.6">2.6</a> Continuity</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h4 id="2.6.1"><a class="headnumber" href="#2.6.1">2.6.1</a> Monotonicity</h4>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO,
+      f <span class="keyword">be</span> Function <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> E);
+
+  <span class="keyword">attr</span> f <span class="keyword">is</span> monotone <span class="keyword">means</span>
+    <span class="keyword">for</span> x,y <span class="keyword">st</span> [x,y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> D) <span class="keyword">holds</span>
+      [f.x,f.y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> E);
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h4 id="2.6.2"><a class="headnumber" href="#2.6.2">2.6.2</a> Continuity</h4>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO,
+      f <span class="keyword">be</span> Function <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> E);
+
+  <span class="keyword">attr</span> f <span class="keyword">is</span> continuous <span class="keyword">means</span>
+    f <span class="keyword">is</span> monotone &amp;
+    <span class="keyword">for</span> X <span class="keyword">being</span> (the BinRel <span class="keyword">of</span> D)-directed
+                Subset <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D)
+      <span class="keyword">holds</span>
+        f.LUB(X) = LUB(f.:X);
+<span class="comment">::&gt;                  *103</span>
+<span class="comment">::                 This is indeed somewhat complicated,</span>
+<span class="comment">::                  why would it necessarily be directed,</span>
+<span class="comment">::                  and thus eligible for LUB ?</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">registration</span>
+  <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO;
+
+  <span class="keyword">cluster</span> continuous <span class="keyword">for</span> Function <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> E);
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO;
+
+  <span class="keyword">mode</span> ContinuousFunc <span class="keyword">of</span> D,E <span class="keyword">is</span> continuous Function <span class="keyword">of</span>
+    (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> E);
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h4 id="2.6.3"><a class="headnumber" href="#2.6.3">2.6.3</a> Continuous function space</h4>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO;
+
+  <span class="keyword">func</span> ContinuousFuncs(D,E) -&gt; <span class="keyword">set</span> <span class="keyword">means</span>
+    x <span class="keyword">in</span> it <span class="keyword">iff</span> x <span class="keyword">is</span> ContinuousFunc <span class="keyword">of</span> D,E;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO,
+      f,g <span class="keyword">be</span> ContinuousFunc <span class="keyword">of</span> D,E;
+
+  <span class="keyword">pred</span> f piecewise_le g <span class="keyword">means</span>
+    <span class="keyword">for</span> x <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">holds</span>
+      [f.x, g.x] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> E);
+<span class="keyword">end</span>;
+
+<span class="keyword">theorem</span>
+  <span class="keyword">for</span> D,E <span class="keyword">being</span> CPO <span class="keyword">holds</span>
+    CPO(# ContinuousFuncs(D,E),
+          { [f,g] where f,g <span class="keyword">is</span> ContinuousFunc <span class="keyword">of</span> D,E : f piecewise_le g },
+          {} #) <span class="keyword">is</span> CPO
+<span class="comment">::&gt;           *105</span>
+<span class="keyword">proof</span>
+  <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h4 id="2.6.4"><a class="headnumber" href="#2.6.4">2.6.4</a> The powerset CPO</h4>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> A <span class="keyword">be</span> non empty <span class="keyword">set</span>;
+
+  <span class="keyword">func</span> SubsetRelation(A) -&gt; Relation <span class="keyword">of</span> bool A <span class="keyword">means</span>
+    [x,y] <span class="keyword">in</span> it <span class="keyword">iff</span> x <span class="keyword">is</span> Subset <span class="keyword">of</span> y;
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+  <span class="keyword">uniqueness</span>;
+<span class="comment">::&gt;        *4</span>
+<span class="keyword">end</span>;
+
+<span class="keyword">theorem</span>
+  <span class="keyword">for</span> A <span class="keyword">being</span> non empty <span class="keyword">set</span> <span class="keyword">holds</span>
+    CPO(# bool A, SubsetRelation(A), {} #) <span class="keyword">is</span> CPO
+<span class="comment">::&gt;                                      *105</span>
+<span class="keyword">proof</span>
+  <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <h2 id="3"><a class="headnumber" href="#3">3</a> Graph Models</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> Bn <span class="keyword">be</span> non empty <span class="keyword">set</span>;
+  <span class="keyword">func</span> BnNext(Bn) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span> Bn \/ [: Bn*, Bn :];
+  <span class="keyword">coherence</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> A <span class="keyword">be</span> non empty <span class="keyword">set</span>;
+  <span class="keyword">func</span> Web(A) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span> A;
+  <span class="comment">:: TODO inductive construction</span>
+  <span class="keyword">coherence</span>;
+<span class="keyword">end</span>;
+
+<span class="keyword">theorem</span>
+  <span class="keyword">for</span> A <span class="keyword">being</span> non empty <span class="keyword">set</span> <span class="keyword">holds</span>
+    id Web(A) <span class="keyword">is</span> one-to-one
+<span class="keyword">proof</span>
+  <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>What does this registration actually state?</p>
+<ol>
+<li>For any infinite set $B$, there is some one-to-one function that
+ embeds $B^*\times B$ into $B$.</li>
+<li>There are at least certain infinite sets $B$ for which
+ such an embedding is possible.</li>
+</ol>
+<p>I only need the second statement, and proving it shouldn&#39;t be too
+ much trouble. (It would simply require
+ doing the infinite recursive construction of $B=Web(A)$ for some
+ non-empty set $A$). I don&#39;t even know for sure if the first
+ statement holds.</p>
+<p>If the first is the case, then how to I define the second statement
+ in Mizar? And how do I then define the graph model struct, below,
+ without being able to use the <code>one-to-one</code> adjective?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">let</span> B <span class="keyword">be</span> infinite <span class="keyword">set</span>;
+  <span class="keyword">cluster</span> one-to-one <span class="keyword">for</span> Function <span class="keyword">of</span> [:B*,B:],B;
+  <span class="comment">:: TODO show that such an embedding is possible, by above construction</span>
+  <span class="keyword">existence</span>;
+<span class="comment">::&gt;       *4</span>
+<span class="keyword">end</span>;
+
+<span class="comment">:: Graph models</span>
+<span class="keyword">definition</span>
+  <span class="keyword">struct</span> GraphModel (#
+    carrier -&gt; infinite <span class="keyword">set</span>,
+    c -&gt; one-to-one (Function <span class="keyword">of</span>
+      [:(the carrier)*, the carrier:], the carrier)
+  #);
+<span class="keyword">end</span>;
+
+
+<span class="comment">::&gt;</span>
+<span class="comment">::&gt; 1: It is not true</span>
+<span class="comment">::&gt; 4: This inference is not accepted</span>
+<span class="comment">::&gt; 56: Disagreement of types</span>
+<span class="comment">::&gt; 103: Unknown functor</span>
+<span class="comment">::&gt; 105: Illegal projection</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"], scale: 90 }
+  });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+$(function () {
+  var layout = function () {
+    $(".sidebar").css({ left: - $("body").scrollLeft() });
+  };
+  $(window).resize(layout).scroll(layout);
+  layout();
+});
+</script>
+</body>
+</html>
