@@ -22,12 +22,19 @@ predicates='s/^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/R$1/'
 } > dict/lambda.voc
 
 mizf text/lambda.miz
+miz2abs text/lambda.miz
 
 # docs building
 #cd /opt/node/lib/node_modules/docco
 #cake build
 #cd /home/kelley/studie/proof_assistants/ex
 docco text/lambda.miz --output text --layout proof-assistants
+mv text/lambda.html text/lambda.miz.html
+
+docco text/lambda.abs --output text --layout proof-assistants
+mv text/lambda.html text/lambda.abs.html
+
 docco dict/lambda.voc --output dict --layout proof-assistants
+mv dict/lambda.html dict/lambda.voc.html
 
 #dokko -v */lambda.{miz,voc}

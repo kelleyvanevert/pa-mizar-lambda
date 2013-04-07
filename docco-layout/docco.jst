@@ -9,19 +9,15 @@
 <body>
   <div id="container">
     <div class="sidebar">
-      <!--<select class="files" onchange="window.location = this.options[this.selectedIndex].value;">
-        <option value="../text/lambda.html"
-          <%=(sources[0].slice(-3) == "miz" ? selected="selected" : "")%>>text/lambda.miz</li>
-        <option value="../dict/lambda.html"
-          <%=(sources[0].slice(-3) == "voc" ? selected="selected" : "")%>>dict/lambda.voc</li>
-      </select>
-      -->
       <ul class="files">
+        <li class="abs <%=(sources[0].slice(-3) == "abs" ? "active" : "")%>">
+          <a href="<%=(sources[0].slice(-3) == "abs" ? "#top" : "../text/lambda.abs.html")%>">.abs</a>
+        </li>
         <li class="miz <%=(sources[0].slice(-3) == "miz" ? "active" : "")%>">
-          <a href="<%=(sources[0].slice(-3) == "miz" ? "#top" : "../text/lambda.html")%>">lambda.miz</a>
+          <a href="<%=(sources[0].slice(-3) == "miz" ? "#top" : "../text/lambda.miz.html")%>">.miz</a>
         </li>
         <li class="voc <%=(sources[0].slice(-3) == "voc" ? "active" : "")%>">
-          <a href="<%=(sources[0].slice(-3) == "voc" ? "#top" : "../dict/lambda.html")%>">lambda.voc</a>
+          <a href="<%=(sources[0].slice(-3) == "voc" ? "#top" : "../dict/lambda.voc.html")%>">.voc</a>
         </li>
       </ul>
       <% var printlevel = function (hn) {
