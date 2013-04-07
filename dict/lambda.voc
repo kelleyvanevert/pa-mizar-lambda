@@ -2,12 +2,14 @@
 ::: (This file was automatically created.)
 
 ::: ## Functors
-::: `perl -ne "s/^ *func (?:\([^\)]*\))?([^\(]+).*$/O$1/ && print" text/lambda.miz | sort -u`
+::: `perl -ne "s/^ *func (?:\([^\)]*\))?([^\( ]+).*$/O$1/ && print" text/lambda.miz | sort -u`
 OAbs
 OApp
 OBnNext
 OContinuousFuncs
 OLUB
+OPreAbstractionTerm
+OPreApplicationTerm
 OSubsetRelation
 OSubstituteActiveVar
 OWeb

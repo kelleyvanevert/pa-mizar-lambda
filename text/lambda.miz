@@ -38,7 +38,9 @@ environ
     SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     ORDERS_1, ORDERS_2,
-    RECDEF_1;
+    RECDEF_1,
+    FINSET_1,
+    ENUMSET1;
 
   ::: Definition are for automatically unfolding predicates in the thesis you are proving
   definitions TARSKI,
@@ -62,7 +64,7 @@ environ
   ::: Load theorem en definition labels
   theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
-    XBOOLE_0, SUBSET_1, RELAT_2;
+    XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1;
   
   schemes RECDEF_1;
 
@@ -112,11 +114,10 @@ definition
       (r^<*0*> in dom D implies D.r = 0);
 end;
 
-::: Here, I am having some troubles with Mizar types. I want to follow
-:::  the general MML pattern of first defining an attribute `LambdaTerm-like`,
-:::  and then a mode `LambdaTerm` which is simply a `LambdaTerm-like DecoratedTree
-:::  of NAT`. But then first, I must show that this is a existence cluster, and thus
-:::  I must show that such a decoratedtree actually exists...
+::: Some simple `LambdaTerm-like` things.
+
+::: TODO: some more of these simple trees, for easy usage
+:::  later on, when defining application and abstraction.
 
 registration
   cluster { {} } --> 0 -> LambdaTerm-like;
@@ -155,9 +156,125 @@ registration
   end;
 end;
 
-::: TODO some more of these simple trees, for easy usage
-:::  later on, when defining application and abstraction.
+registration
+  cluster { {}, <*0*> } -> Tree-like;
+  coherence
+  proof
+    set T = { {}, <*0*> };
+    T = elementary_tree 1 by TREES_1:51;
+    then reconsider T as Tree;
+    T is Tree-like;
+    hence { {}, <*0*> } is Tree-like;
+  end;
+end;
 
+registration
+  cluster { {}, <*0*> } --> 0 -> LambdaTerm-like;
+  coherence
+  proof
+    set T = { {}, <*0*> };
+  A6: T is finite;
+    set D = T --> 0;
+  A2: dom D = T by FUNCOP_1:13;
+    hence dom D is finite by A6;
+    reconsider T as Tree;
+    let r be FinSequence of NAT;
+    assume
+  A1: r in dom D;
+    then
+  A3: r = {} or r = <*0*> by A1, A2, TARSKI:def 2;
+    per cases;
+    suppose r = {};
+      then r = <*> {0,1} by FINSEQ_1:def 6;
+      hence r is FinSequence of {0,1};
+      assume r^<*0*> in dom D;
+      thus D.r = 0 by A1, FUNCOP_1:7;
+    end;
+    suppose
+    A5: not r = {};
+      set ZeroOne = {0,1};
+      reconsider ZeroOne as non empty set;
+      set Zero = 0;
+      Zero in {0,1} by TARSKI:def 2;
+      then reconsider Zero as Element of ZeroOne;
+    A4: <*Zero*> is FinSequence of ZeroOne;
+      r = <*0*> by A3, A5
+       .= <*Zero*>;
+      hence r is FinSequence of {0,1} by A4;
+      assume r^<*0*> in dom D;
+      thus D.r = 0 by A1, FUNCOP_1:7;
+    end;
+  end;
+end;
+
+registration
+  cluster { {}, <*0*>, <*1*> } -> Tree-like;
+  coherence
+  proof
+    set T = { {}, <*0*>, <*1*> };
+    T = elementary_tree 2 by TREES_1:53;
+    then reconsider T as Tree;
+    T is Tree-like;
+    hence { {}, <*0*>, <*1*> } is Tree-like;
+  end;
+end;
+
+registration
+  cluster { {}, <*0*>, <*1*> } --> 0 -> LambdaTerm-like;
+  coherence
+  proof
+    set T = { {}, <*0*>, <*1*> };
+  A6: T is finite;
+    set D = T --> 0;
+  A2: dom D = T by FUNCOP_1:13;
+    hence dom D is finite by A6;
+    reconsider T as Tree;
+    let r be FinSequence of NAT;
+    assume
+  A1: r in dom D;
+    then
+  A3: r = {} or r = <*0*> or r = <*1*> by A1, A2, ENUMSET1:def 1;
+    per cases;
+    suppose r = {};
+      then r = <*> {0,1} by FINSEQ_1:def 6;
+      hence r is FinSequence of {0,1};
+      assume r^<*0*> in dom D;
+      thus D.r = 0 by A1, FUNCOP_1:7;
+    end;
+    suppose
+    A5: r = <*0*>;
+      set ZeroOne = {0,1};
+      reconsider ZeroOne as non empty set;
+      set Zero = 0;
+      Zero in {0,1} by TARSKI:def 2;
+      then reconsider Zero as Element of ZeroOne;
+    A4: <*Zero*> is FinSequence of ZeroOne;
+      r = <*0*> by A5
+       .= <*Zero*>;
+      hence r is FinSequence of {0,1} by A4;
+      assume r^<*0*> in dom D;
+      thus D.r = 0 by A1, FUNCOP_1:7;
+    end;
+    suppose not (r = {} or r = <*0*>);
+      then
+    A7: r = <*1*> by A3;
+      set ZeroOne = {0,1};
+      reconsider ZeroOne as non empty set;
+      set One = 1;
+      One in {0,1} by TARSKI:def 2;
+      then reconsider One as Element of ZeroOne;
+    A4: <*One*> is FinSequence of ZeroOne;
+      r = <*1*> by A7
+       .= <*One*>;
+      hence r is FinSequence of {0,1};
+      assume r^<*0*> in dom D;
+      thus D.r = 0 by A1, FUNCOP_1:7;
+    end;
+  end;
+end;
+
+::: And then we can easily define a `LambdaTerm-like` cluster,
+:::  and make a mode `LambdaTerm` out of it.
 registration
   cluster LambdaTerm-like for DecoratedTree of NAT;
   existence
@@ -172,7 +289,44 @@ definition
   mode LambdaTerm is LambdaTerm-like DecoratedTree of NAT;
 end;
 
+definition
+  func PreAbstractionTerm -> LambdaTerm equals
+    { {}, <*0*> } --> 0;
+  coherence
+  proof
+    set T = { {}, <*0*> };
+    reconsider T as Tree;
+    set D = T --> 0;
+    reconsider D as DecoratedTree of NAT;
+    D is LambdaTerm-like;
+    then reconsider D as LambdaTerm;
+    D is LambdaTerm;
+    hence { {}, <*0*> } --> 0 is LambdaTerm;
+  end;
+end;
+
+definition
+  func PreApplicationTerm -> LambdaTerm equals
+    { {}, <*0*>, <*1*> } --> 0;
+  coherence
+  proof
+    set T = { {}, <*0*>, <*1*> };
+    reconsider T as Tree;
+    set D = T --> 0;
+    reconsider D as DecoratedTree of NAT;
+    D is LambdaTerm-like;
+    then reconsider D as LambdaTerm;
+    D is LambdaTerm;
+    hence { {}, <*0*>, <*1*> } --> 0 is LambdaTerm;
+  end;
+end;
+
 reserve M,N,P,Q for LambdaTerm;
+
+::: #### Preservation under operations
+
+::: `LambdaTerm`s are preserved under taking subterms, and composing
+:::  terms. We'll register this knowledge in the type system.
 
 ::: Let Mizar know that `M|r` is also a `LambdaTerm`.
 ::: The definition of `|` that we are using is the definition
@@ -229,41 +383,9 @@ registration
   end;
 end;
 
-::: ### Helper definitions
-::: Some helper definitions for working with lambda terms.
-
-::: #### Variable occurences
-definition
-  let M,r;
-  
-  pred r is_variable_in M means
-    not r^<*0*> in dom M;
-
-  pred r is_abstraction_in M means
-    r^<*0*> in dom M & not r^<*1*> in dom M;
-
-  pred r is_application_in M means
-    r^<*0*> in dom M & r^<*1*> in dom M;
-end;
-
-::: By $r$ being an _active variable_ of some term $M$ (or more precisely,
-:::  a path identifying an active variable), I mean that if $\lambda M$ were
-:::  to be applied to some other term $N$, we would substitute this variable
-:::  by $M$.
-definition
-  let M,r;
-  
-  pred r is_active_variable_in M means
-    r is_variable_in M &
-    M.r = card { p where p is Element of dom M
-                 : p is_a_proper_prefix_of r &
-                   p is_abstraction_in M };
-end;
-
-::: #### Abstraction and application
-::: To build functors for application and abstraction, we need
-:::  to be able to easily compose lambda terms. So first let us
-:::  prove some basic properties of composed trees.
+::: Let Mizar know that `P with-replacement (p,Q)` is also a `LambdaTerm`.
+::: First we prove a slightly more general theorem about the ranges of
+:::  composed `DecoratedTree`s, and add this knowledge to the type system.
 reserve X for set,
         D1,D2 for DecoratedTree,
         p for Element of dom D1;
@@ -340,13 +462,119 @@ A5: D2 is Y-valued;
   hence thesis by RELAT_1:def 19;
 end;
 
-reserve p for Element of dom P;
+registration
+  let P,Q be LambdaTerm,
+      p be Element of dom P;
+
+  cluster P with-replacement (p,Q) -> NAT-valued;
+  coherence
+  proof
+  A1: P is NAT-valued by Def1;
+  A2: Q is NAT-valued by Def1;
+    P with-replacement (p,Q) is (NAT \/ NAT)-valued by A1, A2, Th1;
+    hence P with-replacement (p,Q) is NAT-valued by XBOOLE_0:def 3;
+  end;
+end;
+
+reserve R for DecoratedTree,
+        p for Element of dom P;
+
 theorem Th2:
   P with-replacement (p,Q) is LambdaTerm-like
 proof
-  thus thesis;
-::>         *4
+  set R = P with-replacement (p,Q);
+  thus dom R is finite
+  proof
+  A1: dom P is finite by Def1;
+  A2: dom Q is finite by Def1;
+    dom R = (dom P) with-replacement (p,dom Q) by TREES_2:def 11;
+    hence thesis by A1, A2;
+  end;
+
+  let r;
+  assume
+A3: r in dom R;
+  thus r is FinSequence of {0,1}
+  proof
+    dom R = (dom P) with-replacement (p,dom Q) by TREES_2:def 11;
+    then
+  A4: ((r in dom P & not p is_a_proper_prefix_of r) or
+      (ex q st q in dom Q & r = p^q)) by A3, TREES_1:def 9;
+    per cases;
+    suppose (r in dom P & not p is_a_proper_prefix_of r);
+      hence r is FinSequence of {0,1} by Def1;
+    end;
+    suppose not (r in dom P & not p is_a_proper_prefix_of r);
+      then (ex q st q in dom Q & r = p^q) by A4;
+      then consider q such that
+    A5: q in dom Q & r = p^q;
+      q is FinSequence of {0,1} by A5, Def1;
+      then reconsider q as FinSequence of {0,1};
+      p is FinSequence of {0,1} by Def1;
+      then reconsider p as FinSequence of {0,1};
+      p^q is FinSequence of {0,1};
+      hence thesis by A5;
+    end;
+  end;
+  set r0 = r^<*0*>;
+  assume
+A6: r0 in dom R;
+  thus R.r = 0; :: TODO
+::>          *4
 end;
+
+registration
+  let P,Q be LambdaTerm,
+      p be Element of dom P;
+
+  cluster P with-replacement (p,Q) -> LambdaTerm-like;
+  coherence
+  proof
+    thus thesis by Th2;
+  end;
+end;
+
+definition
+  let P be LambdaTerm,
+      p be Element of dom P,
+      Q be LambdaTerm;
+
+  redefine func P with-replacement (p,Q) -> LambdaTerm;
+  coherence;
+end;
+
+::: ### Helper definitions
+::: Some helper definitions for working with lambda terms.
+
+::: #### Variable occurences
+definition
+  let M,r;
+  
+  pred r is_variable_in M means
+    not r^<*0*> in dom M;
+
+  pred r is_abstraction_in M means
+    r^<*0*> in dom M & not r^<*1*> in dom M;
+
+  pred r is_application_in M means
+    r^<*0*> in dom M & r^<*1*> in dom M;
+end;
+
+::: By $r$ being an _active variable_ of some term $M$ (or more precisely,
+:::  a path identifying an active variable), I mean that if $\lambda M$ were
+:::  to be applied to some other term $N$, we would substitute this variable
+:::  by $M$.
+definition
+  let M,r;
+  
+  pred r is_active_variable_in M means
+    r is_variable_in M &
+    M.r = card { p where p is Element of dom M
+                 : p is_a_proper_prefix_of r &
+                   p is_abstraction_in M };
+end;
+
+::: #### Abstraction and application
 
 ::: Then we can define abstraction and application
 definition
@@ -356,36 +584,13 @@ definition
     it|<*0*> = M & not <*1*> in dom it;
   existence
   proof
-    set T1 = elementary_tree 1;
-    set D1 = T1 --> 0;
-    set r0 = <*0*>;
-  A3: r0 in T1 by TREES_1:28;
-  A4: dom D1 = T1 by FUNCOP_1:13;
-    then
-  A2: r0 in dom D1 by A3;
-    set D = D1 with-replacement (r0, M);
-    D is (NAT \/ NAT)-valued by A2, Th1;
-    then D is NAT-valued by XBOOLE_0:def 3;
-    then reconsider D as DecoratedTree of NAT;
+    set e = <*0*>;
+    dom PreAbstractionTerm = { {}, <*0*> } by FUNCOP_1:13;
+    then <*0*> in dom PreAbstractionTerm by TARSKI:def 2;
+    then reconsider e as Element of dom PreAbstractionTerm;
+    set D = PreAbstractionTerm with-replacement (e, M);
 
-    D is LambdaTerm-like
-    proof
-      set domM = dom M;
-      reconsider domM as finite Tree by A4, Def1;
-      set domD1 = dom D1;
-      reconsider domD1 as finite Tree by FUNCOP_1:13;
-      r0 is Element of domD1 by A2;
-      then
-    A5: domD1 with-replacement (r0, domM) is finite;
-    A9: dom D = domD1 with-replacement (r0, domM) by A2, TREES_2:def 11;
-      hence
-    A6: dom D is finite by A5;
-      
-    end;
-::>   *70
-    then reconsider D as LambdaTerm;
     take D;
-
     thus D|<*0*> = M;
 ::>                *4
     thus not <*1*> in dom D;
@@ -400,8 +605,34 @@ definition
 
   func App(M,N) -> LambdaTerm means
     it|<*0*> = M & it|<*1*> = N;
-  existence;
-::>       *4
+  existence
+  proof
+    set e0 = <*0*>;
+    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
+    then <*0*> in dom PreApplicationTerm by ENUMSET1:def 1;
+    then reconsider e0 as Element of dom PreApplicationTerm;
+    set preD = PreApplicationTerm with-replacement (e0, M);
+    preD is LambdaTerm;
+
+    set e1 = <*1*>;
+  A1: dom preD = (dom PreApplicationTerm) with-replacement (e0, dom M)
+      by TREES_2:def 11;
+    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
+    then
+  A2: <*1*> in dom PreApplicationTerm by ENUMSET1:def 1;
+    not e0 is_a_proper_prefix_of e1;
+::>                               *4
+    then <*1*> in dom preD by A1, A2, TREES_1:def 9;
+    then reconsider e1 as Element of dom preD;
+    set D = preD with-replacement (e1, N);
+    D is LambdaTerm;
+    
+    take D;
+    thus D|<*0*> = M;
+::>                *4
+    thus D|<*1*> = N;
+::>                *4
+  end;
   uniqueness;
 ::>        *4
 end;
@@ -859,6 +1090,5 @@ end;
 ::> 1: It is not true
 ::> 4: This inference is not accepted
 ::> 56: Disagreement of types
-::> 70: Something remains to be proved
 ::> 103: Unknown functor
 ::> 105: Illegal projection
