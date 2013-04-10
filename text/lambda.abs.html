@@ -93,7 +93,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
     NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
     RELAT_2, RELSET_1,
     FUNCT_1, FUNCT_2,
-    FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+    FUNCT_3, FINSEQ_1, FINSEQ_2, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
     TREES_4, TREES_3, TREES_2, TREES_1,
     ORDERS_1, ORDERS_2,
     XXREAL_0, VALUED_1,
@@ -114,7 +114,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
     FUNCT_1, FUNCT_2, FUNCT_3,
     FUNCOP_1,
     RELSET_1,
-    SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+    SQUARE_1, NAT_1, FINSEQ_1, FINSEQ_2, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     ORDERS_1, ORDERS_2,
     RECDEF_1,
@@ -153,7 +153,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             <div class="content"><div class='highlight'><pre>  <span class="keyword">registrations</span> XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
     RELAT_2, RELAT_1,
     FUNCT_1, FUNCT_2,
-    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
+    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, FINSEQ_2, CARD_1, RELSET_1,
     PBOOLE, CARD_3,
     ORDERS_2,
     TREES_4, TREES_3, TREES_2, TREES_1,
@@ -169,7 +169,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, FINSEQ_2, XTUPLE_0, FUNCT_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
     CARD_1, CARD_2, CARD_3, CARD_4;
@@ -201,8 +201,9 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">reserve</span> T,T1,T2 <span class="keyword">for</span> Tree,
         D <span class="keyword">for</span> DecoratedTree,
-        p,q,r <span class="keyword">for</span> FinSequence <span class="keyword">of</span> NAT,
-        x,y,X,Y <span class="keyword">for</span> <span class="keyword">set</span>;</pre></div></div>
+        p,q,q2,r <span class="keyword">for</span> FinSequence <span class="keyword">of</span> NAT,
+        x,y,X,Y <span class="keyword">for</span> <span class="keyword">set</span>,
+        n <span class="keyword">for</span> Element <span class="keyword">of</span> NAT;</pre></div></div>
             
         </li>
         
@@ -440,7 +441,8 @@ First we prove a slightly more general theorem about the ranges of
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
-  <span class="keyword">let</span> M,r;
+  <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+      r <span class="keyword">be</span> Node <span class="keyword">of</span> M;
 
   <span class="keyword">pred</span> r is_variable_in M <span class="keyword">means</span>
 <span class="comment">:: LAMBDA:def 4</span>
@@ -453,6 +455,18 @@ First we prove a slightly more general theorem about the ranges of
   <span class="keyword">pred</span> r is_application_in M <span class="keyword">means</span>
 <span class="comment">:: LAMBDA:def 6</span>
     r^&lt;*0*&gt; <span class="keyword">in</span> dom M &amp; r^&lt;*1*&gt; <span class="keyword">in</span> dom M;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+      r <span class="keyword">be</span> Node <span class="keyword">of</span> M;
+
+  <span class="keyword">func</span> abstr-depth (r,M) -&gt; Element <span class="keyword">of</span> NAT <span class="keyword">equals</span>
+<span class="comment">:: LAMBDA:def 7</span>
+    card { p where p <span class="keyword">is</span> Node <span class="keyword">of</span> M
+           : p is_a_proper_prefix_of r &amp;
+             p is_abstraction_in M };
+<span class="comment">::&gt; *70</span>
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -469,14 +483,13 @@ First we prove a slightly more general theorem about the ranges of
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
-  <span class="keyword">let</span> M,r;
+  <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+      r <span class="keyword">be</span> Node <span class="keyword">of</span> M;
 
   <span class="keyword">pred</span> r is_active_variable_in M <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 7</span>
+<span class="comment">:: LAMBDA:def 8</span>
     r is_variable_in M &amp;
-    M.r = card { p where p <span class="keyword">is</span> Element <span class="keyword">of</span> dom M
-                 : p is_a_proper_prefix_of r &amp;
-                   p is_abstraction_in M };
+    M.r = abstr-depth (r,M);
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -503,7 +516,7 @@ First we prove a slightly more general theorem about the ranges of
   <span class="keyword">let</span> M;
 
   <span class="keyword">func</span> Abs(M) -&gt; LambdaTerm <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 8</span>
+<span class="comment">:: LAMBDA:def 9</span>
     it|&lt;*0*&gt; = M &amp; <span class="keyword">not</span> &lt;*1*&gt; <span class="keyword">in</span> dom it;
 <span class="comment">::&gt;        *4</span>
 <span class="keyword">end</span>;
@@ -512,7 +525,7 @@ First we prove a slightly more general theorem about the ranges of
   <span class="keyword">let</span> M,N;
 
   <span class="keyword">func</span> App(M,N) -&gt; LambdaTerm <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 9</span>
+<span class="comment">:: LAMBDA:def 10</span>
     it|&lt;*0*&gt; = M &amp; it|&lt;*1*&gt; = N;
 <span class="comment">::&gt;        *4</span>
 <span class="keyword">end</span>;
@@ -521,7 +534,7 @@ First we prove a slightly more general theorem about the ranges of
   <span class="keyword">let</span> M,N;
 
   <span class="keyword">func</span> SubstituteActiveVar(M,N) -&gt; LambdaTerm <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 10</span>
+<span class="comment">:: LAMBDA:def 11</span>
     <span class="comment">:: most things are the same,</span>
     (<span class="keyword">for</span> r <span class="keyword">st</span> <span class="keyword">not</span> (<span class="keyword">ex</span> p <span class="keyword">being</span> Element <span class="keyword">of</span> dom N
                       <span class="keyword">st</span> p is_active_variable_in N &amp; p is_a_prefix_of r)
@@ -561,7 +574,7 @@ First we prove a slightly more general theorem about the ranges of
 
   <span class="comment">:: P === (\x.N)M --&gt; N[x:=M] === Q</span>
   <span class="keyword">pred</span> P beta_shallow Q <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 11</span>
+<span class="comment">:: LAMBDA:def 12</span>
     <span class="keyword">ex</span> M,N <span class="keyword">st</span>
       <span class="comment">:: P === (\x.N)M</span>
       P = App(Abs(N),M) &amp;
@@ -590,7 +603,7 @@ First we prove a slightly more general theorem about the ranges of
   <span class="keyword">let</span> M,N;
 
   <span class="keyword">pred</span> M beta N <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 12</span>
+<span class="comment">:: LAMBDA:def 13</span>
     <span class="keyword">ex</span>
       p <span class="keyword">being</span> Element <span class="keyword">of</span> dom M,
       q <span class="keyword">being</span> Element <span class="keyword">of</span> dom N <span class="keyword">st</span>
@@ -615,7 +628,7 @@ First we prove a slightly more general theorem about the ranges of
   <span class="keyword">let</span> M,N;
 
   <span class="keyword">pred</span> M beta* N <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 13</span>
+<span class="comment">:: LAMBDA:def 14</span>
     M = N <span class="keyword">or</span>
     <span class="keyword">ex</span> P <span class="keyword">st</span> M beta P &amp; P beta N;
 <span class="keyword">end</span>;</pre></div></div>
@@ -634,7 +647,7 @@ First we prove a slightly more general theorem about the ranges of
   <span class="keyword">let</span> M,N;
 
   <span class="keyword">pred</span> M beta= N <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 14</span>
+<span class="comment">:: LAMBDA:def 15</span>
     M beta* N <span class="keyword">or</span> N beta* M;
 <span class="keyword">end</span>;</pre></div></div>
             
@@ -716,7 +729,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
       u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
 
   <span class="keyword">attr</span> u <span class="keyword">is</span> X,R-ub <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 15</span>
+<span class="comment">:: LAMBDA:def 16</span>
     <span class="keyword">for</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X <span class="keyword">holds</span> [x,u] <span class="keyword">in</span> R;
 <span class="keyword">end</span>;</pre></div></div>
             
@@ -737,7 +750,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
       u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
 
   <span class="keyword">attr</span> u <span class="keyword">is</span> X,R-lub <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 16</span>
+<span class="comment">:: LAMBDA:def 17</span>
     u <span class="keyword">is</span> X,R-ub &amp;
     <span class="keyword">for</span> u2 <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u2 <span class="keyword">is</span> X,R-ub <span class="keyword">holds</span>
       [u,u2] <span class="keyword">in</span> R;
@@ -772,7 +785,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
       X <span class="keyword">be</span> Subset <span class="keyword">of</span> D;
 
   <span class="keyword">attr</span> X <span class="keyword">is</span> R-directed <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 17</span>
+<span class="comment">:: LAMBDA:def 18</span>
     <span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
       <span class="keyword">ex</span> z <span class="keyword">st</span>
         z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R;
@@ -828,7 +841,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
 
   <span class="keyword">attr</span> R <span class="keyword">is</span> complete <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 18</span>
+<span class="comment">:: LAMBDA:def 19</span>
     <span class="keyword">for</span> X <span class="keyword">being</span> R-directed non empty Subset <span class="keyword">of</span> D <span class="keyword">holds</span>
       <span class="keyword">ex</span> u <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u <span class="keyword">is</span> X,R-lub;
 <span class="keyword">end</span>;</pre></div></div>
@@ -858,7 +871,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
       X <span class="keyword">be</span> R-directed Subset <span class="keyword">of</span> D;
 
   <span class="keyword">func</span> LUB(X) -&gt; Element <span class="keyword">of</span> D <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 19</span>
+<span class="comment">:: LAMBDA:def 20</span>
     it <span class="keyword">is</span> X,R-lub;
 <span class="comment">::&gt;        *4</span>
 <span class="keyword">end</span>;</pre></div></div>
@@ -888,7 +901,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
       b <span class="keyword">be</span> Element <span class="keyword">of</span> D;
 
   <span class="keyword">attr</span> b <span class="keyword">is</span> R-bottom <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 20</span>
+<span class="comment">:: LAMBDA:def 21</span>
     <span class="keyword">for</span> y <span class="keyword">st</span> y <span class="keyword">in</span> D <span class="keyword">holds</span> [b,y] <span class="keyword">in</span> R;
 <span class="keyword">end</span>;
 
@@ -961,7 +974,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
       f <span class="keyword">be</span> Function <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> E);
 
   <span class="keyword">attr</span> f <span class="keyword">is</span> monotone <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 21</span>
+<span class="comment">:: LAMBDA:def 22</span>
     <span class="keyword">for</span> x,y <span class="keyword">st</span> [x,y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> D) <span class="keyword">holds</span>
       [f.x,f.y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> E);
 <span class="keyword">end</span>;</pre></div></div>
@@ -990,7 +1003,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
       f <span class="keyword">be</span> Function <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> E);
 
   <span class="keyword">attr</span> f <span class="keyword">is</span> continuous <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 22</span>
+<span class="comment">:: LAMBDA:def 23</span>
     f <span class="keyword">is</span> monotone &amp;
     <span class="keyword">for</span> X <span class="keyword">being</span> (the BinRel <span class="keyword">of</span> D)-directed
                 Subset <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D)
@@ -1039,7 +1052,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
   <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO;
 
   <span class="keyword">func</span> ContinuousFuncs(D,E) -&gt; <span class="keyword">set</span> <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 23</span>
+<span class="comment">:: LAMBDA:def 24</span>
     x <span class="keyword">in</span> it <span class="keyword">iff</span> x <span class="keyword">is</span> ContinuousFunc <span class="keyword">of</span> D,E;
 <span class="comment">::&gt;        *4</span>
 <span class="keyword">end</span>;
@@ -1049,7 +1062,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
       f,g <span class="keyword">be</span> ContinuousFunc <span class="keyword">of</span> D,E;
 
   <span class="keyword">pred</span> f piecewise_le g <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 24</span>
+<span class="comment">:: LAMBDA:def 25</span>
     <span class="keyword">for</span> x <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">holds</span>
       [f.x, g.x] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> E);
 <span class="keyword">end</span>;
@@ -1083,7 +1096,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
   <span class="keyword">let</span> A <span class="keyword">be</span> non empty <span class="keyword">set</span>;
 
   <span class="keyword">func</span> SubsetRelation(A) -&gt; Relation <span class="keyword">of</span> bool A <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 25</span>
+<span class="comment">:: LAMBDA:def 26</span>
     [x,y] <span class="keyword">in</span> it <span class="keyword">iff</span> x <span class="keyword">is</span> Subset <span class="keyword">of</span> y;
 <span class="comment">::&gt;        *4</span>
 <span class="keyword">end</span>;
@@ -1114,14 +1127,14 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
             <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
   <span class="keyword">let</span> Bn <span class="keyword">be</span> non empty <span class="keyword">set</span>;
   <span class="keyword">func</span> BnNext(Bn) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span>
-<span class="comment">:: LAMBDA:def 26</span>
+<span class="comment">:: LAMBDA:def 27</span>
 Bn \/ [: Bn*, Bn :];
 <span class="keyword">end</span>;
 
 <span class="keyword">definition</span>
   <span class="keyword">let</span> A <span class="keyword">be</span> non empty <span class="keyword">set</span>;
   <span class="keyword">func</span> Web(A) -&gt; <span class="keyword">set</span> <span class="keyword">equals</span>
-<span class="comment">:: LAMBDA:def 27</span>
+<span class="comment">:: LAMBDA:def 28</span>
 A;
 <span class="keyword">end</span>;
 
@@ -1144,7 +1157,7 @@ A;
   <span class="keyword">let</span> B <span class="keyword">be</span> <span class="keyword">set</span>;
 
   <span class="keyword">func</span> (B)^&lt;w -&gt; <span class="keyword">set</span> <span class="keyword">equals</span>
-<span class="comment">:: LAMBDA:def 28</span>
+<span class="comment">:: LAMBDA:def 29</span>
     { X where X <span class="keyword">is</span> Subset <span class="keyword">of</span> B : X <span class="keyword">is</span> finite };
 <span class="keyword">end</span>;
 
@@ -1152,7 +1165,7 @@ A;
   <span class="keyword">let</span> B <span class="keyword">be</span> <span class="keyword">set</span>;
 
   <span class="keyword">redefine</span> <span class="keyword">func</span> (B)^&lt;w -&gt; <span class="keyword">set</span> <span class="keyword">means</span>
-<span class="comment">:: LAMBDA:def 29</span>
+<span class="comment">:: LAMBDA:def 30</span>
     X <span class="keyword">in</span> it <span class="keyword">iff</span> X c= B &amp; X <span class="keyword">is</span> finite;
 <span class="keyword">end</span>;</pre></div></div>
             
@@ -1205,6 +1218,7 @@ A;
 <span class="comment">::&gt; 1: It is not true</span>
 <span class="comment">::&gt; 4: This inference is not accepted</span>
 <span class="comment">::&gt; 56: Disagreement of types</span>
+<span class="comment">::&gt; 70: Something remains to be proved</span>
 <span class="comment">::&gt; 103: Unknown functor</span>
 <span class="comment">::&gt; 105: Illegal projection</span></pre></div></div>
             

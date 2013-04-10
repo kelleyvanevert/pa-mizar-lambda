@@ -23,7 +23,7 @@ environ
     NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
     RELAT_2, RELSET_1,
     FUNCT_1, FUNCT_2,
-    FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+    FUNCT_3, FINSEQ_1, FINSEQ_2, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
     TREES_4, TREES_3, TREES_2, TREES_1,
     ORDERS_1, ORDERS_2,
     XXREAL_0, VALUED_1,
@@ -35,7 +35,7 @@ environ
     FUNCT_1, FUNCT_2, FUNCT_3,
     FUNCOP_1,
     RELSET_1,
-    SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+    SQUARE_1, NAT_1, FINSEQ_1, FINSEQ_2, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     ORDERS_1, ORDERS_2,
     RECDEF_1,
@@ -56,14 +56,14 @@ environ
   registrations XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
     RELAT_2, RELAT_1,
     FUNCT_1, FUNCT_2,
-    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
+    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, FINSEQ_2, CARD_1, RELSET_1,
     PBOOLE, CARD_3,
     ORDERS_2,
     TREES_4, TREES_3, TREES_2, TREES_1,
     FINSET_1;
 
   ::: Load theorem en definition labels
-  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
+  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, FINSEQ_2, XTUPLE_0, FUNCT_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
     CARD_1, CARD_2, CARD_3, CARD_4;
@@ -78,8 +78,9 @@ begin
 
 reserve T,T1,T2 for Tree,
         D for DecoratedTree,
-        p,q,r for FinSequence of NAT,
-        x,y,X,Y for set;
+        p,q,q2,r for FinSequence of NAT,
+        x,y,X,Y for set,
+        n for Element of NAT;
 
 ::: ### Lambda terms
 
@@ -235,7 +236,8 @@ end;
 
 ::: #### Variable occurences
 definition
-  let M,r;
+  let M be LambdaTerm,
+      r be Node of M;
 
   pred r is_variable_in M means
 :: LAMBDA:def 4
@@ -250,19 +252,30 @@ definition
     r^<*0*> in dom M & r^<*1*> in dom M;
 end;
 
+definition
+  let M be LambdaTerm,
+      r be Node of M;
+
+  func abstr-depth (r,M) -> Element of NAT equals
+:: LAMBDA:def 7
+    card { p where p is Node of M
+           : p is_a_proper_prefix_of r &
+             p is_abstraction_in M };
+::> *70
+end;
+
 ::: By $r$ being an _active variable_ of some term $M$ (or more precisely,
 :::  a path identifying an active variable), I mean that if $\lambda M$ were
 :::  to be applied to some other term $N$, we would substitute this variable
 :::  by $M$.
 definition
-  let M,r;
+  let M be LambdaTerm,
+      r be Node of M;
 
   pred r is_active_variable_in M means
-:: LAMBDA:def 7
+:: LAMBDA:def 8
     r is_variable_in M &
-    M.r = card { p where p is Element of dom M
-                 : p is_a_proper_prefix_of r &
-                   p is_abstraction_in M };
+    M.r = abstr-depth (r,M);
 end;
 
 ::: #### Abstraction and application
@@ -272,7 +285,7 @@ definition
   let M;
 
   func Abs(M) -> LambdaTerm means
-:: LAMBDA:def 8
+:: LAMBDA:def 9
     it|<*0*> = M & not <*1*> in dom it;
 ::>        *4
 end;
@@ -281,7 +294,7 @@ definition
   let M,N;
 
   func App(M,N) -> LambdaTerm means
-:: LAMBDA:def 9
+:: LAMBDA:def 10
     it|<*0*> = M & it|<*1*> = N;
 ::>        *4
 end;
@@ -290,7 +303,7 @@ definition
   let M,N;
 
   func SubstituteActiveVar(M,N) -> LambdaTerm means
-:: LAMBDA:def 10
+:: LAMBDA:def 11
     :: most things are the same,
     (for r st not (ex p being Element of dom N
                       st p is_active_variable_in N & p is_a_prefix_of r)
@@ -314,7 +327,7 @@ definition
 
   :: P === (\x.N)M --> N[x:=M] === Q
   pred P beta_shallow Q means
-:: LAMBDA:def 11
+:: LAMBDA:def 12
     ex M,N st
       :: P === (\x.N)M
       P = App(Abs(N),M) &
@@ -334,7 +347,7 @@ definition
   let M,N;
 
   pred M beta N means
-:: LAMBDA:def 12
+:: LAMBDA:def 13
     ex
       p being Element of dom M,
       q being Element of dom N st
@@ -350,7 +363,7 @@ definition
   let M,N;
 
   pred M beta* N means
-:: LAMBDA:def 13
+:: LAMBDA:def 14
     M = N or
     ex P st M beta P & P beta N;
 end;
@@ -360,7 +373,7 @@ definition
   let M,N;
 
   pred M beta= N means
-:: LAMBDA:def 14
+:: LAMBDA:def 15
     M beta* N or N beta* M;
 end;
 
@@ -401,7 +414,7 @@ definition
       u be Element of D;
 
   attr u is X,R-ub means
-:: LAMBDA:def 15
+:: LAMBDA:def 16
     for x st x in X holds [x,u] in R;
 end;
 
@@ -413,7 +426,7 @@ definition
       u be Element of D;
 
   attr u is X,R-lub means
-:: LAMBDA:def 16
+:: LAMBDA:def 17
     u is X,R-ub &
     for u2 being Element of D st u2 is X,R-ub holds
       [u,u2] in R;
@@ -431,7 +444,7 @@ definition
       X be Subset of D;
 
   attr X is R-directed means
-:: LAMBDA:def 17
+:: LAMBDA:def 18
     for x,y st x in X & y in X holds
       ex z st
         z in X & [x,z] in R & [y,z] in R;
@@ -461,7 +474,7 @@ definition
       R be PartialOrder of D;
 
   attr R is complete means
-:: LAMBDA:def 18
+:: LAMBDA:def 19
     for X being R-directed non empty Subset of D holds
       ex u being Element of D st u is X,R-lub;
 end;
@@ -483,7 +496,7 @@ definition
       X be R-directed Subset of D;
 
   func LUB(X) -> Element of D means
-:: LAMBDA:def 19
+:: LAMBDA:def 20
     it is X,R-lub;
 ::>        *4
 end;
@@ -495,7 +508,7 @@ definition
       b be Element of D;
 
   attr b is R-bottom means
-:: LAMBDA:def 20
+:: LAMBDA:def 21
     for y st y in D holds [b,y] in R;
 end;
 
@@ -523,7 +536,7 @@ definition
       f be Function of (the carrier of D),(the carrier of E);
 
   attr f is monotone means
-:: LAMBDA:def 21
+:: LAMBDA:def 22
     for x,y st [x,y] in (the BinRel of D) holds
       [f.x,f.y] in (the BinRel of E);
 end;
@@ -534,7 +547,7 @@ definition
       f be Function of (the carrier of D),(the carrier of E);
 
   attr f is continuous means
-:: LAMBDA:def 22
+:: LAMBDA:def 23
     f is monotone &
     for X being (the BinRel of D)-directed
                 Subset of (the carrier of D)
@@ -565,7 +578,7 @@ definition
   let D,E be CPO;
 
   func ContinuousFuncs(D,E) -> set means
-:: LAMBDA:def 23
+:: LAMBDA:def 24
     x in it iff x is ContinuousFunc of D,E;
 ::>        *4
 end;
@@ -575,7 +588,7 @@ definition
       f,g be ContinuousFunc of D,E;
 
   pred f piecewise_le g means
-:: LAMBDA:def 24
+:: LAMBDA:def 25
     for x being Element of D holds
       [f.x, g.x] in (the BinRel of E);
 end;
@@ -591,7 +604,7 @@ definition
   let A be non empty set;
 
   func SubsetRelation(A) -> Relation of bool A means
-:: LAMBDA:def 25
+:: LAMBDA:def 26
     [x,y] in it iff x is Subset of y;
 ::>        *4
 end;
@@ -607,14 +620,14 @@ theorem :: LAMBDA:4
 definition
   let Bn be non empty set;
   func BnNext(Bn) -> set equals
-:: LAMBDA:def 26
+:: LAMBDA:def 27
 Bn \/ [: Bn*, Bn :];
 end;
 
 definition
   let A be non empty set;
   func Web(A) -> set equals
-:: LAMBDA:def 27
+:: LAMBDA:def 28
 A;
 end;
 
@@ -628,7 +641,7 @@ definition
   let B be set;
 
   func (B)^<w -> set equals
-:: LAMBDA:def 28
+:: LAMBDA:def 29
     { X where X is Subset of B : X is finite };
 end;
 
@@ -636,7 +649,7 @@ definition
   let B be set;
 
   redefine func (B)^<w -> set means
-:: LAMBDA:def 29
+:: LAMBDA:def 30
     X in it iff X c= B & X is finite;
 end;
 
@@ -671,5 +684,6 @@ end;
 ::> 1: It is not true
 ::> 4: This inference is not accepted
 ::> 56: Disagreement of types
+::> 70: Something remains to be proved
 ::> 103: Unknown functor
 ::> 105: Illegal projection

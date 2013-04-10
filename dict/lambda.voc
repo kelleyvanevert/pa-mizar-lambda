@@ -4,6 +4,7 @@
 ::: ## Functors
 ::: `perl -ne "s/^ *func (?:\([^\)]*\))?([^\( ]+).*$/O$1/ && print" text/lambda.miz | sort -u`
 OAbs
+Oabstr-depth
 OApp
 OBnNext
 OContinuousFuncs

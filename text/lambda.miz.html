@@ -93,7 +93,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
     NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
     RELAT_2, RELSET_1,
     FUNCT_1, FUNCT_2,
-    FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+    FUNCT_3, FINSEQ_1, FINSEQ_2, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
     TREES_4, TREES_3, TREES_2, TREES_1,
     ORDERS_1, ORDERS_2,
     XXREAL_0, VALUED_1,
@@ -114,7 +114,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
     FUNCT_1, FUNCT_2, FUNCT_3,
     FUNCOP_1,
     RELSET_1,
-    SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+    SQUARE_1, NAT_1, FINSEQ_1, FINSEQ_2, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     ORDERS_1, ORDERS_2,
     RECDEF_1,
@@ -153,7 +153,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             <div class="content"><div class='highlight'><pre>  <span class="keyword">registrations</span> XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
     RELAT_2, RELAT_1,
     FUNCT_1, FUNCT_2,
-    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
+    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, FINSEQ_2, CARD_1, RELSET_1,
     PBOOLE, CARD_3,
     ORDERS_2,
     TREES_4, TREES_3, TREES_2, TREES_1,
@@ -169,7 +169,7 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, FINSEQ_2, XTUPLE_0, FUNCT_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
     CARD_1, CARD_2, CARD_3, CARD_4;
@@ -201,8 +201,9 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">reserve</span> T,T1,T2 <span class="keyword">for</span> Tree,
         D <span class="keyword">for</span> DecoratedTree,
-        p,q,r <span class="keyword">for</span> FinSequence <span class="keyword">of</span> NAT,
-        x,y,X,Y <span class="keyword">for</span> <span class="keyword">set</span>;</pre></div></div>
+        p,q,q2,r <span class="keyword">for</span> FinSequence <span class="keyword">of</span> NAT,
+        x,y,X,Y <span class="keyword">for</span> <span class="keyword">set</span>,
+        n <span class="keyword">for</span> Element <span class="keyword">of</span> NAT;</pre></div></div>
             
         </li>
         
@@ -700,8 +701,92 @@ A3: r <span class="keyword">in</span> dom R;
   <span class="keyword">set</span> r0 = r^&lt;*0*&gt;;
   <span class="keyword">assume</span>
 A6: r0 <span class="keyword">in</span> dom R;
-  <span class="keyword">thus</span> R.r = 0; <span class="comment">:: TODO</span>
-<span class="comment">::&gt;          *4</span>
+  <span class="keyword">then</span> r0 <span class="keyword">in</span> (dom P) with-replacement (p,dom Q) <span class="keyword">by</span> TREES_2:def 11;
+  <span class="keyword">then</span>
+A7: ((r0 <span class="keyword">in</span> (dom P) &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r0) <span class="keyword">or</span>
+     (<span class="keyword">ex</span> q <span class="keyword">st</span> q <span class="keyword">in</span> (dom Q) &amp; r0 = p^q)) <span class="keyword">by</span> TREES_1:def 9;
+  <span class="keyword">per</span> <span class="keyword">cases</span>;
+  <span class="keyword">suppose</span>
+  A13: (r0 <span class="keyword">in</span> (dom P) &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r0);
+    <span class="keyword">then</span>
+  A8: r0 <span class="keyword">in</span> dom P;
+    <span class="keyword">then</span>
+  A12: r <span class="keyword">in</span> dom P <span class="keyword">by</span> TREES_1:21;
+    <span class="keyword">then</span>
+  A9: P.r = 0 <span class="keyword">by</span> A8, Def1;
+  A10: <span class="keyword">not</span> p is_a_prefix_of r
+    <span class="keyword">proof</span>
+      <span class="keyword">assume</span> p is_a_prefix_of r;
+      <span class="keyword">then</span> p is_a_proper_prefix_of r0 <span class="keyword">by</span> TREES_1:8;
+      <span class="keyword">hence</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> A13;
+    <span class="keyword">end</span>;
+    R.r = P.r <span class="keyword">by</span> A10, A12, TREES_3:45;
+    <span class="keyword">hence</span> R.r = 0 <span class="keyword">by</span> A9;
+  <span class="keyword">end</span>;
+  <span class="keyword">suppose</span> <span class="keyword">not</span> (r0 <span class="keyword">in</span> (dom P) &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r0);
+    <span class="keyword">then</span> (<span class="keyword">ex</span> q <span class="keyword">st</span> q <span class="keyword">in</span> (dom Q) &amp; r0 = p^q) <span class="keyword">by</span> A7;
+    <span class="keyword">then</span> <span class="keyword">consider</span> q <span class="keyword">such</span> <span class="keyword">that</span>
+  A14: q <span class="keyword">in</span> (dom Q) &amp; r0 = p^q;
+    <span class="keyword">per</span> <span class="keyword">cases</span>;
+    <span class="keyword">suppose</span> <span class="keyword">ex</span> q2 <span class="keyword">being</span> FinSequence, n <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">st</span> q = q2^&lt;*n*&gt;;
+      <span class="keyword">then</span> <span class="keyword">consider</span> q2 <span class="keyword">being</span> FinSequence, n <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">such</span> <span class="keyword">that</span>
+    A15: q = q2^&lt;*n*&gt;;
+      q2 <span class="keyword">is</span> FinSequence <span class="keyword">of</span> NAT <span class="keyword">by</span> A15, FINSEQ_1:36;
+      <span class="keyword">then</span> <span class="keyword">reconsider</span> q2 <span class="keyword">as</span> FinSequence <span class="keyword">of</span> NAT;
+      r^&lt;*0*&gt; = r0
+        .= p^q <span class="keyword">by</span> A14
+        .= p^(q2^&lt;*n*&gt;) <span class="keyword">by</span> A15
+        .= (p^q2)^&lt;*n*&gt; <span class="keyword">by</span> FINSEQ_1:32;
+      <span class="keyword">then</span>
+    A19: r = (p^q2) &amp; &lt;*0*&gt; = &lt;*n*&gt; <span class="keyword">by</span> FINSEQ_2:17;
+      <span class="keyword">then</span>
+    A16: 0 = n <span class="keyword">by</span> FINSEQ_1:76;
+      q <span class="keyword">in</span> dom Q <span class="keyword">by</span> A14;
+      <span class="keyword">then</span>
+    A17: q2^&lt;*0*&gt; <span class="keyword">in</span> dom Q <span class="keyword">by</span> A14, A15, A16;
+      <span class="keyword">then</span>
+    A18: q2 <span class="keyword">in</span> dom Q <span class="keyword">by</span> TREES_1:21;
+      <span class="keyword">then</span> Q.q2 = 0 <span class="keyword">by</span> Def1, A17;
+      <span class="keyword">then</span> R.(p^q2) = 0 <span class="keyword">by</span> A18, TREES_3:46;
+      <span class="keyword">hence</span> R.r = 0 <span class="keyword">by</span> A19;
+    <span class="keyword">end</span>;
+    <span class="keyword">suppose</span>
+    A20: <span class="keyword">not</span> <span class="keyword">ex</span> q2 <span class="keyword">being</span> FinSequence, n <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">st</span> q = q2^&lt;*n*&gt;;
+    A21: q = {}
+      <span class="keyword">proof</span>
+        <span class="keyword">assume</span> q &lt;&gt; {};
+        <span class="keyword">then</span> <span class="keyword">ex</span> q2 <span class="keyword">being</span> FinSequence,
+          n <span class="keyword">being</span> <span class="keyword">set</span> <span class="keyword">st</span> q = q2^&lt;*n*&gt; <span class="keyword">by</span> FINSEQ_1:46;
+        <span class="keyword">hence</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> A20;
+      <span class="keyword">end</span>;
+    A30: r0 = p <span class="keyword">by</span> A14, A21, FINSEQ_1:34;
+      <span class="keyword">then</span>
+    A22: r0 <span class="keyword">in</span> dom P;
+      <span class="keyword">then</span>
+    A23: r <span class="keyword">in</span> dom P <span class="keyword">by</span> A22, TREES_1:21;
+      <span class="keyword">then</span>
+    A24: P.r = 0 <span class="keyword">by</span> A22, Def1;
+    A27: <span class="keyword">not</span> p is_a_prefix_of r
+      <span class="keyword">proof</span>
+        <span class="keyword">assume</span> p is_a_prefix_of r;
+        <span class="keyword">then</span>
+      A28: p c= r;
+        r0 = p <span class="keyword">by</span> A30;
+        <span class="keyword">then</span> r0 c= p <span class="keyword">by</span> XBOOLE_0:def 10;
+        <span class="keyword">then</span> r0 is_a_prefix_of p;
+        <span class="keyword">then</span> r is_a_proper_prefix_of p <span class="keyword">by</span> TREES_1:7;
+        <span class="keyword">then</span>
+      A32: r c&lt; p;
+        <span class="keyword">then</span> r c= p <span class="keyword">by</span> XBOOLE_0:def 8;
+        <span class="keyword">then</span>
+      A31: r = p <span class="keyword">by</span> A28, XBOOLE_0:def 10;
+        r &lt;&gt; p <span class="keyword">by</span> A32, XBOOLE_0:def 8;
+        <span class="keyword">hence</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> A31;
+      <span class="keyword">end</span>;
+      R.r = P.r <span class="keyword">by</span> A23, A27, TREES_3:45;
+      <span class="keyword">hence</span> R.r = 0 <span class="keyword">by</span> A24;
+    <span class="keyword">end</span>;
+  <span class="keyword">end</span>;
 <span class="keyword">end</span>;
 
 <span class="keyword">registration</span>
@@ -755,7 +840,8 @@ A6: r0 <span class="keyword">in</span> dom R;
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
-  <span class="keyword">let</span> M,r;
+  <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+      r <span class="keyword">be</span> Node <span class="keyword">of</span> M;
   
   <span class="keyword">pred</span> r is_variable_in M <span class="keyword">means</span>
     <span class="keyword">not</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom M;
@@ -765,6 +851,23 @@ A6: r0 <span class="keyword">in</span> dom R;
 
   <span class="keyword">pred</span> r is_application_in M <span class="keyword">means</span>
     r^&lt;*0*&gt; <span class="keyword">in</span> dom M &amp; r^&lt;*1*&gt; <span class="keyword">in</span> dom M;
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+      r <span class="keyword">be</span> Node <span class="keyword">of</span> M;
+
+  <span class="keyword">func</span> abstr-depth (r,M) -&gt; Element <span class="keyword">of</span> NAT <span class="keyword">equals</span>
+    card { p where p <span class="keyword">is</span> Node <span class="keyword">of</span> M
+           : p is_a_proper_prefix_of r &amp;
+             p is_abstraction_in M };
+  <span class="keyword">coherence</span>
+  <span class="keyword">proof</span>
+    <span class="keyword">set</span> abstractions = { p where p <span class="keyword">is</span> Node <span class="keyword">of</span> M
+                         : p is_a_proper_prefix_of r &amp;
+                           p is_abstraction_in M };
+  <span class="keyword">end</span>;
+<span class="comment">::&gt; *70</span>
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -781,13 +884,12 @@ A6: r0 <span class="keyword">in</span> dom R;
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
-  <span class="keyword">let</span> M,r;
+  <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+      r <span class="keyword">be</span> Node <span class="keyword">of</span> M;
   
   <span class="keyword">pred</span> r is_active_variable_in M <span class="keyword">means</span>
     r is_variable_in M &amp;
-    M.r = card { p where p <span class="keyword">is</span> Element <span class="keyword">of</span> dom M
-                 : p is_a_proper_prefix_of r &amp;
-                   p is_abstraction_in M };
+    M.r = abstr-depth (r,M);
 <span class="keyword">end</span>;</pre></div></div>
             
         </li>
@@ -1613,7 +1715,9 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
   <span class="keyword">existence</span>
   <span class="keyword">proof</span>
     <span class="keyword">not</span> B <span class="keyword">is</span> finite;
-    <span class="keyword">then</span> [:B,B:],B are_equipotent <span class="keyword">by</span> CARD_4:18;
+    <span class="keyword">then</span> [:B,B:],B are_equipotent <span class="keyword">by</span> CARD_4:18; <span class="comment">:: &lt;-- though this</span>
+        <span class="comment">:: won't get me there directly :(</span>
+    <span class="comment">:: I'll probably "build up" (first finite sets of size 1, then 2, ...)</span>
     <span class="keyword">thus</span> <span class="keyword">ex</span> f <span class="keyword">being</span> Function <span class="keyword">of</span> [:B^&lt;w,B:],B <span class="keyword">st</span> f <span class="keyword">is</span> one-to-one;
 <span class="comment">::&gt;                                                           *4</span>
   <span class="keyword">end</span>;
@@ -1654,6 +1758,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
 <span class="comment">::&gt; 1: It is not true</span>
 <span class="comment">::&gt; 4: This inference is not accepted</span>
 <span class="comment">::&gt; 56: Disagreement of types</span>
+<span class="comment">::&gt; 70: Something remains to be proved</span>
 <span class="comment">::&gt; 103: Unknown functor</span>
 <span class="comment">::&gt; 105: Illegal projection</span></pre></div></div>
             

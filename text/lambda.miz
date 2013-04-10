@@ -23,7 +23,7 @@ environ
     NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
     RELAT_2, RELSET_1,
     FUNCT_1, FUNCT_2,
-    FUNCT_3, FINSEQ_1, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+    FUNCT_3, FINSEQ_1, FINSEQ_2, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
     TREES_4, TREES_3, TREES_2, TREES_1,
     ORDERS_1, ORDERS_2,
     XXREAL_0, VALUED_1,
@@ -35,7 +35,7 @@ environ
     FUNCT_1, FUNCT_2, FUNCT_3,
     FUNCOP_1,
     RELSET_1,
-    SQUARE_1, NAT_1, FINSEQ_1, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+    SQUARE_1, NAT_1, FINSEQ_1, FINSEQ_2, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     ORDERS_1, ORDERS_2,
     RECDEF_1,
@@ -56,14 +56,14 @@ environ
   registrations XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
     RELAT_2, RELAT_1,
     FUNCT_1, FUNCT_2,
-    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, CARD_1, RELSET_1,
+    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, FINSEQ_2, CARD_1, RELSET_1,
     PBOOLE, CARD_3,
     ORDERS_2,
     TREES_4, TREES_3, TREES_2, TREES_1,
     FINSET_1;
 
   ::: Load theorem en definition labels
-  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
+  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, FINSEQ_2, XTUPLE_0, FUNCT_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
     CARD_1, CARD_2, CARD_3, CARD_4;
@@ -78,8 +78,9 @@ begin
 
 reserve T,T1,T2 for Tree,
         D for DecoratedTree,
-        p,q,r for FinSequence of NAT,
-        x,y,X,Y for set;
+        p,q,q2,r for FinSequence of NAT,
+        x,y,X,Y for set,
+        n for Element of NAT;
 
 ::: ### Lambda terms
 
@@ -521,8 +522,92 @@ A3: r in dom R;
   set r0 = r^<*0*>;
   assume
 A6: r0 in dom R;
-  thus R.r = 0; :: TODO
-::>          *4
+  then r0 in (dom P) with-replacement (p,dom Q) by TREES_2:def 11;
+  then
+A7: ((r0 in (dom P) & not p is_a_proper_prefix_of r0) or
+     (ex q st q in (dom Q) & r0 = p^q)) by TREES_1:def 9;
+  per cases;
+  suppose
+  A13: (r0 in (dom P) & not p is_a_proper_prefix_of r0);
+    then
+  A8: r0 in dom P;
+    then
+  A12: r in dom P by TREES_1:21;
+    then
+  A9: P.r = 0 by A8, Def1;
+  A10: not p is_a_prefix_of r
+    proof
+      assume p is_a_prefix_of r;
+      then p is_a_proper_prefix_of r0 by TREES_1:8;
+      hence contradiction by A13;
+    end;
+    R.r = P.r by A10, A12, TREES_3:45;
+    hence R.r = 0 by A9;
+  end;
+  suppose not (r0 in (dom P) & not p is_a_proper_prefix_of r0);
+    then (ex q st q in (dom Q) & r0 = p^q) by A7;
+    then consider q such that
+  A14: q in (dom Q) & r0 = p^q;
+    per cases;
+    suppose ex q2 being FinSequence, n being set st q = q2^<*n*>;
+      then consider q2 being FinSequence, n being set such that
+    A15: q = q2^<*n*>;
+      q2 is FinSequence of NAT by A15, FINSEQ_1:36;
+      then reconsider q2 as FinSequence of NAT;
+      r^<*0*> = r0
+        .= p^q by A14
+        .= p^(q2^<*n*>) by A15
+        .= (p^q2)^<*n*> by FINSEQ_1:32;
+      then
+    A19: r = (p^q2) & <*0*> = <*n*> by FINSEQ_2:17;
+      then
+    A16: 0 = n by FINSEQ_1:76;
+      q in dom Q by A14;
+      then
+    A17: q2^<*0*> in dom Q by A14, A15, A16;
+      then
+    A18: q2 in dom Q by TREES_1:21;
+      then Q.q2 = 0 by Def1, A17;
+      then R.(p^q2) = 0 by A18, TREES_3:46;
+      hence R.r = 0 by A19;
+    end;
+    suppose
+    A20: not ex q2 being FinSequence, n being set st q = q2^<*n*>;
+    A21: q = {}
+      proof
+        assume q <> {};
+        then ex q2 being FinSequence,
+          n being set st q = q2^<*n*> by FINSEQ_1:46;
+        hence contradiction by A20;
+      end;
+    A30: r0 = p by A14, A21, FINSEQ_1:34;
+      then
+    A22: r0 in dom P;
+      then
+    A23: r in dom P by A22, TREES_1:21;
+      then
+    A24: P.r = 0 by A22, Def1;
+    A27: not p is_a_prefix_of r
+      proof
+        assume p is_a_prefix_of r;
+        then
+      A28: p c= r;
+        r0 = p by A30;
+        then r0 c= p by XBOOLE_0:def 10;
+        then r0 is_a_prefix_of p;
+        then r is_a_proper_prefix_of p by TREES_1:7;
+        then
+      A32: r c< p;
+        then r c= p by XBOOLE_0:def 8;
+        then
+      A31: r = p by A28, XBOOLE_0:def 10;
+        r <> p by A32, XBOOLE_0:def 8;
+        hence contradiction by A31;
+      end;
+      R.r = P.r by A23, A27, TREES_3:45;
+      hence R.r = 0 by A24;
+    end;
+  end;
 end;
 
 registration
@@ -550,7 +635,8 @@ end;
 
 ::: #### Variable occurences
 definition
-  let M,r;
+  let M be LambdaTerm,
+      r be Node of M;
   
   pred r is_variable_in M means
     not r^<*0*> in dom M;
@@ -562,18 +648,34 @@ definition
     r^<*0*> in dom M & r^<*1*> in dom M;
 end;
 
+definition
+  let M be LambdaTerm,
+      r be Node of M;
+
+  func abstr-depth (r,M) -> Element of NAT equals
+    card { p where p is Node of M
+           : p is_a_proper_prefix_of r &
+             p is_abstraction_in M };
+  coherence
+  proof
+    set abstractions = { p where p is Node of M
+                         : p is_a_proper_prefix_of r &
+                           p is_abstraction_in M };
+  end;
+::> *70
+end;
+
 ::: By $r$ being an _active variable_ of some term $M$ (or more precisely,
 :::  a path identifying an active variable), I mean that if $\lambda M$ were
 :::  to be applied to some other term $N$, we would substitute this variable
 :::  by $M$.
 definition
-  let M,r;
+  let M be LambdaTerm,
+      r be Node of M;
   
   pred r is_active_variable_in M means
     r is_variable_in M &
-    M.r = card { p where p is Element of dom M
-                 : p is_a_proper_prefix_of r &
-                   p is_abstraction_in M };
+    M.r = abstr-depth (r,M);
 end;
 
 ::: #### Abstraction and application
@@ -1122,5 +1224,6 @@ end;
 ::> 1: It is not true
 ::> 4: This inference is not accepted
 ::> 56: Disagreement of types
+::> 70: Something remains to be proved
 ::> 103: Unknown functor
 ::> 105: Illegal projection
