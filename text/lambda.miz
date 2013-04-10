@@ -40,7 +40,8 @@ environ
     ORDERS_1, ORDERS_2,
     RECDEF_1,
     FINSET_1,
-    ENUMSET1;
+    ENUMSET1,
+    WELLORD2;
 
   ::: Definition are for automatically unfolding predicates in the thesis you are proving
   definitions TARSKI,
@@ -64,7 +65,8 @@ environ
   ::: Load theorem en definition labels
   theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
-    XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1;
+    XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
+    CARD_1, CARD_2, CARD_3, CARD_4;
   
   schemes RECDEF_1;
 
@@ -1052,28 +1054,58 @@ proof
   thus thesis;
 end;
 
-::: What does this registration actually state?
-:::
-::: 1. For any infinite set $B$, there is some one-to-one function that
-:::     embeds $B^*\\times B$ into $B$.
-::: 2. There are at least certain infinite sets $B$ for which
-:::     such an embedding is possible.
-:::
-::: I only need the second statement, and proving it shouldn't be too
-:::  much trouble. (It would simply require
-:::  doing the infinite recursive construction of $B=Web(A)$ for some
-:::  non-empty set $A$). I don't even know for sure if the first
-:::  statement holds.
-:::
-::: If the first is the case, then how to I define the second statement
-:::  in Mizar? And how do I then define the graph model struct, below,
-:::  without being able to use the `one-to-one` adjective?
+::: Doesn't there already exist a notation for the set of all
+:::  finite subsets of a set in Mizar ?!
+definition
+  let B be set;
+
+  func (B)^<w -> set equals
+    { X where X is Subset of B : X is finite };
+  coherence;
+end;
+
+definition
+  let B be set;
+
+  redefine func (B)^<w -> set means
+    X in it iff X c= B & X is finite;
+  compatibility
+  proof
+    thus thesis;
+::>           *4,4,4
+  end;
+  coherence;
+end;
+
+::: This is true if one assumes the axiom of choice, and
+:::  then still it might be a bit complicated to give a proof.
+::: (First show that `B` can be well-ordered, then define a
+:::  well-order on `[:B^<w,B:]`, so that these two well-orders
+:::  become isomorphic..?)
 registration
   let B be infinite set;
-  cluster one-to-one for Function of [:B*,B:],B;
-  :: TODO show that such an embedding is possible, by above construction
-  existence;
-::>       *4
+  cluster one-to-one for Function of [:B^<w,B:],B;
+  existence
+  proof
+    not B is finite;
+    then [:B,B:],B are_equipotent by CARD_4:18; :: <-- though this
+        :: won't get me there directly :(
+    :: I'll probably "build up" (first finite sets of size 1, then 2, ...)
+    thus ex f being Function of [:B^<w,B:],B st f is one-to-one;
+::>                                                           *4
+  end;
+end;
+
+::: Easier, and probably good enough for our purposes, is to prove
+:::  this version, where we only prove it for countable sets.
+registration
+  let B be countable infinite set;
+  cluster one-to-one for Function of [:B^<w,B:],B;
+  existence
+  proof
+    thus ex f being Function of [:B^<w,B:],B st f is one-to-one;
+::>                                                           *4
+  end;
 end;
 
 :: Graph models
@@ -1081,7 +1113,7 @@ definition
   struct GraphModel (#
     carrier -> infinite set,
     c -> one-to-one (Function of
-      [:(the carrier)*, the carrier:], the carrier)
+      [:(the carrier)^<w, the carrier:], the carrier)
   #);
 end;
 

@@ -119,7 +119,8 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
     ORDERS_1, ORDERS_2,
     RECDEF_1,
     FINSET_1,
-    ENUMSET1;</pre></div></div>
+    ENUMSET1,
+    WELLORD2;</pre></div></div>
             
         </li>
         
@@ -170,7 +171,8 @@ But it also helped [175 unknown attribute format] error with [finite set]</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="keyword">theorems</span> FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, XTUPLE_0, FUNCT_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
-    XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1;
+    XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
+    CARD_1, CARD_2, CARD_3, CARD_4;
 
   <span class="keyword">schemes</span> RECDEF_1;
 
@@ -1133,28 +1135,60 @@ A;
         <li>
             <div class="annotation">
               
-              <p>What does this registration actually state?</p>
-<ol>
-<li>For any infinite set $B$, there is some one-to-one function that
- embeds $B^*\times B$ into $B$.</li>
-<li>There are at least certain infinite sets $B$ for which
- such an embedding is possible.</li>
-</ol>
-<p>I only need the second statement, and proving it shouldn&#39;t be too
- much trouble. (It would simply require
- doing the infinite recursive construction of $B=Web(A)$ for some
- non-empty set $A$). I don&#39;t even know for sure if the first
- statement holds.</p>
-<p>If the first is the case, then how to I define the second statement
- in Mizar? And how do I then define the graph model struct, below,
- without being able to use the <code>one-to-one</code> adjective?</p>
+              <p>Doesn&#39;t there already exist a notation for the set of all
+ finite subsets of a set in Mizar ?!</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">definition</span>
+  <span class="keyword">let</span> B <span class="keyword">be</span> <span class="keyword">set</span>;
+
+  <span class="keyword">func</span> (B)^&lt;w -&gt; <span class="keyword">set</span> <span class="keyword">equals</span>
+<span class="comment">:: LAMBDA:def 28</span>
+    { X where X <span class="keyword">is</span> Subset <span class="keyword">of</span> B : X <span class="keyword">is</span> finite };
+<span class="keyword">end</span>;
+
+<span class="keyword">definition</span>
+  <span class="keyword">let</span> B <span class="keyword">be</span> <span class="keyword">set</span>;
+
+  <span class="keyword">redefine</span> <span class="keyword">func</span> (B)^&lt;w -&gt; <span class="keyword">set</span> <span class="keyword">means</span>
+<span class="comment">:: LAMBDA:def 29</span>
+    X <span class="keyword">in</span> it <span class="keyword">iff</span> X c= B &amp; X <span class="keyword">is</span> finite;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>This is true if one assumes the axiom of choice, and
+ then still it might be a bit complicated to give a proof.
+(First show that <code>B</code> can be well-ordered, then define a
+ well-order on <code>[:B^&lt;w,B:]</code>, so that these two well-orders
+ become isomorphic..?)</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
   <span class="keyword">let</span> B <span class="keyword">be</span> infinite <span class="keyword">set</span>;
-  <span class="keyword">cluster</span> one-to-one <span class="keyword">for</span> Function <span class="keyword">of</span> [:B*,B:],B;
-<span class="comment">::&gt;       *4</span>
+  <span class="keyword">cluster</span> one-to-one <span class="keyword">for</span> Function <span class="keyword">of</span> [:B^&lt;w,B:],B;
+<span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              <p>Easier, and probably good enough for our purposes, is to prove
+ this version, where we only prove it for countable sets.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">registration</span>
+  <span class="keyword">let</span> B <span class="keyword">be</span> countable infinite <span class="keyword">set</span>;
+  <span class="keyword">cluster</span> one-to-one <span class="keyword">for</span> Function <span class="keyword">of</span> [:B^&lt;w,B:],B;
 <span class="keyword">end</span>;
 
 <span class="comment">:: Graph models</span>
@@ -1162,7 +1196,7 @@ A;
   <span class="keyword">struct</span> GraphModel (#
     carrier -&gt; infinite <span class="keyword">set</span>,
     c -&gt; one-to-one (Function <span class="keyword">of</span>
-      [:(the carrier)*, the carrier:], the carrier)
+      [:(the carrier)^&lt;w, the carrier:], the carrier)
   #);
 <span class="keyword">end</span>;
 
