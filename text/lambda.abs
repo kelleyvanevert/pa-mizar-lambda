@@ -22,7 +22,7 @@ environ
     ORDERS_2, ORDERS_1,
     FINSEQ_2, PBOOLE, CARD_3, VALUED_1,
     TREES_4, TREES_3, TREES_2, TREES_1;
-  
+
   :: Radix type specifications
   :: But it also helped [175 unknown attribute format] error with [finite set]
   notations FINSET_1,
@@ -75,7 +75,7 @@ environ
     TREES_4, TREES_3, TREES_2, TREES_1,
     XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
     CARD_1, CARD_2, CARD_3, CARD_4;
-  
+
   schemes RECDEF_1;
 
   requirements BOOLE, SUBSET, NUMERALS, ARITHM, REAL;
@@ -116,9 +116,10 @@ reserve T,T1,T2 for Tree,
 
 definition
   let D;
-  
+
   attr D is LambdaTerm-like means
-    :Def1:
+:: LAMBDA:def 1
+
     dom D is finite &
     for r st r in dom D holds
       r is FinSequence of {0,1} &
@@ -132,169 +133,36 @@ end;
 
 registration
   cluster { {} } --> 0 -> LambdaTerm-like;
-  coherence
-  proof
-    set D = { {} } --> 0;
-    dom D = { {} } by FUNCOP_1:13;
-    hence dom D is finite;
-    let r be FinSequence of NAT;
-    assume
-  A1: r in dom D;
-    dom D = { {} } by FUNCOP_1:13;
-    then r = {} by A1, TARSKI:def 1;
-    then r = <*> {0,1} by FINSEQ_1:def 6;
-    hence r is FinSequence of {0,1};
-    assume r^<*0*> in dom D;
-    thus D.r = 0 by A1, FUNCOP_1:7;
-  end;
 end;
 
 registration
   cluster { <*> NAT } -> Tree-like;
-  coherence
-  proof
-    { <*> NAT } = { {} } by FINSEQ_1:def 6;
-    thus { <*> NAT } is Tree-like;
-  end;
 end;
 
 registration
   cluster { <*> NAT } --> 0 -> LambdaTerm-like;
-  coherence
-  proof
-    { <*> NAT } = { {} } by FINSEQ_1:def 6;
-    thus { <*> NAT } --> 0 is LambdaTerm-like;
-  end;
 end;
 
 registration
   cluster { {}, <*0*> } -> Tree-like;
-  coherence
-  proof
-    set T = { {}, <*0*> };
-    T = elementary_tree 1 by TREES_1:51;
-    then reconsider T as Tree;
-    T is Tree-like;
-    hence { {}, <*0*> } is Tree-like;
-  end;
 end;
 
 registration
   cluster { {}, <*0*> } --> 0 -> LambdaTerm-like;
-  coherence
-  proof
-    set T = { {}, <*0*> };
-  A6: T is finite;
-    set D = T --> 0;
-  A2: dom D = T by FUNCOP_1:13;
-    hence dom D is finite by A6;
-    reconsider T as Tree;
-    let r be FinSequence of NAT;
-    assume
-  A1: r in dom D;
-    then
-  A3: r = {} or r = <*0*> by A1, A2, TARSKI:def 2;
-    per cases;
-    suppose r = {};
-::>       *60
-      then r = <*> {0,1} by FINSEQ_1:def 6;
-      hence r is FinSequence of {0,1};
-      assume r^<*0*> in dom D;
-      ::thus D.r = 0 by A1, FUNCOP_1:7;
-    end;
-    suppose
-    A5: not r = {};
-      set ZeroOne = {0,1};
-      reconsider ZeroOne as non empty set;
-      set Zero = 0;
-      Zero in {0,1} by TARSKI:def 2;
-      then reconsider Zero as Element of ZeroOne;
-    A4: <*Zero*> is FinSequence of ZeroOne;
-      r = <*0*> by A3, A5
-       .= <*Zero*>;
-      hence r is FinSequence of {0,1} by A4;
-      assume r^<*0*> in dom D;
-      thus D.r = 0 by A1, FUNCOP_1:7;
-    end;
-  end;
 end;
 
 registration
   cluster { {}, <*0*>, <*1*> } -> Tree-like;
-  coherence
-  proof
-    set T = { {}, <*0*>, <*1*> };
-    T = elementary_tree 2 by TREES_1:53;
-    then reconsider T as Tree;
-    T is Tree-like;
-    hence { {}, <*0*>, <*1*> } is Tree-like;
-  end;
 end;
 
 registration
   cluster { {}, <*0*>, <*1*> } --> 0 -> LambdaTerm-like;
-  coherence
-  proof
-    set T = { {}, <*0*>, <*1*> };
-  A6: T is finite;
-    set D = T --> 0;
-  A2: dom D = T by FUNCOP_1:13;
-    hence dom D is finite by A6;
-    reconsider T as Tree;
-    let r be FinSequence of NAT;
-    assume
-  A1: r in dom D;
-    then
-  A3: r = {} or r = <*0*> or r = <*1*> by A1, A2, ENUMSET1:def 1;
-    per cases;
-    suppose r = {};
-      then r = <*> {0,1} by FINSEQ_1:def 6;
-      hence r is FinSequence of {0,1};
-      assume r^<*0*> in dom D;
-      thus D.r = 0 by A1, FUNCOP_1:7;
-    end;
-    suppose
-    A5: r = <*0*>;
-      set ZeroOne = {0,1};
-      reconsider ZeroOne as non empty set;
-      set Zero = 0;
-      Zero in {0,1} by TARSKI:def 2;
-      then reconsider Zero as Element of ZeroOne;
-    A4: <*Zero*> is FinSequence of ZeroOne;
-      r = <*0*> by A5
-       .= <*Zero*>;
-      hence r is FinSequence of {0,1} by A4;
-      assume r^<*0*> in dom D;
-      thus D.r = 0 by A1, FUNCOP_1:7;
-    end;
-    suppose not (r = {} or r = <*0*>);
-      then
-    A7: r = <*1*> by A3;
-      set ZeroOne = {0,1};
-      reconsider ZeroOne as non empty set;
-      set One = 1;
-      One in {0,1} by TARSKI:def 2;
-      then reconsider One as Element of ZeroOne;
-    A4: <*One*> is FinSequence of ZeroOne;
-      r = <*1*> by A7
-       .= <*One*>;
-      hence r is FinSequence of {0,1};
-      assume r^<*0*> in dom D;
-      thus D.r = 0 by A1, FUNCOP_1:7;
-    end;
-  end;
 end;
 
 ::: And then we can easily define a `LambdaTerm-like` cluster,
 :::  and make a mode `LambdaTerm` out of it.
 registration
   cluster LambdaTerm-like for DecoratedTree of NAT;
-  existence
-  proof
-    set D = { {} } --> 0;
-    take D;
-    thus D is LambdaTerm-like;
-  end;
 end;
 
 definition
@@ -303,34 +171,14 @@ end;
 
 definition
   func PreAbstractionTerm -> LambdaTerm equals
+:: LAMBDA:def 2
     { {}, <*0*> } --> 0;
-  coherence
-  proof
-    set T = { {}, <*0*> };
-    reconsider T as Tree;
-    set D = T --> 0;
-    reconsider D as DecoratedTree of NAT;
-    D is LambdaTerm-like;
-    then reconsider D as LambdaTerm;
-    D is LambdaTerm;
-    hence { {}, <*0*> } --> 0 is LambdaTerm;
-  end;
 end;
 
 definition
   func PreApplicationTerm -> LambdaTerm equals
+:: LAMBDA:def 3
     { {}, <*0*>, <*1*> } --> 0;
-  coherence
-  proof
-    set T = { {}, <*0*>, <*1*> };
-    reconsider T as Tree;
-    set D = T --> 0;
-    reconsider D as DecoratedTree of NAT;
-    D is LambdaTerm-like;
-    then reconsider D as LambdaTerm;
-    D is LambdaTerm;
-    hence { {}, <*0*>, <*1*> } --> 0 is LambdaTerm;
-  end;
 end;
 
 reserve M,N,P,Q for LambdaTerm;
@@ -350,49 +198,6 @@ registration
       r be Element of dom M;
 
   cluster M|r -> LambdaTerm-like;
-  coherence
-  proof
-    thus dom (M|r) is finite proof
-      dom M is finite by Def1;
-      then (dom M)|r is finite;
-      hence thesis by TREES_2:def 10;
-    end;
-
-    let p be FinSequence of NAT;
-    assume
-  A3: p in dom (M|r);
-    thus p is FinSequence of {0,1} proof
-      dom (M|r) = (dom M)|r by TREES_2:def 10;
-      then p in (dom M)|r by A3;
-      then r^p in dom M by TREES_1:def 6;
-      then r^p is FinSequence of {0,1} by Def1;
-      hence thesis by FINSEQ_1:36;
-    end;
-
-    :: r^p^<*0*>
-    set p0 = p^<*0*>;
-    set rp = r^p;
-    assume
-  A4: p0 in dom (M|r);
-    thus (M|r).p = 0 proof
-      dom (M|r) is Tree-like;
-      then
-    A5: p0 in dom (M|r) by A4, TREES_1:21;
-      then reconsider p0 as Element of dom (M|r);
-      reconsider p0 as Element of (dom M)|r by TREES_2:def 10;
-      p0 in (dom M)|r;
-      then r^p0 in dom M by TREES_1:def 6;
-      then
-    A6: rp^<*0*> in dom M by FINSEQ_1:32;
-      then rp in dom M by TREES_1:21;
-      then M.rp = 0 by A6, Def1;
-      then
-    A8: M.(r^p) = 0;
-      p in (dom M)|r by A3, TREES_2:def 10;
-      then (M|r).p = M.(r^p) by TREES_2:def 10;
-      hence (M|r).p = 0 by A8, TREES_2:def 10;
-    end;
-  end;
 end;
 
 ::: Let Mizar know that `P with-replacement (p,Q)` is also a `LambdaTerm`.
@@ -402,232 +207,28 @@ reserve X for set,
         D1,D2 for DecoratedTree,
         p for Element of dom D1;
 
-theorem Th1:
+theorem :: LAMBDA:1
   D1 is X-valued & D2 is Y-valued implies
-    D1 with-replacement (p,D2) is (X \/ Y)-valued
-proof
-  assume
-A4: D1 is X-valued;
-  assume
-A5: D2 is Y-valued;
-  set D = D1 with-replacement (p,D2);
-  set T = dom D;
-  rng D c= X \/ Y
-  proof
-    let x be set;
-    assume x in rng D;
-    then ex q being set st [q,x] in D by XTUPLE_0:def 13;
-    then consider q being set such that
-  A1: [q,x] in D;
-  A2: q in T by A1, XTUPLE_0:def 12;
-    T is Tree by TREES_2:def 8;
-    then reconsider q as FinSequence of NAT by A2, TREES_1:19;
-  A13: T = dom D1 with-replacement (p, dom D2) by TREES_2:def 11;
-    then
-  A3: ((not p is_a_prefix_of q & D.q = D1.q) or
-      (ex r st r in dom D2 & q = p^r & D.q = D2.r)) by A2, TREES_2:def 11;
-    per cases;
-    suppose
-    A6: (not p is_a_prefix_of q & D.q = D1.q);
-      [q,x] in D by A1;
-      then D.q = x by A2, FUNCT_1:def 2;
-      then
-    A7: D1.q = x by A6;
-    A12: q in dom D1
-      proof
-      A14: (q in dom D1 & not p is_a_proper_prefix_of q or
-          ex r st r in dom D2 & q = p^r) by A2, A13, TREES_1:def 9;
-        per cases;
-        suppose q in dom D1 & not p is_a_proper_prefix_of q;
-          hence q in dom D1;
-        end;
-        suppose not (q in dom D1 & not p is_a_proper_prefix_of q);
-          then ex r st r in dom D2 & q = p^r by A14;
-          then
-        A15: p is_a_prefix_of q by TREES_1:1;
-          assume not q in dom D1;
-          thus contradiction by A6, A15;
-        end;
-      end;
-      [q,x] in D1 by A7, A12, FUNCT_1:def 2;
-      then
-    A8: x in rng D1 by XTUPLE_0:def 13;
-      rng D1 c= X by A4, RELAT_1:def 19;
-      then x in X by A8;
-      hence x in (X \/ Y) by XBOOLE_0:def 3;
-    end;
-    suppose not (not p is_a_prefix_of q & D.q = D1.q);
-      then (ex r st r in dom D2 & q = p^r & D.q = D2.r) by A3;
-      then consider r such that
-    A9: r in dom D2 & q = p^r & D.q = D2.r;
-      [q,x] in D by A1;
-      then D.q = x by A2, FUNCT_1:def 2;
-      then D2.r = x by A9;
-      then [r,x] in D2 by A9, FUNCT_1:def 2;
-      then
-    A11: x in rng D2 by XTUPLE_0:def 13;
-      rng D2 c= Y by A5, RELAT_1:def 19;
-      then x in Y by A11;
-      hence x in (X \/ Y) by XBOOLE_0:def 3;
-    end;
-  end;
-  hence thesis by RELAT_1:def 19;
-end;
+    D1 with-replacement (p,D2) is (X \/ Y)-valued;
 
 registration
   let P,Q be LambdaTerm,
       p be Element of dom P;
 
   cluster P with-replacement (p,Q) -> NAT-valued;
-  coherence
-  proof
-  A1: P is NAT-valued by Def1;
-  A2: Q is NAT-valued by Def1;
-    P with-replacement (p,Q) is (NAT \/ NAT)-valued by A1, A2, Th1;
-    hence P with-replacement (p,Q) is NAT-valued by XBOOLE_0:def 3;
-  end;
 end;
 
 reserve R for DecoratedTree,
         p for Element of dom P;
 
-theorem Th2:
-  P with-replacement (p,Q) is LambdaTerm-like
-proof
-  set R = P with-replacement (p,Q);
-  thus dom R is finite
-  proof
-  A1: dom P is finite by Def1;
-  A2: dom Q is finite by Def1;
-    dom R = (dom P) with-replacement (p,dom Q) by TREES_2:def 11;
-    hence thesis by A1, A2;
-  end;
-
-  let r;
-  assume
-A3: r in dom R;
-  thus r is FinSequence of {0,1}
-  proof
-    dom R = (dom P) with-replacement (p,dom Q) by TREES_2:def 11;
-    then
-  A4: ((r in dom P & not p is_a_proper_prefix_of r) or
-      (ex q st q in dom Q & r = p^q)) by A3, TREES_1:def 9;
-    per cases;
-    suppose (r in dom P & not p is_a_proper_prefix_of r);
-      hence r is FinSequence of {0,1} by Def1;
-    end;
-    suppose not (r in dom P & not p is_a_proper_prefix_of r);
-      then (ex q st q in dom Q & r = p^q) by A4;
-      then consider q such that
-    A5: q in dom Q & r = p^q;
-      q is FinSequence of {0,1} by A5, Def1;
-      then reconsider q as FinSequence of {0,1};
-      p is FinSequence of {0,1} by Def1;
-      then reconsider p as FinSequence of {0,1};
-      p^q is FinSequence of {0,1};
-      hence thesis by A5;
-    end;
-  end;
-  set r0 = r^<*0*>;
-  assume
-A6: r0 in dom R;
-  then r0 in (dom P) with-replacement (p,dom Q) by TREES_2:def 11;
-  then
-A7: ((r0 in (dom P) & not p is_a_proper_prefix_of r0) or
-     (ex q st q in (dom Q) & r0 = p^q)) by TREES_1:def 9;
-  per cases;
-  suppose
-  A13: (r0 in (dom P) & not p is_a_proper_prefix_of r0);
-    then
-  A8: r0 in dom P;
-    then
-  A12: r in dom P by TREES_1:21;
-    then
-  A9: P.r = 0 by A8, Def1;
-  A10: not p is_a_prefix_of r
-    proof
-      assume p is_a_prefix_of r;
-      then p is_a_proper_prefix_of r0 by TREES_1:8;
-      hence contradiction by A13;
-    end;
-    R.r = P.r by A10, A12, TREES_3:45;
-    hence R.r = 0 by A9;
-  end;
-  suppose not (r0 in (dom P) & not p is_a_proper_prefix_of r0);
-    then (ex q st q in (dom Q) & r0 = p^q) by A7;
-    then consider q such that
-  A14: q in (dom Q) & r0 = p^q;
-    per cases;
-    suppose ex q2 being FinSequence, n being set st q = q2^<*n*>;
-      then consider q2 being FinSequence, n being set such that
-    A15: q = q2^<*n*>;
-      q2 is FinSequence of NAT by A15, FINSEQ_1:36;
-      then reconsider q2 as FinSequence of NAT;
-      r^<*0*> = r0
-        .= p^q by A14
-        .= p^(q2^<*n*>) by A15
-        .= (p^q2)^<*n*> by FINSEQ_1:32;
-      then
-    A19: r = (p^q2) & <*0*> = <*n*> by FINSEQ_2:17;
-      then
-    A16: 0 = n by FINSEQ_1:76;
-      q in dom Q by A14;
-      then
-    A17: q2^<*0*> in dom Q by A14, A15, A16;
-      then
-    A18: q2 in dom Q by TREES_1:21;
-      then Q.q2 = 0 by Def1, A17;
-      then R.(p^q2) = 0 by A18, TREES_3:46;
-      hence R.r = 0 by A19;
-    end;
-    suppose
-    A20: not ex q2 being FinSequence, n being set st q = q2^<*n*>;
-    A21: q = {}
-      proof
-        assume q <> {};
-        then ex q2 being FinSequence,
-          n being set st q = q2^<*n*> by FINSEQ_1:46;
-        hence contradiction by A20;
-      end;
-    A30: r0 = p by A14, A21, FINSEQ_1:34;
-      then
-    A22: r0 in dom P;
-      then
-    A23: r in dom P by A22, TREES_1:21;
-      then
-    A24: P.r = 0 by A22, Def1;
-    A27: not p is_a_prefix_of r
-      proof
-        assume p is_a_prefix_of r;
-        then
-      A28: p c= r;
-        r0 = p by A30;
-        then r0 c= p by XBOOLE_0:def 10;
-        then r0 is_a_prefix_of p;
-        then r is_a_proper_prefix_of p by TREES_1:7;
-        then
-      A32: r c< p;
-        then r c= p by XBOOLE_0:def 8;
-        then
-      A31: r = p by A28, XBOOLE_0:def 10;
-        r <> p by A32, XBOOLE_0:def 8;
-        hence contradiction by A31;
-      end;
-      R.r = P.r by A23, A27, TREES_3:45;
-      hence R.r = 0 by A24;
-    end;
-  end;
-end;
+theorem :: LAMBDA:2
+  P with-replacement (p,Q) is LambdaTerm-like;
 
 registration
   let P,Q be LambdaTerm,
       p be Element of dom P;
 
   cluster P with-replacement (p,Q) -> LambdaTerm-like;
-  coherence
-  proof
-    thus thesis by Th2;
-  end;
 end;
 
 definition
@@ -636,7 +237,6 @@ definition
       Q be LambdaTerm;
 
   redefine func P with-replacement (p,Q) -> LambdaTerm;
-  coherence;
 end;
 
 ::: ### Helper definitions
@@ -646,14 +246,17 @@ end;
 definition
   let M be LambdaTerm,
       r be Node of M;
-  
+
   pred r is_variable_in M means
+:: LAMBDA:def 4
     not r^<*0*> in dom M;
 
   pred r is_abstraction_in M means
+:: LAMBDA:def 5
     r^<*0*> in dom M & not r^<*1*> in dom M;
 
   pred r is_application_in M means
+:: LAMBDA:def 6
     r^<*0*> in dom M & r^<*1*> in dom M;
 end;
 
@@ -662,15 +265,10 @@ definition
       r be Node of M;
 
   func abstr-depth (r,M) -> Element of NAT equals
+:: LAMBDA:def 7
     card { p where p is Node of M
            : p is_a_proper_prefix_of r &
              p is_abstraction_in M };
-  coherence
-  proof
-    set abstractions = { p where p is Node of M
-                         : p is_a_proper_prefix_of r &
-                           p is_abstraction_in M };
-  end;
 ::> *70
 end;
 
@@ -681,8 +279,9 @@ end;
 definition
   let M be LambdaTerm,
       r be Node of M;
-  
+
   pred r is_active_variable_in M means
+:: LAMBDA:def 8
     r is_variable_in M &
     M.r = abstr-depth (r,M);
 end;
@@ -692,24 +291,10 @@ end;
 ::: Then we can define abstraction and application
 definition
   let M;
-  
-  func Abs(M) -> LambdaTerm means
-    it|<*0*> = M & not <*1*> in dom it;
-  existence
-  proof
-    set e = <*0*>;
-    dom PreAbstractionTerm = { {}, <*0*> } by FUNCOP_1:13;
-    then <*0*> in dom PreAbstractionTerm by TARSKI:def 2;
-    then reconsider e as Element of dom PreAbstractionTerm;
-    set D = PreAbstractionTerm with-replacement (e, M);
 
-    take D;
-    thus D|<*0*> = M;
-::>                *4
-    thus not <*1*> in dom D;
-::>                       *4
-  end;
-  uniqueness;
+  func Abs(M) -> LambdaTerm means
+:: LAMBDA:def 9
+    it|<*0*> = M & not <*1*> in dom it;
 ::>        *4
 end;
 
@@ -717,36 +302,8 @@ definition
   let M,N;
 
   func App(M,N) -> LambdaTerm means
+:: LAMBDA:def 10
     it|<*0*> = M & it|<*1*> = N;
-  existence
-  proof
-    set e0 = <*0*>;
-    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
-    then <*0*> in dom PreApplicationTerm by ENUMSET1:def 1;
-    then reconsider e0 as Element of dom PreApplicationTerm;
-    set preD = PreApplicationTerm with-replacement (e0, M);
-    preD is LambdaTerm;
-
-    set e1 = <*1*>;
-  A1: dom preD = (dom PreApplicationTerm) with-replacement (e0, dom M)
-      by TREES_2:def 11;
-    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
-    then
-  A2: <*1*> in dom PreApplicationTerm by ENUMSET1:def 1;
-    not e0 is_a_proper_prefix_of e1;
-::>                               *4
-    then <*1*> in dom preD by A1, A2, TREES_1:def 9;
-    then reconsider e1 as Element of dom preD;
-    set D = preD with-replacement (e1, N);
-    D is LambdaTerm;
-    
-    take D;
-    thus D|<*0*> = M;
-::>                *4
-    thus D|<*1*> = N;
-::>                *4
-  end;
-  uniqueness;
 ::>        *4
 end;
 
@@ -754,6 +311,7 @@ definition
   let M,N;
 
   func SubstituteActiveVar(M,N) -> LambdaTerm means
+:: LAMBDA:def 11
     :: most things are the same,
     (for r st not (ex p being Element of dom N
                       st p is_active_variable_in N & p is_a_prefix_of r)
@@ -763,9 +321,6 @@ definition
     (for r being Element of dom N
             st r is_active_variable_in N
             holds it|r = M);
-  existence;
-::>       *4
-  uniqueness;
 ::>        *4
 end;
 
@@ -777,9 +332,10 @@ end;
 
 definition
   let P,Q;
-  
+
   :: P === (\x.N)M --> N[x:=M] === Q
   pred P beta_shallow Q means
+:: LAMBDA:def 12
     ex M,N st
       :: P === (\x.N)M
       P = App(Abs(N),M) &
@@ -799,6 +355,7 @@ definition
   let M,N;
 
   pred M beta N means
+:: LAMBDA:def 13
     ex
       p being Element of dom M,
       q being Element of dom N st
@@ -812,8 +369,9 @@ end;
 :::  to get the full beta reduction relation.
 definition
   let M,N;
-  
+
   pred M beta* N means
+:: LAMBDA:def 14
     M = N or
     ex P st M beta P & P beta N;
 end;
@@ -821,8 +379,9 @@ end;
 ::: And then close under symmetry to get beta conversion.
 definition
   let M,N;
-  
+
   pred M beta= N means
+:: LAMBDA:def 15
     M beta* N or N beta* M;
 end;
 
@@ -863,6 +422,7 @@ definition
       u be Element of D;
 
   attr u is X,R-ub means
+:: LAMBDA:def 16
     for x st x in X holds [x,u] in R;
 end;
 
@@ -874,6 +434,7 @@ definition
       u be Element of D;
 
   attr u is X,R-lub means
+:: LAMBDA:def 17
     u is X,R-ub &
     for u2 being Element of D st u2 is X,R-ub holds
       [u,u2] in R;
@@ -891,6 +452,7 @@ definition
       X be Subset of D;
 
   attr X is R-directed means
+:: LAMBDA:def 18
     for x,y st x in X & y in X holds
       ex z st
         z in X & [x,z] in R & [y,z] in R;
@@ -902,24 +464,6 @@ registration
       R be PartialOrder of D;
 
   cluster R-directed for Subset of D;
-  existence
-  proof
-    set X = {};
-    reconsider X as Subset of D by SUBSET_1:1;
-    take X;
-    thus X is R-directed
-    proof
-      assume not (for x,y st x in X & y in X holds
-      ex z st
-        z in X & [x,z] in R & [y,z] in R);
-      then consider x,y such that
-    A1: x in X & y in X and
-    A2: not (ex z st z in X & [x,z] in R & [y,z] in R);
-      x in X by A1;
-      then ex x st x in X;
-      hence contradiction by XBOOLE_0:def 1;
-    end;
-  end;
 end;
 
 registration
@@ -927,48 +471,6 @@ registration
       R be PartialOrder of D;
 
   cluster R-directed for non empty Subset of D;
-  existence
-  proof
-    ex d being set st d in D by XBOOLE_0:def 1;
-    then consider d being set such that
-  A1: d in D;
-    set X = {d};
-    d is Element of D by A1;
-    then X is Subset of D by SUBSET_1:33;
-    then reconsider X as non empty Subset of D;
-    take X;
-    thus X is R-directed
-    proof
-      assume not (for x,y st x in X & y in X holds
-      ex z st
-        z in X & [x,z] in R & [y,z] in R);
-      then consider x,y such that
-    A2: x in X & y in X and
-    A3: not (ex z st z in X & [x,z] in R & [y,z] in R);
-      per cases;
-      suppose x = y;
-        :: idea: use x = y = d to show that
-        ::  ex d, because [x,d] = [x,x] in R by reflexivity, ..
-        thus contradiction;
-::>                      *1
-      end;
-      suppose x <> y;
-        per cases;
-        suppose x = d;
-          :: idea: then d <> y, but both in X,
-          ::  but that contradicts X being a singleton
-          thus contradiction;
-::>                        *1
-        end;
-        suppose x <> d;
-          :: idea: then d <> x, but both in X,
-          ::  but that contradicts X being a singleton
-          thus contradiction;
-::>                        *1
-        end;
-      end;
-    end;
-  end;
 end;
 
 ::: ### Completeness
@@ -980,6 +482,7 @@ definition
       R be PartialOrder of D;
 
   attr R is complete means
+:: LAMBDA:def 19
     for X being R-directed non empty Subset of D holds
       ex u being Element of D st u is X,R-lub;
 end;
@@ -993,17 +496,6 @@ registration
   let D be non empty set;
 
   cluster complete for PartialOrder of D;
-  existence
-  proof
-    set I = id D;
-    reconsider I as PartialOrder of D;
-    take I;
-    thus I is complete
-    proof
-      let X be I-directed Subset of D;
-::>                            *56
-    end;
-  end;
 end;
 
 definition
@@ -1012,10 +504,8 @@ definition
       X be R-directed Subset of D;
 
   func LUB(X) -> Element of D means
+:: LAMBDA:def 20
     it is X,R-lub;
-  existence;
-::>       *4
-  uniqueness;
 ::>        *4
 end;
 
@@ -1026,6 +516,7 @@ definition
       b be Element of D;
 
   attr b is R-bottom means
+:: LAMBDA:def 21
     for y st y in D holds [b,y] in R;
 end;
 
@@ -1034,7 +525,6 @@ registration
       R be PartialOrder of D;
 
   cluster R-bottom for Element of D;
-  existence;
 ::>       *4
 end;
 
@@ -1054,6 +544,7 @@ definition
       f be Function of (the carrier of D),(the carrier of E);
 
   attr f is monotone means
+:: LAMBDA:def 22
     for x,y st [x,y] in (the BinRel of D) holds
       [f.x,f.y] in (the BinRel of E);
 end;
@@ -1064,6 +555,7 @@ definition
       f be Function of (the carrier of D),(the carrier of E);
 
   attr f is continuous means
+:: LAMBDA:def 23
     f is monotone &
     for X being (the BinRel of D)-directed
                 Subset of (the carrier of D)
@@ -1079,7 +571,6 @@ registration
   let D,E be CPO;
 
   cluster continuous for Function of (the carrier of D),(the carrier of E);
-  existence;
 ::>       *4
 end;
 
@@ -1095,10 +586,8 @@ definition
   let D,E be CPO;
 
   func ContinuousFuncs(D,E) -> set means
+:: LAMBDA:def 24
     x in it iff x is ContinuousFunc of D,E;
-  existence;
-::>       *4
-  uniqueness;
 ::>        *4
 end;
 
@@ -1107,39 +596,30 @@ definition
       f,g be ContinuousFunc of D,E;
 
   pred f piecewise_le g means
+:: LAMBDA:def 25
     for x being Element of D holds
       [f.x, g.x] in (the BinRel of E);
 end;
 
-theorem
+theorem :: LAMBDA:3
   for D,E being CPO holds
     CPO(# ContinuousFuncs(D,E),
           { [f,g] where f,g is ContinuousFunc of D,E : f piecewise_le g },
-          {} #) is CPO
-::>           *105
-proof
-  thus thesis;
-end;
+          {} #) is CPO;
 
 ::: #### The powerset CPO
 definition
   let A be non empty set;
 
   func SubsetRelation(A) -> Relation of bool A means
+:: LAMBDA:def 26
     [x,y] in it iff x is Subset of y;
-  existence;
-::>       *4
-  uniqueness;
 ::>        *4
 end;
 
-theorem
+theorem :: LAMBDA:4
   for A being non empty set holds
-    CPO(# bool A, SubsetRelation(A), {} #) is CPO
-::>                                      *105
-proof
-  thus thesis;
-end;
+    CPO(# bool A, SubsetRelation(A), {} #) is CPO;
 
 
 
@@ -1147,23 +627,21 @@ end;
 
 definition
   let Bn be non empty set;
-  func BnNext(Bn) -> set equals Bn \/ [: Bn*, Bn :];
-  coherence;
+  func BnNext(Bn) -> set equals
+:: LAMBDA:def 27
+Bn \/ [: Bn*, Bn :];
 end;
 
 definition
   let A be non empty set;
-  func Web(A) -> set equals A;
-  :: TODO inductive construction
-  coherence;
+  func Web(A) -> set equals
+:: LAMBDA:def 28
+A;
 end;
 
-theorem
+theorem :: LAMBDA:5
   for A being non empty set holds
-    id Web(A) is one-to-one
-proof
-  thus thesis;
-end;
+    id Web(A) is one-to-one;
 
 ::: Doesn't there already exist a notation for the set of all
 :::  finite subsets of a set in Mizar ?!
@@ -1171,21 +649,16 @@ definition
   let B be set;
 
   func (B)^<w -> set equals
+:: LAMBDA:def 29
     { X where X is Subset of B : X is finite };
-  coherence;
 end;
 
 definition
   let B be set;
 
   redefine func (B)^<w -> set means
+:: LAMBDA:def 30
     X in it iff X c= B & X is finite;
-  compatibility
-  proof
-    thus thesis;
-::>           *4,4,4
-  end;
-  coherence;
 end;
 
 ::: This is true if one assumes the axiom of choice, and
@@ -1196,15 +669,6 @@ end;
 registration
   let B be infinite set;
   cluster one-to-one for Function of [:B^<w,B:],B;
-  existence
-  proof
-    not B is finite;
-    then [:B,B:],B are_equipotent by CARD_4:18; :: <-- though this
-        :: won't get me there directly :(
-    :: I'll probably "build up" (first finite sets of size 1, then 2, ...)
-    thus ex f being Function of [:B^<w,B:],B st f is one-to-one;
-::>                                                           *4
-  end;
 end;
 
 ::: Easier, and probably good enough for our purposes, is to prove
@@ -1212,11 +676,6 @@ end;
 registration
   let B be countable infinite set;
   cluster one-to-one for Function of [:B^<w,B:],B;
-  existence
-  proof
-    thus ex f being Function of [:B^<w,B:],B st f is one-to-one;
-::>                                                           *4
-  end;
 end;
 
 :: Graph models

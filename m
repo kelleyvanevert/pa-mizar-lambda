@@ -21,13 +21,13 @@ predicates='s/^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/R$1/'
   done
 } > dict/lambda.voc
 
-#mizf text/lambda.miz
-#miz2abs text/lambda.miz
+mizf text/lambda.miz
+miz2abs text/lambda.miz
 
 # docs building
-cd /opt/node/lib/node_modules/docco
-cake build
-cd /home/kelley/studie/proof_assistants/ex
+#cd /opt/node/lib/node_modules/docco
+#cake build
+#cd /home/kelley/studie/proof_assistants/ex
 
 docco --output ./ --template ./res/_template.js.html --pass ./res/process-doc.js text/lambda.miz
 
