@@ -2,9 +2,9 @@
 <html>
 <head>
   <title><%= title %></title>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-  <link rel="stylesheet" media="all" href="../res/<%= css %>" />
+  <link rel="stylesheet" media="all" href="res/style.css" />
+  <meta charset="utf8">
 </head>
 <body>
   <div id="container">
@@ -51,10 +51,17 @@
         <% var fragment = fragments[i]; %>
         <li>
             <div class="annotation">
-              <% heading = fragment.docsHtml.match(/^\s*<(h\d)>/) %>
               <%= fragment.docsHtml %>
+              <% if (fragment.type == "heading" && fragment.vocabulary.length > 0) { %>
+                <ul class="vocabulary">
+                <% for (var j = 0; j < fragment.vocabulary.length; j++) { %>
+                <% var voc = fragment.vocabulary[j]; %>
+                <li><a href="#line-<%= voc.line %>"><code><%= voc.name %></code></a></li>
+                <% } %>
+                </ul>
+              <% } %>
             </div>
-            <% if (fragment.codeText.replace(/\s/gm, '') != '') { %>
+            <% if (fragment.code.join("\n").replace(/\s/gm, '') != '') { %>
             <div class="content"><%= fragment.codeHtml %></div>
             <% } %>
         </li>
@@ -78,11 +85,13 @@
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script>
 $(function () {
-  var layout = function () {
-    $(".sidebar").css({ left: - $("body").scrollLeft() });
-  };
-  $(window).resize(layout).scroll(layout);
-  layout();
+  
+  $(".collapsible").hide();
+  $("a.toggle-collapsible").click(function () {
+    $(this).next().toggle();
+    return false;
+  });
+
 });
 </script>
 </body>

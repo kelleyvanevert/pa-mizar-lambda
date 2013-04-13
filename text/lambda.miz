@@ -1,9 +1,9 @@
 ::: # Lambda calculus
 
-::: Environ originally taken from `finseq_2`. Later, I added trees and orders.
+:: Environ originally taken from `finseq_2`. Later, I added trees and orders.
 environ
 
-  ::: Vocabularies are basically for Mizar's lexer.
+  :: Vocabularies are basically for Mizar's lexer.
   vocabularies LAMBDA,
     FINSET_1,
     NUMBERS,
@@ -16,8 +16,8 @@ environ
     FINSEQ_2, PBOOLE, CARD_3, VALUED_1,
     TREES_4, TREES_3, TREES_2, TREES_1;
   
-  ::: Radix type specifications
-  ::: But it also helped [175 unknown attribute format] error with [finite set]
+  :: Radix type specifications
+  :: But it also helped [175 unknown attribute format] error with [finite set]
   notations FINSET_1,
     TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
     NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
@@ -29,7 +29,7 @@ environ
     XXREAL_0, VALUED_1,
     RECDEF_1;
 
-  ::: For modes? (unknown mode format resolved)
+  :: For modes? (unknown mode format resolved)
   constructors RELAT_2, RELAT_1,
     PARTFUN1, BINOP_1, DOMAIN_1,
     FUNCT_1, FUNCT_2, FUNCT_3,
@@ -43,7 +43,8 @@ environ
     ENUMSET1,
     WELLORD2;
 
-  ::: Definition are for automatically unfolding predicates in the thesis you are proving
+  :: Definition are for automatically unfolding predicates
+  ::  in the thesis you are proving
   definitions TARSKI,
     FUNCT_1, FUNCT_2,
     FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
@@ -51,8 +52,8 @@ environ
     TREES_4, TREES_3, TREES_2, TREES_1,
     XTUPLE_0;
 
-  ::: Registrations are for clusters (showing that a type exists (is non-empty),
-  :::  and automatically adding adjectives)
+  :: Registrations are for clusters (showing that a type exists (is non-empty),
+  ::  and automatically adding adjectives)
   registrations XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
     RELAT_2, RELAT_1,
     FUNCT_1, FUNCT_2,
@@ -62,7 +63,7 @@ environ
     TREES_4, TREES_3, TREES_2, TREES_1,
     FINSET_1;
 
-  ::: Load theorem en definition labels
+  :: Load theorem en definition labels
   theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, FINSEQ_2, XTUPLE_0, FUNCT_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
@@ -188,10 +189,11 @@ registration
   A3: r = {} or r = <*0*> by A1, A2, TARSKI:def 2;
     per cases;
     suppose r = {};
+::>       *60
       then r = <*> {0,1} by FINSEQ_1:def 6;
       hence r is FinSequence of {0,1};
       assume r^<*0*> in dom D;
-      thus D.r = 0 by A1, FUNCOP_1:7;
+      ::thus D.r = 0 by A1, FUNCOP_1:7;
     end;
     suppose
     A5: not r = {};
@@ -1224,6 +1226,7 @@ end;
 ::> 1: It is not true
 ::> 4: This inference is not accepted
 ::> 56: Disagreement of types
+::> 60: Something remains to be proved in this case
 ::> 70: Something remains to be proved
 ::> 103: Unknown functor
 ::> 105: Illegal projection

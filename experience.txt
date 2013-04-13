@@ -1,0 +1,42 @@
+
+@ Mizar
+  =====
+
+   (i) Reconsidering                       (ii) "then" does not work
+    variables apparently                    after an existential
+    invalidates results                     elimination
+
+    theorem                                 ex x st [ x ];
+      [ x ]                                 then consider x such that [ x ];
+    proof                                   then { x };
+      reconsider x as ...;                     *4
+      thus [ x ];
+         *51 :: ?!                         ..although:
+    end;
+                                            [ x ];
+                                            then { x };
+
+    (iii) How to solve this?
+
+     let M, p be [ M ];                (iv) Average number of open tabs
+     func M|p -> ...                    in sublimetext? ~ 20
+
+     ex p st
+       M|p = N|p
+       ***                         (v) Waiting for Mizar to compile
+                                    -->  proof thus [ correctness thesis ]; end;
+    ..the workaround:               so you know you've got the correctness
+                                    thesis right in the first place.
+     ex p,q st p = q &
+       M|p = N|q
+
+                                               (vii) How many ways to say that proof material
+                                                is missing?
+  (vi) Writing build scripts with                             *1       *60
+   lots of perl regexing so you don't                            *4          ...more?
+   have to keep forgetting to list your                     *70
+   names in the .voc file.
+
+
+                                     (ix) Remembering error counts to get a feel
+                                      of "how happy" Mizar is.

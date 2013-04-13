@@ -1,46 +1,21 @@
-/*--------------------- Typography ----------------------------*/
 
-@font-face {
-    font-family: 'aller-light';
-    src: url('fonts/aller-light.eot');
-    src: url('fonts/aller-light.eot?#iefix') format('embedded-opentype'),
-         url('fonts/aller-light.woff') format('woff'),
-         url('fonts/aller-light.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+@import url("lmodern/stylesheet.css");
 
-@font-face {
-    font-family: 'aller-bold';
-    src: url('fonts/aller-bold.eot');
-    src: url('fonts/aller-bold.eot?#iefix') format('embedded-opentype'),
-         url('fonts/aller-bold.woff') format('woff'),
-         url('fonts/aller-bold.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'novecento-bold';
-    src: url('fonts/novecento-bold.eot');
-    src: url('fonts/novecento-bold.eot?#iefix') format('embedded-opentype'),
-         url('fonts/novecento-bold.woff') format('woff'),
-         url('fonts/novecento-bold.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-/*--------------------- Layout ----------------------------*/
 html { height: 100%; }
 body {
-  font-family: "aller-light";
-  font-size: 14px;
-  line-height: 18px;
-  color: #30404f;
-  margin: 0; padding: 0;
+  font-family: "LatinModernRoman10Regular", serif;
+  font-size: 17px;
+  line-height: 24px;
+  color: #111;
+  text-align: justify;
+  margin: 0;
+  padding: 0;
   height:100%;
 }
-#container { min-height: 100%; }
+#container {
+  min-height: 100%;
+  position: relative;
+}
 
 a {
   color: #000;
@@ -48,11 +23,12 @@ a {
 
 b, strong {
   font-weight: normal;
-  font-family: "aller-bold";
+  font-family: "LatinModernRoman10Bold", serif;
 }
 
 i, em {
-  font-style: italic;
+  font-style: normal;
+  font-family: "LatinModernRoman10Italic", serif;
 }
 
 p, ul, ol {
@@ -60,28 +36,60 @@ p, ul, ol {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #123;
-  line-height: 1em;
+  color: #000;
   font-weight: normal;
-  font-family: "novecento-bold";
-  text-transform: uppercase;
+  font-family: "LatinModernRomanDemi10Regular", serif;
   padding-top: 30px;
   margin: 0 0 15px 0;
-  
-  position: relative;
+}
+h1 {
+  font-size: 35px;
+  line-height: 50px;
+}
+h2 {
+  font-size: 30px;
+  line-height: 40px;
+}
+h3 {
+  font-size: 25px;
+  line-height: 35px;
+}
+h4 {
+  font-size: 20px;
+  line-height: 30px;
 }
 
 a.headnumber {
+  /*
   position: absolute;
   left: -70px;
   width: 60px;
   text-align: right;
-  color: #123;
+  */
+  color: #888;
   text-decoration: none;
+  margin-right: 10px;
 }
 
 h1 {
   padding-top: 60px;
+}
+
+ul.vocabulary {
+  margin: 0 0 10px 0 !important;
+  padding: 0 !important;
+  text-align: left;
+}
+ul.vocabulary li {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+ul.vocabulary li a {
+  margin-right: 5px;
+}
+ul.vocabulary li a code {
+  background: none;
 }
 
 hr {
@@ -92,9 +100,11 @@ hr {
 }
 
 pre, tt, code {
-  font-size: 12px; line-height: 16px;
+  font-size: 14px;
+  line-height: 20px;
   font-family: Menlo, Monaco, Consolas, "Lucida Console", monospace;
-  margin: 0; padding: 0;
+  margin: 0;
+  padding: 0;
 }
   .annotation pre {
     display: block;
@@ -111,6 +121,11 @@ pre, tt, code {
       padding: 0;
       background: transparent;
     }
+  .annotation code {
+    margin: -2px -1px;
+    padding: 2px 3px;
+    background: #F5F7F8;
+  }
 
 
 blockquote {
@@ -129,7 +144,7 @@ blockquote {
 ul.fragments {
   list-style: none;
   padding:0 0 5px 0;;
-  margin:0 0 0 230px;
+  margin:0 0 0 30px;
 }
 
 /*
@@ -146,78 +161,8 @@ ul.fragments > li > div {
   box-sizing: border-box;         /* css3 */
 }
 
-
-/*---------------------- Jump Page -----------------------------*/
-#jump_to, #jump_page {
-  margin: 0;
-  background: white;
-  -webkit-box-shadow: 0 0 25px #777; -moz-box-shadow: 0 0 25px #777;
-  -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomleft: 5px;
-  font: 16px Arial;
-  cursor: pointer;
-  text-align: right;
-  list-style: none;
-}
-
-#jump_to a {
-  text-decoration: none;
-}
-
-#jump_to a.large {
-  display: none;
-}
-#jump_to a.small {
-  font-size: 22px;
-  font-weight: bold;
-  color: #676767;
-}
-
-#jump_to, #jump_wrapper {
-  position: fixed;
-  right: 0; top: 0;
-  padding: 10px 15px;
-  margin:0;
-}
-
-#jump_wrapper {
-  display: none;
-  padding:0;
-}
-
-#jump_to:hover #jump_wrapper {
-  display: block;
-}
-
-#jump_page {
-  padding: 5px 0 3px;
-  margin: 0 0 25px 25px;
-}
-
-#jump_page .source {
-  display: block;
-  padding: 15px;
-  text-decoration: none;
-  border-top: 1px solid #eee;
-}
-
-#jump_page .source:hover {
-  background: #f5f5ff;
-}
-
-#jump_page .source:first-child {
-}
-
-
-  #container {
-    position: relative;
-  }
   body {
-    background-color: #F5F5FF;
-    font-size: 14px;
-    line-height: 21px;
-  }
-  pre, tt, code {
-    line-height: 18px;
+    background: #F5F7F8;
   }
   p, ul, ol {
     margin: 0 0 15px;
@@ -247,12 +192,14 @@ ul.fragments > li > div {
 
 #background {
   position: absolute;
-  left: 230px;
+  left: 30px;
   top: 0; bottom: 0;
-  width: 500px;
+  width: 600px;
   background: #fff;
-  border-right: 1px solid #e5e5ee;
+  border-left: 1px solid #E0DAC5;
+  border-right: 1px solid #E0DAC5;
   z-index: -1;
+  box-shadow: 0 0 20px #E0E4E6;
 }
 
 ul.fragments > li > div.annotation ul, ul.fragments > li > div.annotation ol {
@@ -272,9 +219,8 @@ ul.fragments > li > div.annotation {
   overflow-x: hidden;
   white-space: normal;
   vertical-align: top;
-  text-align: left;
-  width: 500px;
-  padding: 10px 25px 1px 60px;
+  width: 600px;
+  padding: 10px 50px 1px 50px;
 }
 ul.fragments > li > div.annotation pre {
   margin: 15px 0 15px;
@@ -283,11 +229,10 @@ ul.fragments > li > div.annotation pre {
 
 ul.fragments > li > div.content {
   vertical-align: top;
-  background: #f5f5ff;
   border: none;
   -webkit-box-shadow: none;
   box-shadow: none;
-  padding: 9px 15px 16px 25px;
+  padding: 9px 15px 16px 0;
 }
 
 .pilwrap {
@@ -318,8 +263,16 @@ ul.fragments > li > div.annotation:hover .pilcrow {
 
 /*---------------------- Syntax Highlighting -----------------------------*/
 
-td.linenos { background-color: #f0f0f0; padding-right: 10px; }
-span.lineno { background-color: #f0f0f0; padding: 0 5px 0 5px; }
+.lineno {
+  display: inline-block;
+  text-decoration: none;
+  text-align: right;
+  width: 40px;
+  padding-right: 10px;
+  color: #D2D6D6;
+  font-size: 12px;
+}
+
 /*
 
 github.com style (c) Vasily Polovnyov <vast@whiteants.net>
@@ -332,12 +285,16 @@ pre code {
   background: #f8f8ff
 }
 
+pre .error {
+  color: #DC322F;
+  font-weight: bold;
+}
+
 pre .comment,
 pre .template_comment,
 pre .diff .header,
 pre .javadoc {
-  color: #408080;
-  font-style: italic
+  color: #ABB8B8;
 }
 
 pre .keyword,
@@ -348,8 +305,12 @@ pre .winutils,
 pre .javascript .title,
 pre .lisp .title,
 pre .subst {
-  color: #954121;
-  /*font-weight: bold*/
+  color: #637486;
+}
+
+pre .reference {
+  color: #323644;
+  font-weight: bold;
 }
 
 pre .number,
@@ -435,98 +396,6 @@ pre .cdata {
   font-weight: bold
 }
 
-pre .deletion {
-  background: #fdd
-}
-
-pre .addition {
-  background: #dfd
-}
-
-pre .diff .change {
-  background: #0086b3
-}
-
-pre .chunk {
-  color: #aaa
-}
-
-pre .tex .formula {
-  opacity: 0.5;
-}
-
 .sidebar {
-  background: #E2C87C;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 229px;
-  border-right: 1px solid #BBA974;
-  
-  font-size: 13px;
-  color: #000;
-  line-height: 20px;
+  display: none;
 }
-  .sidebar ul {
-    margin: 0;
-    padding: 0 0 0 10px;
-  }
-  .sidebar ul.index {
-    padding-top: 15px;
-  }
-  .sidebar ul.index li {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .sidebar ul.index li a {
-    text-decoration: none;
-    color: #000 !important;
-  }
-  .sidebar ul.index li a .hn {
-    color: #635E38;
-  }
-  .sidebar ul.index > li {
-    margin-top: 10px;
-  }
-  .sidebar ul.index > li > a {
-    font-weight: bold;
-  }
-  
-  .files {
-    width: 229px;
-    margin: 0 0 0 0 !important;
-    padding: 0 !important;
-    background: #C9B784;
-   }
-   .files:after {
-     display: block;
-     content: ".";
-     width: 230px;
-     height: 0px;
-     overflow: hidden;
-     clear: both;
-   }
-  .files li {
-    margin: 0 0 0 0;
-    padding: 0;
-    display: block;
-    width: 33.3333%;
-    float: left;
-  }
-  .files li a {
-    display: block;
-    border-bottom: 1px solid #BBA974;
-    padding: 3px 0;
-    text-align: center;
-    color: #887B5F;
-    text-decoration: none;
-    font-family: monospace;
-    font-size: 12px;
-  }
-  .files li.active a {
-    color: rgb(32, 31, 27);
-    background: #BBA974;
-  }
-

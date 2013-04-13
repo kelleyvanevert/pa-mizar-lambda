@@ -1,0 +1,1922 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Lambda calculus</title>
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="res/style.css" />
+  <meta charset="utf8">
+</head>
+<body>
+  <div id="container">
+    <div class="sidebar">
+      <ul class="files">
+        <li class="abs ">
+          <a href="../text/lambda.abs.html">.abs</a>
+        </li>
+        <li class="miz active">
+          <a href="#top">.miz</a>
+        </li>
+        <li class="voc ">
+          <a href="../dict/lambda.voc.html">.voc</a>
+        </li>
+      </ul>
+      
+      <ul class="index">
+        
+        <li><a href="#1"><span class="hn">1</span> Syntax and behaviour</a><ul><li><a href="#1.1"><span class="hn">1.1</span> Lambda terms</a><ul><li><a href="#1.1.1"><span class="hn">1.1.1</span> Preservation under operations</a></li></ul></li><li><a href="#1.2"><span class="hn">1.2</span> Helper definitions</a><ul><li><a href="#1.2.1"><span class="hn">1.2.1</span> Variable occurences</a></li><li><a href="#1.2.2"><span class="hn">1.2.2</span> Abstraction and application</a></li></ul></li><li><a href="#1.3"><span class="hn">1.3</span> Reduction and conversion</a></li></ul></li>
+        
+        <li><a href="#2"><span class="hn">2</span> CPO&#39;s</a><ul><li><a href="#2.1"><span class="hn">2.1</span> (Least) upper bounds</a></li><li><a href="#2.2"><span class="hn">2.2</span> Directed sets</a></li><li><a href="#2.3"><span class="hn">2.3</span> Completeness</a></li><li><a href="#2.4"><span class="hn">2.4</span> Bottom element</a></li><li><a href="#2.5"><span class="hn">2.5</span> The CPO structure</a></li><li><a href="#2.6"><span class="hn">2.6</span> Continuity</a><ul><li><a href="#2.6.1"><span class="hn">2.6.1</span> Monotonicity</a></li><li><a href="#2.6.2"><span class="hn">2.6.2</span> Continuity</a></li><li><a href="#2.6.3"><span class="hn">2.6.3</span> Continuous function space</a></li><li><a href="#2.6.4"><span class="hn">2.6.4</span> The powerset CPO</a></li></ul></li></ul></li>
+        
+        <li><a href="#3"><span class="hn">3</span> Graph Models</a></li>
+        
+      </ul>
+    </div>
+    <div id="background"></div>
+    <ul class="fragments" id="top">
+        
+        
+        
+        <li>
+            <div class="annotation">
+              <h1 id="">Lambda calculus</h1>
+
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-3' id='line-3'>3</a> <span class="comment">:: Environ originally taken from `finseq_2`. Later, I added trees and orders.</span>
+<a class='lineno' href='#line-4' id='line-4'>4</a> <span class="keyword">environ</span>
+<a class='lineno' href='#line-5' id='line-5'>5</a> 
+<a class='lineno' href='#line-6' id='line-6'>6</a>   <span class="comment">:: Vocabularies are basically for Mizar's lexer.</span>
+<a class='lineno' href='#line-7' id='line-7'>7</a>   <span class="keyword">vocabularies</span> <span class="reference">LAMBDA</span>,
+<a class='lineno' href='#line-8' id='line-8'>8</a>     <span class="reference">FINSET_1</span>,
+<a class='lineno' href='#line-9' id='line-9'>9</a>     <span class="reference">NUMBERS</span>,
+<a class='lineno' href='#line-10' id='line-10'>10</a>     <span class="reference">NAT_1</span>, <span class="reference">XBOOLE_0</span>, <span class="reference">SUBSET_1</span>, <span class="reference">FINSEQ_1</span>, <span class="reference">XXREAL_0</span>, <span class="reference">CARD_1</span>,
+<a class='lineno' href='#line-11' id='line-11'>11</a>     <span class="reference">ARYTM_1</span>, <span class="reference">ARYTM_3</span>, <span class="reference">TARSKI</span>, <span class="reference">ORDINAL4</span>, <span class="reference">FUNCOP_1</span>,
+<a class='lineno' href='#line-12' id='line-12'>12</a>     <span class="reference">RELAT_2</span>, <span class="reference">RELAT_1</span>,
+<a class='lineno' href='#line-13' id='line-13'>13</a>     <span class="reference">FUNCT_1</span>, <span class="reference">FUNCT_2</span>,
+<a class='lineno' href='#line-14' id='line-14'>14</a>     <span class="reference">ZFMISC_1</span>, <span class="reference">PARTFUN1</span>,
+<a class='lineno' href='#line-15' id='line-15'>15</a>     <span class="reference">ORDERS_2</span>, <span class="reference">ORDERS_1</span>,
+<a class='lineno' href='#line-16' id='line-16'>16</a>     <span class="reference">FINSEQ_2</span>, <span class="reference">PBOOLE</span>, <span class="reference">CARD_3</span>, <span class="reference">VALUED_1</span>,
+<a class='lineno' href='#line-17' id='line-17'>17</a>     <span class="reference">TREES_4</span>, <span class="reference">TREES_3</span>, <span class="reference">TREES_2</span>, <span class="reference">TREES_1</span>;
+<a class='lineno' href='#line-18' id='line-18'>18</a>   
+<a class='lineno' href='#line-19' id='line-19'>19</a>   <span class="comment">:: Radix type specifications</span>
+<a class='lineno' href='#line-20' id='line-20'>20</a>   <span class="comment">:: But it also helped [175 unknown attribute format] error with [finite set]</span>
+<a class='lineno' href='#line-21' id='line-21'>21</a>   <span class="keyword">notations</span> <span class="reference">FINSET_1</span>,
+<a class='lineno' href='#line-22' id='line-22'>22</a>     <span class="reference">TARSKI</span>, <span class="reference">XBOOLE_0</span>, <span class="reference">ENUMSET1</span>, <span class="reference">ZFMISC_1</span>, <span class="reference">SUBSET_1</span>, <span class="reference">ORDINAL1</span>, <span class="reference">CARD_1</span>,
+<a class='lineno' href='#line-23' id='line-23'>23</a>     <span class="reference">NUMBERS</span>, <span class="reference">XCMPLX_0</span>, <span class="reference">DOMAIN_1</span>, <span class="reference">NAT_1</span>, <span class="reference">RELAT_1</span>, <span class="reference">PARTFUN1</span>,
+<a class='lineno' href='#line-24' id='line-24'>24</a>     <span class="reference">RELAT_2</span>, <span class="reference">RELSET_1</span>,
+<a class='lineno' href='#line-25' id='line-25'>25</a>     <span class="reference">FUNCT_1</span>, <span class="reference">FUNCT_2</span>,
+<a class='lineno' href='#line-26' id='line-26'>26</a>     <span class="reference">FUNCT_3</span>, <span class="reference">FINSEQ_1</span>, <span class="reference">FINSEQ_2</span>, <span class="reference">BINOP_1</span>, <span class="reference">PBOOLE</span>, <span class="reference">FUNCOP_1</span>, <span class="reference">CARD_3</span>,
+<a class='lineno' href='#line-27' id='line-27'>27</a>     <span class="reference">TREES_4</span>, <span class="reference">TREES_3</span>, <span class="reference">TREES_2</span>, <span class="reference">TREES_1</span>,
+<a class='lineno' href='#line-28' id='line-28'>28</a>     <span class="reference">ORDERS_1</span>, <span class="reference">ORDERS_2</span>,
+<a class='lineno' href='#line-29' id='line-29'>29</a>     <span class="reference">XXREAL_0</span>, <span class="reference">VALUED_1</span>,
+<a class='lineno' href='#line-30' id='line-30'>30</a>     <span class="reference">RECDEF_1</span>;
+<a class='lineno' href='#line-31' id='line-31'>31</a> 
+<a class='lineno' href='#line-32' id='line-32'>32</a>   <span class="comment">:: For modes? (unknown mode format resolved)</span>
+<a class='lineno' href='#line-33' id='line-33'>33</a>   <span class="keyword">constructors</span> <span class="reference">RELAT_2</span>, <span class="reference">RELAT_1</span>,
+<a class='lineno' href='#line-34' id='line-34'>34</a>     <span class="reference">PARTFUN1</span>, <span class="reference">BINOP_1</span>, <span class="reference">DOMAIN_1</span>,
+<a class='lineno' href='#line-35' id='line-35'>35</a>     <span class="reference">FUNCT_1</span>, <span class="reference">FUNCT_2</span>, <span class="reference">FUNCT_3</span>,
+<a class='lineno' href='#line-36' id='line-36'>36</a>     <span class="reference">FUNCOP_1</span>,
+<a class='lineno' href='#line-37' id='line-37'>37</a>     <span class="reference">RELSET_1</span>,
+<a class='lineno' href='#line-38' id='line-38'>38</a>     <span class="reference">SQUARE_1</span>, <span class="reference">NAT_1</span>, <span class="reference">FINSEQ_1</span>, <span class="reference">FINSEQ_2</span>, <span class="reference">PBOOLE</span>, <span class="reference">CARD_3</span>, <span class="reference">VALUED_1</span>, <span class="reference">SETFAM_1</span>,
+<a class='lineno' href='#line-39' id='line-39'>39</a>     <span class="reference">TREES_4</span>, <span class="reference">TREES_3</span>, <span class="reference">TREES_2</span>, <span class="reference">TREES_1</span>,
+<a class='lineno' href='#line-40' id='line-40'>40</a>     <span class="reference">ORDERS_1</span>, <span class="reference">ORDERS_2</span>,
+<a class='lineno' href='#line-41' id='line-41'>41</a>     <span class="reference">RECDEF_1</span>,
+<a class='lineno' href='#line-42' id='line-42'>42</a>     <span class="reference">FINSET_1</span>,
+<a class='lineno' href='#line-43' id='line-43'>43</a>     <span class="reference">ENUMSET1</span>,
+<a class='lineno' href='#line-44' id='line-44'>44</a>     <span class="reference">WELLORD2</span>;
+<a class='lineno' href='#line-45' id='line-45'>45</a> 
+<a class='lineno' href='#line-46' id='line-46'>46</a>   <span class="comment">:: Definition are for automatically unfolding predicates</span>
+<a class='lineno' href='#line-47' id='line-47'>47</a>   <span class="comment">::  in the thesis you are proving</span>
+<a class='lineno' href='#line-48' id='line-48'>48</a>   <span class="keyword">definitions</span> <span class="reference">TARSKI</span>,
+<a class='lineno' href='#line-49' id='line-49'>49</a>     <span class="reference">FUNCT_1</span>, <span class="reference">FUNCT_2</span>,
+<a class='lineno' href='#line-50' id='line-50'>50</a>     <span class="reference">FINSEQ_1</span>, <span class="reference">CARD_1</span>, <span class="reference">PBOOLE</span>, <span class="reference">FUNCOP_1</span>,
+<a class='lineno' href='#line-51' id='line-51'>51</a>     <span class="reference">ORDERS_1</span>,
+<a class='lineno' href='#line-52' id='line-52'>52</a>     <span class="reference">TREES_4</span>, <span class="reference">TREES_3</span>, <span class="reference">TREES_2</span>, <span class="reference">TREES_1</span>,
+<a class='lineno' href='#line-53' id='line-53'>53</a>     <span class="reference">XTUPLE_0</span>;
+<a class='lineno' href='#line-54' id='line-54'>54</a> 
+<a class='lineno' href='#line-55' id='line-55'>55</a>   <span class="comment">:: Registrations are for clusters (showing that a type exists (is non-empty),</span>
+<a class='lineno' href='#line-56' id='line-56'>56</a>   <span class="comment">::  and automatically adding adjectives)</span>
+<a class='lineno' href='#line-57' id='line-57'>57</a>   <span class="keyword">registrations</span> <span class="reference">XBOOLE_0</span>, <span class="reference">SUBSET_1</span>, <span class="reference">ORDINAL1</span>, <span class="reference">PARTFUN1</span>,
+<a class='lineno' href='#line-58' id='line-58'>58</a>     <span class="reference">RELAT_2</span>, <span class="reference">RELAT_1</span>,
+<a class='lineno' href='#line-59' id='line-59'>59</a>     <span class="reference">FUNCT_1</span>, <span class="reference">FUNCT_2</span>,
+<a class='lineno' href='#line-60' id='line-60'>60</a>     <span class="reference">FUNCOP_1</span>, <span class="reference">XXREAL_0</span>, <span class="reference">XREAL_0</span>, <span class="reference">NAT_1</span>, <span class="reference">FINSEQ_1</span>, <span class="reference">FINSEQ_2</span>, <span class="reference">CARD_1</span>, <span class="reference">RELSET_1</span>,
+<a class='lineno' href='#line-61' id='line-61'>61</a>     <span class="reference">PBOOLE</span>, <span class="reference">CARD_3</span>,
+<a class='lineno' href='#line-62' id='line-62'>62</a>     <span class="reference">ORDERS_2</span>,
+<a class='lineno' href='#line-63' id='line-63'>63</a>     <span class="reference">TREES_4</span>, <span class="reference">TREES_3</span>, <span class="reference">TREES_2</span>, <span class="reference">TREES_1</span>,
+<a class='lineno' href='#line-64' id='line-64'>64</a>     <span class="reference">FINSET_1</span>;
+<a class='lineno' href='#line-65' id='line-65'>65</a> 
+<a class='lineno' href='#line-66' id='line-66'>66</a>   <span class="comment">:: Load theorem en definition labels</span>
+<a class='lineno' href='#line-67' id='line-67'>67</a>   <span class="keyword">theorems</span> <span class="reference">FUNCOP_1</span>, <span class="reference">RELAT_1</span>, <span class="reference">TARSKI</span>, <span class="reference">FINSEQ_1</span>, <span class="reference">FINSEQ_2</span>, <span class="reference">XTUPLE_0</span>, <span class="reference">FUNCT_1</span>,
+<a class='lineno' href='#line-68' id='line-68'>68</a>     <span class="reference">TREES_4</span>, <span class="reference">TREES_3</span>, <span class="reference">TREES_2</span>, <span class="reference">TREES_1</span>,
+<a class='lineno' href='#line-69' id='line-69'>69</a>     <span class="reference">XBOOLE_0</span>, <span class="reference">SUBSET_1</span>, <span class="reference">RELAT_2</span>, <span class="reference">ENUMSET1</span>,
+<a class='lineno' href='#line-70' id='line-70'>70</a>     <span class="reference">CARD_1</span>, <span class="reference">CARD_2</span>, <span class="reference">CARD_3</span>, <span class="reference">CARD_4</span>;
+<a class='lineno' href='#line-71' id='line-71'>71</a>   
+<a class='lineno' href='#line-72' id='line-72'>72</a>   <span class="keyword">schemes</span> <span class="reference">RECDEF_1</span>;
+<a class='lineno' href='#line-73' id='line-73'>73</a> 
+<a class='lineno' href='#line-74' id='line-74'>74</a>   <span class="keyword">requirements</span> <span class="reference">BOOLE</span>, <span class="reference">SUBSET</span>, <span class="reference">NUMERALS</span>, <span class="reference">ARITHM</span>, <span class="reference">REAL</span>;
+<a class='lineno' href='#line-75' id='line-75'>75</a> 
+<a class='lineno' href='#line-76' id='line-76'>76</a> <span class="keyword">begin</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h2 id="1"><a class="headnumber" href="#1">1</a> Syntax and behaviour</h2>
+
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-80' id='line-80'>80</a> <span class="keyword">reserve</span> T,T1,T2 <span class="keyword">for</span> Tree,
+<a class='lineno' href='#line-81' id='line-81'>81</a>         D <span class="keyword">for</span> DecoratedTree,
+<a class='lineno' href='#line-82' id='line-82'>82</a>         p,q,q2,r <span class="keyword">for</span> FinSequence <span class="keyword">of</span> NAT,
+<a class='lineno' href='#line-83' id='line-83'>83</a>         x,y,X,Y <span class="keyword">for</span> set,
+<a class='lineno' href='#line-84' id='line-84'>84</a>         n <span class="keyword">for</span> Element <span class="keyword">of</span> NAT;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h3 id="1.1"><a class="headnumber" href="#1.1">1.1</a> Lambda terms</h3>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-113"><code>LambdaTerm-like</code></a></li>
+                
+                
+                <li><a href="#line-294"><code>LambdaTerm</code></a></li>
+                
+                
+                <li><a href="#line-298"><code>PreAbstractionTerm</code></a></li>
+                
+                
+                <li><a href="#line-314"><code>PreApplicationTerm</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>A <em>lambda term</em> is identified with it&#39;s AST (abstract
+ syntax tree). More precisely, we identify a lambda term
+ with a finite decorated tree.
+The nodes of the tree denote either application, abstraction
+ or a variable. Using <em>De Bruijn</em> variable indexing, we decorate
+ variables with their De Bruijn index (a natural nuber). Note
+ that we needn&#39;t explicitly annotate the type of a node,
+ as the three types of nodes differ in how many children they must
+ have: an application always has two children, an abstraction but one,
+ and variables don&#39;t have any. So it suffices to decorate application
+ and abstraction nodes with some default value (say, $0$).</p>
+<p>In Mizar, a <code>Tree</code> is a non-empty subset of <code>NAT*</code>, so a set of finite
+ sequences of natural numbers, such that certain logical properties hold.
+Every such sequence denotes a node in the tree, and can be interpreted
+ as a <em>path specification</em> (how to get there, from the top). We see, then,
+ that lambda term trees are a specific subset of general trees, in which
+ only finite sequences of $\{0,1\}$ are used to denote nodes, nodes
+ with children are decorated with a $0$, and is also finite in height.
+By <em>decorating</em> a node <code>r</code> with a number <code>n</code>, we mean that <code>M.r = n</code>.
+Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents the lambda term.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-110' id='line-110'>110</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-111' id='line-111'>111</a>   <span class="keyword">let</span> D;
+<a class='lineno' href='#line-112' id='line-112'>112</a>   
+<a class='lineno' href='#line-113' id='line-113'>113</a>   <span class="keyword">attr</span> D <span class="keyword">is</span> LambdaTerm-like <span class="keyword">means</span>
+<a class='lineno' href='#line-114' id='line-114'>114</a>     :<span class="reference">Def1</span>:
+<a class='lineno' href='#line-115' id='line-115'>115</a>     dom D <span class="keyword">is</span> finite &amp;
+<a class='lineno' href='#line-116' id='line-116'>116</a>     <span class="keyword">for</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D <span class="keyword">holds</span>
+<a class='lineno' href='#line-117' id='line-117'>117</a>       r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} &amp;
+<a class='lineno' href='#line-118' id='line-118'>118</a>       (r^&lt;*0*&gt; <span class="keyword">in</span> dom D <span class="keyword">implies</span> D.r = 0);
+<a class='lineno' href='#line-119' id='line-119'>119</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>Some simple <code>LambdaTerm-like</code> things.</p>
+<p>TODO: some more of these simple trees, for easy usage
+ later on, when defining application and abstraction.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-126' id='line-126'>126</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-127' id='line-127'>127</a>   <span class="keyword">cluster</span> { {} } --&gt; 0 -&gt; LambdaTerm-like;
+<a class='lineno' href='#line-128' id='line-128'>128</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-129' id='line-129'>129</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-130' id='line-130'>130</a> <span class="set-keyword">    <span class="keyword">set</span></span> D = { {} } --&gt; 0;
+<a class='lineno' href='#line-131' id='line-131'>131</a>     dom D = { {} } <span class="keyword">by</span> <span class="reference">FUNCOP_1:13</span>;
+<a class='lineno' href='#line-132' id='line-132'>132</a>     <span class="keyword">hence</span> dom D <span class="keyword">is</span> finite;
+<a class='lineno' href='#line-133' id='line-133'>133</a>     <span class="keyword">let</span> r <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
+<a class='lineno' href='#line-134' id='line-134'>134</a>     <span class="keyword">assume</span>
+<a class='lineno' href='#line-135' id='line-135'>135</a>   A1: r <span class="keyword">in</span> dom D;
+<a class='lineno' href='#line-136' id='line-136'>136</a>     dom D = { {} } <span class="keyword">by</span> <span class="reference">FUNCOP_1:13</span>;
+<a class='lineno' href='#line-137' id='line-137'>137</a>     <span class="keyword">then</span> r = {} <span class="keyword">by</span> A1, <span class="reference">TARSKI:def 1</span>;
+<a class='lineno' href='#line-138' id='line-138'>138</a>     <span class="keyword">then</span> r = &lt;*&gt; {0,1} <span class="keyword">by</span> <span class="reference">FINSEQ_1:def 6</span>;
+<a class='lineno' href='#line-139' id='line-139'>139</a>     <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+<a class='lineno' href='#line-140' id='line-140'>140</a>     <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+<a class='lineno' href='#line-141' id='line-141'>141</a>     <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, <span class="reference">FUNCOP_1:7</span>;
+<a class='lineno' href='#line-142' id='line-142'>142</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-143' id='line-143'>143</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-144' id='line-144'>144</a> 
+<a class='lineno' href='#line-145' id='line-145'>145</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-146' id='line-146'>146</a>   <span class="keyword">cluster</span> { &lt;*&gt; NAT } -&gt; Tree-like;
+<a class='lineno' href='#line-147' id='line-147'>147</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-148' id='line-148'>148</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-149' id='line-149'>149</a>     { &lt;*&gt; NAT } = { {} } <span class="keyword">by</span> <span class="reference">FINSEQ_1:def 6</span>;
+<a class='lineno' href='#line-150' id='line-150'>150</a>     <span class="keyword">thus</span> { &lt;*&gt; NAT } <span class="keyword">is</span> Tree-like;
+<a class='lineno' href='#line-151' id='line-151'>151</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-152' id='line-152'>152</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-153' id='line-153'>153</a> 
+<a class='lineno' href='#line-154' id='line-154'>154</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-155' id='line-155'>155</a>   <span class="keyword">cluster</span> { &lt;*&gt; NAT } --&gt; 0 -&gt; LambdaTerm-like;
+<a class='lineno' href='#line-156' id='line-156'>156</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-157' id='line-157'>157</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-158' id='line-158'>158</a>     { &lt;*&gt; NAT } = { {} } <span class="keyword">by</span> <span class="reference">FINSEQ_1:def 6</span>;
+<a class='lineno' href='#line-159' id='line-159'>159</a>     <span class="keyword">thus</span> { &lt;*&gt; NAT } --&gt; 0 <span class="keyword">is</span> LambdaTerm-like;
+<a class='lineno' href='#line-160' id='line-160'>160</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-161' id='line-161'>161</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-162' id='line-162'>162</a> 
+<a class='lineno' href='#line-163' id='line-163'>163</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-164' id='line-164'>164</a>   <span class="keyword">cluster</span> { {}, &lt;*0*&gt; } -&gt; Tree-like;
+<a class='lineno' href='#line-165' id='line-165'>165</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-166' id='line-166'>166</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-167' id='line-167'>167</a> <span class="set-keyword">    <span class="keyword">set</span></span> T = { {}, &lt;*0*&gt; };
+<a class='lineno' href='#line-168' id='line-168'>168</a>     T = elementary_tree 1 <span class="keyword">by</span> <span class="reference">TREES_1:51</span>;
+<a class='lineno' href='#line-169' id='line-169'>169</a>     <span class="keyword">then</span> <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+<a class='lineno' href='#line-170' id='line-170'>170</a>     T <span class="keyword">is</span> Tree-like;
+<a class='lineno' href='#line-171' id='line-171'>171</a>     <span class="keyword">hence</span> { {}, &lt;*0*&gt; } <span class="keyword">is</span> Tree-like;
+<a class='lineno' href='#line-172' id='line-172'>172</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-173' id='line-173'>173</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-174' id='line-174'>174</a> 
+<a class='lineno' href='#line-175' id='line-175'>175</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-176' id='line-176'>176</a>   <span class="keyword">cluster</span> { {}, &lt;*0*&gt; } --&gt; 0 -&gt; LambdaTerm-like;
+<a class='lineno' href='#line-177' id='line-177'>177</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-178' id='line-178'>178</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-179' id='line-179'>179</a> <span class="set-keyword">    <span class="keyword">set</span></span> T = { {}, &lt;*0*&gt; };
+<a class='lineno' href='#line-180' id='line-180'>180</a>   A6: T <span class="keyword">is</span> finite;
+<a class='lineno' href='#line-181' id='line-181'>181</a> <span class="set-keyword">    <span class="keyword">set</span></span> D = T --&gt; 0;
+<a class='lineno' href='#line-182' id='line-182'>182</a>   A2: dom D = T <span class="keyword">by</span> <span class="reference">FUNCOP_1:13</span>;
+<a class='lineno' href='#line-183' id='line-183'>183</a>     <span class="keyword">hence</span> dom D <span class="keyword">is</span> finite <span class="keyword">by</span> A6;
+<a class='lineno' href='#line-184' id='line-184'>184</a>     <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+<a class='lineno' href='#line-185' id='line-185'>185</a>     <span class="keyword">let</span> r <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
+<a class='lineno' href='#line-186' id='line-186'>186</a>     <span class="keyword">assume</span>
+<a class='lineno' href='#line-187' id='line-187'>187</a>   A1: r <span class="keyword">in</span> dom D;
+<a class='lineno' href='#line-188' id='line-188'>188</a>     <span class="keyword">then</span>
+<a class='lineno' href='#line-189' id='line-189'>189</a>   A3: r = {} <span class="keyword">or</span> r = &lt;*0*&gt; <span class="keyword">by</span> A1, A2, <span class="reference">TARSKI:def 2</span>;
+<a class='lineno' href='#line-190' id='line-190'>190</a>     <span class="keyword">per</span> <span class="keyword">cases</span>;
+<a class='lineno' href='#line-191' id='line-191'>191</a>     <span class="keyword">suppose</span> r = {};
+<a class='lineno' href='#line-192' id='line-192'>192</a> <span class="error">::&gt;       *60</span>
+<a class='lineno' href='#line-193' id='line-193'>193</a>       <span class="keyword">then</span> r = &lt;*&gt; {0,1} <span class="keyword">by</span> <span class="reference">FINSEQ_1:def 6</span>;
+<a class='lineno' href='#line-194' id='line-194'>194</a>       <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+<a class='lineno' href='#line-195' id='line-195'>195</a>       <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+<a class='lineno' href='#line-196' id='line-196'>196</a>       <span class="comment">::thus D.r = 0 by A1, FUNCOP_1:7;</span>
+<a class='lineno' href='#line-197' id='line-197'>197</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-198' id='line-198'>198</a>     <span class="keyword">suppose</span>
+<a class='lineno' href='#line-199' id='line-199'>199</a>     A5: <span class="keyword">not</span> r = {};
+<a class='lineno' href='#line-200' id='line-200'>200</a> <span class="set-keyword">      <span class="keyword">set</span></span> ZeroOne = {0,1};
+<a class='lineno' href='#line-201' id='line-201'>201</a>       <span class="keyword">reconsider</span> ZeroOne <span class="keyword">as</span> non empty set;
+<a class='lineno' href='#line-202' id='line-202'>202</a> <span class="set-keyword">      <span class="keyword">set</span></span> Zero = 0;
+<a class='lineno' href='#line-203' id='line-203'>203</a>       Zero <span class="keyword">in</span> {0,1} <span class="keyword">by</span> <span class="reference">TARSKI:def 2</span>;
+<a class='lineno' href='#line-204' id='line-204'>204</a>       <span class="keyword">then</span> <span class="keyword">reconsider</span> Zero <span class="keyword">as</span> Element <span class="keyword">of</span> ZeroOne;
+<a class='lineno' href='#line-205' id='line-205'>205</a>     A4: &lt;*Zero*&gt; <span class="keyword">is</span> FinSequence <span class="keyword">of</span> ZeroOne;
+<a class='lineno' href='#line-206' id='line-206'>206</a>       r = &lt;*0*&gt; <span class="keyword">by</span> A3, A5
+<a class='lineno' href='#line-207' id='line-207'>207</a>        .= &lt;*Zero*&gt;;
+<a class='lineno' href='#line-208' id='line-208'>208</a>       <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> A4;
+<a class='lineno' href='#line-209' id='line-209'>209</a>       <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+<a class='lineno' href='#line-210' id='line-210'>210</a>       <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, <span class="reference">FUNCOP_1:7</span>;
+<a class='lineno' href='#line-211' id='line-211'>211</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-212' id='line-212'>212</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-213' id='line-213'>213</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-214' id='line-214'>214</a> 
+<a class='lineno' href='#line-215' id='line-215'>215</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-216' id='line-216'>216</a>   <span class="keyword">cluster</span> { {}, &lt;*0*&gt;, &lt;*1*&gt; } -&gt; Tree-like;
+<a class='lineno' href='#line-217' id='line-217'>217</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-218' id='line-218'>218</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-219' id='line-219'>219</a> <span class="set-keyword">    <span class="keyword">set</span></span> T = { {}, &lt;*0*&gt;, &lt;*1*&gt; };
+<a class='lineno' href='#line-220' id='line-220'>220</a>     T = elementary_tree 2 <span class="keyword">by</span> <span class="reference">TREES_1:53</span>;
+<a class='lineno' href='#line-221' id='line-221'>221</a>     <span class="keyword">then</span> <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+<a class='lineno' href='#line-222' id='line-222'>222</a>     T <span class="keyword">is</span> Tree-like;
+<a class='lineno' href='#line-223' id='line-223'>223</a>     <span class="keyword">hence</span> { {}, &lt;*0*&gt;, &lt;*1*&gt; } <span class="keyword">is</span> Tree-like;
+<a class='lineno' href='#line-224' id='line-224'>224</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-225' id='line-225'>225</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-226' id='line-226'>226</a> 
+<a class='lineno' href='#line-227' id='line-227'>227</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-228' id='line-228'>228</a>   <span class="keyword">cluster</span> { {}, &lt;*0*&gt;, &lt;*1*&gt; } --&gt; 0 -&gt; LambdaTerm-like;
+<a class='lineno' href='#line-229' id='line-229'>229</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-230' id='line-230'>230</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-231' id='line-231'>231</a> <span class="set-keyword">    <span class="keyword">set</span></span> T = { {}, &lt;*0*&gt;, &lt;*1*&gt; };
+<a class='lineno' href='#line-232' id='line-232'>232</a>   A6: T <span class="keyword">is</span> finite;
+<a class='lineno' href='#line-233' id='line-233'>233</a> <span class="set-keyword">    <span class="keyword">set</span></span> D = T --&gt; 0;
+<a class='lineno' href='#line-234' id='line-234'>234</a>   A2: dom D = T <span class="keyword">by</span> <span class="reference">FUNCOP_1:13</span>;
+<a class='lineno' href='#line-235' id='line-235'>235</a>     <span class="keyword">hence</span> dom D <span class="keyword">is</span> finite <span class="keyword">by</span> A6;
+<a class='lineno' href='#line-236' id='line-236'>236</a>     <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+<a class='lineno' href='#line-237' id='line-237'>237</a>     <span class="keyword">let</span> r <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
+<a class='lineno' href='#line-238' id='line-238'>238</a>     <span class="keyword">assume</span>
+<a class='lineno' href='#line-239' id='line-239'>239</a>   A1: r <span class="keyword">in</span> dom D;
+<a class='lineno' href='#line-240' id='line-240'>240</a>     <span class="keyword">then</span>
+<a class='lineno' href='#line-241' id='line-241'>241</a>   A3: r = {} <span class="keyword">or</span> r = &lt;*0*&gt; <span class="keyword">or</span> r = &lt;*1*&gt; <span class="keyword">by</span> A1, A2, <span class="reference">ENUMSET1:def 1</span>;
+<a class='lineno' href='#line-242' id='line-242'>242</a>     <span class="keyword">per</span> <span class="keyword">cases</span>;
+<a class='lineno' href='#line-243' id='line-243'>243</a>     <span class="keyword">suppose</span> r = {};
+<a class='lineno' href='#line-244' id='line-244'>244</a>       <span class="keyword">then</span> r = &lt;*&gt; {0,1} <span class="keyword">by</span> <span class="reference">FINSEQ_1:def 6</span>;
+<a class='lineno' href='#line-245' id='line-245'>245</a>       <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+<a class='lineno' href='#line-246' id='line-246'>246</a>       <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+<a class='lineno' href='#line-247' id='line-247'>247</a>       <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, <span class="reference">FUNCOP_1:7</span>;
+<a class='lineno' href='#line-248' id='line-248'>248</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-249' id='line-249'>249</a>     <span class="keyword">suppose</span>
+<a class='lineno' href='#line-250' id='line-250'>250</a>     A5: r = &lt;*0*&gt;;
+<a class='lineno' href='#line-251' id='line-251'>251</a> <span class="set-keyword">      <span class="keyword">set</span></span> ZeroOne = {0,1};
+<a class='lineno' href='#line-252' id='line-252'>252</a>       <span class="keyword">reconsider</span> ZeroOne <span class="keyword">as</span> non empty set;
+<a class='lineno' href='#line-253' id='line-253'>253</a> <span class="set-keyword">      <span class="keyword">set</span></span> Zero = 0;
+<a class='lineno' href='#line-254' id='line-254'>254</a>       Zero <span class="keyword">in</span> {0,1} <span class="keyword">by</span> <span class="reference">TARSKI:def 2</span>;
+<a class='lineno' href='#line-255' id='line-255'>255</a>       <span class="keyword">then</span> <span class="keyword">reconsider</span> Zero <span class="keyword">as</span> Element <span class="keyword">of</span> ZeroOne;
+<a class='lineno' href='#line-256' id='line-256'>256</a>     A4: &lt;*Zero*&gt; <span class="keyword">is</span> FinSequence <span class="keyword">of</span> ZeroOne;
+<a class='lineno' href='#line-257' id='line-257'>257</a>       r = &lt;*0*&gt; <span class="keyword">by</span> A5
+<a class='lineno' href='#line-258' id='line-258'>258</a>        .= &lt;*Zero*&gt;;
+<a class='lineno' href='#line-259' id='line-259'>259</a>       <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> A4;
+<a class='lineno' href='#line-260' id='line-260'>260</a>       <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+<a class='lineno' href='#line-261' id='line-261'>261</a>       <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, <span class="reference">FUNCOP_1:7</span>;
+<a class='lineno' href='#line-262' id='line-262'>262</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-263' id='line-263'>263</a>     <span class="keyword">suppose</span> <span class="keyword">not</span> (r = {} <span class="keyword">or</span> r = &lt;*0*&gt;);
+<a class='lineno' href='#line-264' id='line-264'>264</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-265' id='line-265'>265</a>     A7: r = &lt;*1*&gt; <span class="keyword">by</span> A3;
+<a class='lineno' href='#line-266' id='line-266'>266</a> <span class="set-keyword">      <span class="keyword">set</span></span> ZeroOne = {0,1};
+<a class='lineno' href='#line-267' id='line-267'>267</a>       <span class="keyword">reconsider</span> ZeroOne <span class="keyword">as</span> non empty set;
+<a class='lineno' href='#line-268' id='line-268'>268</a> <span class="set-keyword">      <span class="keyword">set</span></span> One = 1;
+<a class='lineno' href='#line-269' id='line-269'>269</a>       One <span class="keyword">in</span> {0,1} <span class="keyword">by</span> <span class="reference">TARSKI:def 2</span>;
+<a class='lineno' href='#line-270' id='line-270'>270</a>       <span class="keyword">then</span> <span class="keyword">reconsider</span> One <span class="keyword">as</span> Element <span class="keyword">of</span> ZeroOne;
+<a class='lineno' href='#line-271' id='line-271'>271</a>     A4: &lt;*One*&gt; <span class="keyword">is</span> FinSequence <span class="keyword">of</span> ZeroOne;
+<a class='lineno' href='#line-272' id='line-272'>272</a>       r = &lt;*1*&gt; <span class="keyword">by</span> A7
+<a class='lineno' href='#line-273' id='line-273'>273</a>        .= &lt;*One*&gt;;
+<a class='lineno' href='#line-274' id='line-274'>274</a>       <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+<a class='lineno' href='#line-275' id='line-275'>275</a>       <span class="keyword">assume</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom D;
+<a class='lineno' href='#line-276' id='line-276'>276</a>       <span class="keyword">thus</span> D.r = 0 <span class="keyword">by</span> A1, <span class="reference">FUNCOP_1:7</span>;
+<a class='lineno' href='#line-277' id='line-277'>277</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-278' id='line-278'>278</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-279' id='line-279'>279</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>And then we can easily define a <code>LambdaTerm-like</code> cluster,
+ and make a mode <code>LambdaTerm</code> out of it.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-283' id='line-283'>283</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-284' id='line-284'>284</a>   <span class="keyword">cluster</span> LambdaTerm-like <span class="keyword">for</span> DecoratedTree <span class="keyword">of</span> NAT;
+<a class='lineno' href='#line-285' id='line-285'>285</a>   <span class="keyword">existence</span>
+<a class='lineno' href='#line-286' id='line-286'>286</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-287' id='line-287'>287</a> <span class="set-keyword">    <span class="keyword">set</span></span> D = { {} } --&gt; 0;
+<a class='lineno' href='#line-288' id='line-288'>288</a>     <span class="keyword">take</span> D;
+<a class='lineno' href='#line-289' id='line-289'>289</a>     <span class="keyword">thus</span> D <span class="keyword">is</span> LambdaTerm-like;
+<a class='lineno' href='#line-290' id='line-290'>290</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-291' id='line-291'>291</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-292' id='line-292'>292</a> 
+<a class='lineno' href='#line-293' id='line-293'>293</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-294' id='line-294'>294</a>   <span class="keyword">mode</span> LambdaTerm <span class="keyword">is</span> LambdaTerm-like DecoratedTree <span class="keyword">of</span> NAT;
+<a class='lineno' href='#line-295' id='line-295'>295</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-296' id='line-296'>296</a> 
+<a class='lineno' href='#line-297' id='line-297'>297</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-298' id='line-298'>298</a>   <span class="keyword">func</span> PreAbstractionTerm -&gt; LambdaTerm <span class="keyword">equals</span>
+<a class='lineno' href='#line-299' id='line-299'>299</a>     { {}, &lt;*0*&gt; } --&gt; 0;
+<a class='lineno' href='#line-300' id='line-300'>300</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-301' id='line-301'>301</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-302' id='line-302'>302</a> <span class="set-keyword">    <span class="keyword">set</span></span> T = { {}, &lt;*0*&gt; };
+<a class='lineno' href='#line-303' id='line-303'>303</a>     <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+<a class='lineno' href='#line-304' id='line-304'>304</a> <span class="set-keyword">    <span class="keyword">set</span></span> D = T --&gt; 0;
+<a class='lineno' href='#line-305' id='line-305'>305</a>     <span class="keyword">reconsider</span> D <span class="keyword">as</span> DecoratedTree <span class="keyword">of</span> NAT;
+<a class='lineno' href='#line-306' id='line-306'>306</a>     D <span class="keyword">is</span> LambdaTerm-like;
+<a class='lineno' href='#line-307' id='line-307'>307</a>     <span class="keyword">then</span> <span class="keyword">reconsider</span> D <span class="keyword">as</span> LambdaTerm;
+<a class='lineno' href='#line-308' id='line-308'>308</a>     D <span class="keyword">is</span> LambdaTerm;
+<a class='lineno' href='#line-309' id='line-309'>309</a>     <span class="keyword">hence</span> { {}, &lt;*0*&gt; } --&gt; 0 <span class="keyword">is</span> LambdaTerm;
+<a class='lineno' href='#line-310' id='line-310'>310</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-311' id='line-311'>311</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-312' id='line-312'>312</a> 
+<a class='lineno' href='#line-313' id='line-313'>313</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-314' id='line-314'>314</a>   <span class="keyword">func</span> PreApplicationTerm -&gt; LambdaTerm <span class="keyword">equals</span>
+<a class='lineno' href='#line-315' id='line-315'>315</a>     { {}, &lt;*0*&gt;, &lt;*1*&gt; } --&gt; 0;
+<a class='lineno' href='#line-316' id='line-316'>316</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-317' id='line-317'>317</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-318' id='line-318'>318</a> <span class="set-keyword">    <span class="keyword">set</span></span> T = { {}, &lt;*0*&gt;, &lt;*1*&gt; };
+<a class='lineno' href='#line-319' id='line-319'>319</a>     <span class="keyword">reconsider</span> T <span class="keyword">as</span> Tree;
+<a class='lineno' href='#line-320' id='line-320'>320</a> <span class="set-keyword">    <span class="keyword">set</span></span> D = T --&gt; 0;
+<a class='lineno' href='#line-321' id='line-321'>321</a>     <span class="keyword">reconsider</span> D <span class="keyword">as</span> DecoratedTree <span class="keyword">of</span> NAT;
+<a class='lineno' href='#line-322' id='line-322'>322</a>     D <span class="keyword">is</span> LambdaTerm-like;
+<a class='lineno' href='#line-323' id='line-323'>323</a>     <span class="keyword">then</span> <span class="keyword">reconsider</span> D <span class="keyword">as</span> LambdaTerm;
+<a class='lineno' href='#line-324' id='line-324'>324</a>     D <span class="keyword">is</span> LambdaTerm;
+<a class='lineno' href='#line-325' id='line-325'>325</a>     <span class="keyword">hence</span> { {}, &lt;*0*&gt;, &lt;*1*&gt; } --&gt; 0 <span class="keyword">is</span> LambdaTerm;
+<a class='lineno' href='#line-326' id='line-326'>326</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-327' id='line-327'>327</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-328' id='line-328'>328</a> 
+<a class='lineno' href='#line-329' id='line-329'>329</a> <span class="keyword">reserve</span> M,N,P,Q <span class="keyword">for</span> LambdaTerm;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h4 id="1.1.1"><a class="headnumber" href="#1.1.1">1.1.1</a> Preservation under operations</h4>
+
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p><code>LambdaTerm</code>s are preserved under taking subterms, and composing
+ terms. We&#39;ll register this knowledge in the type system.</p>
+<p>Let Mizar know that <code>M|r</code> is also a <code>LambdaTerm</code>.
+The definition of <code>|</code> that we are using is the definition
+ that operates on (and returns) a <code>DecoratedTree</code>. Showing
+ that retricting a <code>LambdaTerm</code> produces a <code>LambdaTerm-like</code>
+ result ensures us that the result is a <code>LambdaTerm</code>.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-341' id='line-341'>341</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-342' id='line-342'>342</a>   <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+<a class='lineno' href='#line-343' id='line-343'>343</a>       r <span class="keyword">be</span> Element <span class="keyword">of</span> dom M;
+<a class='lineno' href='#line-344' id='line-344'>344</a> 
+<a class='lineno' href='#line-345' id='line-345'>345</a>   <span class="keyword">cluster</span> M|r -&gt; LambdaTerm-like;
+<a class='lineno' href='#line-346' id='line-346'>346</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-347' id='line-347'>347</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-348' id='line-348'>348</a>     <span class="keyword">thus</span> dom (M|r) <span class="keyword">is</span> finite <span class="keyword">proof</span>
+<a class='lineno' href='#line-349' id='line-349'>349</a>       dom M <span class="keyword">is</span> finite <span class="keyword">by</span> <span class="reference">Def1</span>;
+<a class='lineno' href='#line-350' id='line-350'>350</a>       <span class="keyword">then</span> (dom M)|r <span class="keyword">is</span> finite;
+<a class='lineno' href='#line-351' id='line-351'>351</a>       <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> <span class="reference">TREES_2:def 10</span>;
+<a class='lineno' href='#line-352' id='line-352'>352</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-353' id='line-353'>353</a> 
+<a class='lineno' href='#line-354' id='line-354'>354</a>     <span class="keyword">let</span> p <span class="keyword">be</span> FinSequence <span class="keyword">of</span> NAT;
+<a class='lineno' href='#line-355' id='line-355'>355</a>     <span class="keyword">assume</span>
+<a class='lineno' href='#line-356' id='line-356'>356</a>   A3: p <span class="keyword">in</span> dom (M|r);
+<a class='lineno' href='#line-357' id='line-357'>357</a>     <span class="keyword">thus</span> p <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">proof</span>
+<a class='lineno' href='#line-358' id='line-358'>358</a>       dom (M|r) = (dom M)|r <span class="keyword">by</span> <span class="reference">TREES_2:def 10</span>;
+<a class='lineno' href='#line-359' id='line-359'>359</a>       <span class="keyword">then</span> p <span class="keyword">in</span> (dom M)|r <span class="keyword">by</span> A3;
+<a class='lineno' href='#line-360' id='line-360'>360</a>       <span class="keyword">then</span> r^p <span class="keyword">in</span> dom M <span class="keyword">by</span> <span class="reference">TREES_1:def 6</span>;
+<a class='lineno' href='#line-361' id='line-361'>361</a>       <span class="keyword">then</span> r^p <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> <span class="reference">Def1</span>;
+<a class='lineno' href='#line-362' id='line-362'>362</a>       <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> <span class="reference">FINSEQ_1:36</span>;
+<a class='lineno' href='#line-363' id='line-363'>363</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-364' id='line-364'>364</a> 
+<a class='lineno' href='#line-365' id='line-365'>365</a>     <span class="comment">:: r^p^&lt;*0*&gt;</span>
+<a class='lineno' href='#line-366' id='line-366'>366</a> <span class="set-keyword">    <span class="keyword">set</span></span> p0 = p^&lt;*0*&gt;;
+<a class='lineno' href='#line-367' id='line-367'>367</a> <span class="set-keyword">    <span class="keyword">set</span></span> rp = r^p;
+<a class='lineno' href='#line-368' id='line-368'>368</a>     <span class="keyword">assume</span>
+<a class='lineno' href='#line-369' id='line-369'>369</a>   A4: p0 <span class="keyword">in</span> dom (M|r);
+<a class='lineno' href='#line-370' id='line-370'>370</a>     <span class="keyword">thus</span> (M|r).p = 0 <span class="keyword">proof</span>
+<a class='lineno' href='#line-371' id='line-371'>371</a>       dom (M|r) <span class="keyword">is</span> Tree-like;
+<a class='lineno' href='#line-372' id='line-372'>372</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-373' id='line-373'>373</a>     A5: p0 <span class="keyword">in</span> dom (M|r) <span class="keyword">by</span> A4, <span class="reference">TREES_1:21</span>;
+<a class='lineno' href='#line-374' id='line-374'>374</a>       <span class="keyword">then</span> <span class="keyword">reconsider</span> p0 <span class="keyword">as</span> Element <span class="keyword">of</span> dom (M|r);
+<a class='lineno' href='#line-375' id='line-375'>375</a>       <span class="keyword">reconsider</span> p0 <span class="keyword">as</span> Element <span class="keyword">of</span> (dom M)|r <span class="keyword">by</span> <span class="reference">TREES_2:def 10</span>;
+<a class='lineno' href='#line-376' id='line-376'>376</a>       p0 <span class="keyword">in</span> (dom M)|r;
+<a class='lineno' href='#line-377' id='line-377'>377</a>       <span class="keyword">then</span> r^p0 <span class="keyword">in</span> dom M <span class="keyword">by</span> <span class="reference">TREES_1:def 6</span>;
+<a class='lineno' href='#line-378' id='line-378'>378</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-379' id='line-379'>379</a>     A6: rp^&lt;*0*&gt; <span class="keyword">in</span> dom M <span class="keyword">by</span> <span class="reference">FINSEQ_1:32</span>;
+<a class='lineno' href='#line-380' id='line-380'>380</a>       <span class="keyword">then</span> rp <span class="keyword">in</span> dom M <span class="keyword">by</span> <span class="reference">TREES_1:21</span>;
+<a class='lineno' href='#line-381' id='line-381'>381</a>       <span class="keyword">then</span> M.rp = 0 <span class="keyword">by</span> A6, <span class="reference">Def1</span>;
+<a class='lineno' href='#line-382' id='line-382'>382</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-383' id='line-383'>383</a>     A8: M.(r^p) = 0;
+<a class='lineno' href='#line-384' id='line-384'>384</a>       p <span class="keyword">in</span> (dom M)|r <span class="keyword">by</span> A3, <span class="reference">TREES_2:def 10</span>;
+<a class='lineno' href='#line-385' id='line-385'>385</a>       <span class="keyword">then</span> (M|r).p = M.(r^p) <span class="keyword">by</span> <span class="reference">TREES_2:def 10</span>;
+<a class='lineno' href='#line-386' id='line-386'>386</a>       <span class="keyword">hence</span> (M|r).p = 0 <span class="keyword">by</span> A8, <span class="reference">TREES_2:def 10</span>;
+<a class='lineno' href='#line-387' id='line-387'>387</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-388' id='line-388'>388</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-389' id='line-389'>389</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>Let Mizar know that <code>P with-replacement (p,Q)</code> is also a <code>LambdaTerm</code>.
+First we prove a slightly more general theorem about the ranges of
+ composed <code>DecoratedTree</code>s, and add this knowledge to the type system.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-394' id='line-394'>394</a> <span class="keyword">reserve</span> X <span class="keyword">for</span> set,
+<a class='lineno' href='#line-395' id='line-395'>395</a>         D1,D2 <span class="keyword">for</span> DecoratedTree,
+<a class='lineno' href='#line-396' id='line-396'>396</a>         p <span class="keyword">for</span> Element <span class="keyword">of</span> dom D1;
+<a class='lineno' href='#line-397' id='line-397'>397</a> 
+<a class='lineno' href='#line-398' id='line-398'>398</a> <span class="keyword">theorem</span> Th1:
+<a class='lineno' href='#line-399' id='line-399'>399</a>   D1 <span class="keyword">is</span> X-valued &amp; D2 <span class="keyword">is</span> Y-valued <span class="keyword">implies</span>
+<a class='lineno' href='#line-400' id='line-400'>400</a>     D1 with-replacement (p,D2) <span class="keyword">is</span> (X \/ Y)-valued
+<a class='lineno' href='#line-401' id='line-401'>401</a> <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-402' id='line-402'>402</a>   <span class="keyword">assume</span>
+<a class='lineno' href='#line-403' id='line-403'>403</a> A4: D1 <span class="keyword">is</span> X-valued;
+<a class='lineno' href='#line-404' id='line-404'>404</a>   <span class="keyword">assume</span>
+<a class='lineno' href='#line-405' id='line-405'>405</a> A5: D2 <span class="keyword">is</span> Y-valued;
+<a class='lineno' href='#line-406' id='line-406'>406</a> <span class="set-keyword">  <span class="keyword">set</span></span> D = D1 with-replacement (p,D2);
+<a class='lineno' href='#line-407' id='line-407'>407</a> <span class="set-keyword">  <span class="keyword">set</span></span> T = dom D;
+<a class='lineno' href='#line-408' id='line-408'>408</a>   rng D c= X \/ Y
+<a class='lineno' href='#line-409' id='line-409'>409</a>   <span class="keyword">proof</span>
+<a class='lineno' href='#line-410' id='line-410'>410</a>     <span class="keyword">let</span> x <span class="keyword">be</span> set;
+<a class='lineno' href='#line-411' id='line-411'>411</a>     <span class="keyword">assume</span> x <span class="keyword">in</span> rng D;
+<a class='lineno' href='#line-412' id='line-412'>412</a>     <span class="keyword">then</span> <span class="keyword">ex</span> q <span class="keyword">being</span> set <span class="keyword">st</span> [q,x] <span class="keyword">in</span> D <span class="keyword">by</span> <span class="reference">XTUPLE_0:def 13</span>;
+<a class='lineno' href='#line-413' id='line-413'>413</a>     <span class="keyword">then</span> <span class="keyword">consider</span> q <span class="keyword">being</span> set <span class="keyword">such</span> <span class="keyword">that</span>
+<a class='lineno' href='#line-414' id='line-414'>414</a>   A1: [q,x] <span class="keyword">in</span> D;
+<a class='lineno' href='#line-415' id='line-415'>415</a>   A2: q <span class="keyword">in</span> T <span class="keyword">by</span> A1, <span class="reference">XTUPLE_0:def 12</span>;
+<a class='lineno' href='#line-416' id='line-416'>416</a>     T <span class="keyword">is</span> Tree <span class="keyword">by</span> <span class="reference">TREES_2:def 8</span>;
+<a class='lineno' href='#line-417' id='line-417'>417</a>     <span class="keyword">then</span> <span class="keyword">reconsider</span> q <span class="keyword">as</span> FinSequence <span class="keyword">of</span> NAT <span class="keyword">by</span> A2, <span class="reference">TREES_1:19</span>;
+<a class='lineno' href='#line-418' id='line-418'>418</a>   A13: T = dom D1 with-replacement (p, dom D2) <span class="keyword">by</span> <span class="reference">TREES_2:def 11</span>;
+<a class='lineno' href='#line-419' id='line-419'>419</a>     <span class="keyword">then</span>
+<a class='lineno' href='#line-420' id='line-420'>420</a>   A3: ((<span class="keyword">not</span> p is_a_prefix_of q &amp; D.q = D1.q) <span class="keyword">or</span>
+<a class='lineno' href='#line-421' id='line-421'>421</a>       (<span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r &amp; D.q = D2.r)) <span class="keyword">by</span> A2, <span class="reference">TREES_2:def 11</span>;
+<a class='lineno' href='#line-422' id='line-422'>422</a>     <span class="keyword">per</span> <span class="keyword">cases</span>;
+<a class='lineno' href='#line-423' id='line-423'>423</a>     <span class="keyword">suppose</span>
+<a class='lineno' href='#line-424' id='line-424'>424</a>     A6: (<span class="keyword">not</span> p is_a_prefix_of q &amp; D.q = D1.q);
+<a class='lineno' href='#line-425' id='line-425'>425</a>       [q,x] <span class="keyword">in</span> D <span class="keyword">by</span> A1;
+<a class='lineno' href='#line-426' id='line-426'>426</a>       <span class="keyword">then</span> D.q = x <span class="keyword">by</span> A2, <span class="reference">FUNCT_1:def 2</span>;
+<a class='lineno' href='#line-427' id='line-427'>427</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-428' id='line-428'>428</a>     A7: D1.q = x <span class="keyword">by</span> A6;
+<a class='lineno' href='#line-429' id='line-429'>429</a>     A12: q <span class="keyword">in</span> dom D1
+<a class='lineno' href='#line-430' id='line-430'>430</a>       <span class="keyword">proof</span>
+<a class='lineno' href='#line-431' id='line-431'>431</a>       A14: (q <span class="keyword">in</span> dom D1 &amp; <span class="keyword">not</span> p is_a_proper_prefix_of q <span class="keyword">or</span>
+<a class='lineno' href='#line-432' id='line-432'>432</a>           <span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r) <span class="keyword">by</span> A2, A13, <span class="reference">TREES_1:def 9</span>;
+<a class='lineno' href='#line-433' id='line-433'>433</a>         <span class="keyword">per</span> <span class="keyword">cases</span>;
+<a class='lineno' href='#line-434' id='line-434'>434</a>         <span class="keyword">suppose</span> q <span class="keyword">in</span> dom D1 &amp; <span class="keyword">not</span> p is_a_proper_prefix_of q;
+<a class='lineno' href='#line-435' id='line-435'>435</a>           <span class="keyword">hence</span> q <span class="keyword">in</span> dom D1;
+<a class='lineno' href='#line-436' id='line-436'>436</a>         <span class="keyword">end</span>;
+<a class='lineno' href='#line-437' id='line-437'>437</a>         <span class="keyword">suppose</span> <span class="keyword">not</span> (q <span class="keyword">in</span> dom D1 &amp; <span class="keyword">not</span> p is_a_proper_prefix_of q);
+<a class='lineno' href='#line-438' id='line-438'>438</a>           <span class="keyword">then</span> <span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r <span class="keyword">by</span> A14;
+<a class='lineno' href='#line-439' id='line-439'>439</a>           <span class="keyword">then</span>
+<a class='lineno' href='#line-440' id='line-440'>440</a>         A15: p is_a_prefix_of q <span class="keyword">by</span> <span class="reference">TREES_1:1</span>;
+<a class='lineno' href='#line-441' id='line-441'>441</a>           <span class="keyword">assume</span> <span class="keyword">not</span> q <span class="keyword">in</span> dom D1;
+<a class='lineno' href='#line-442' id='line-442'>442</a>           <span class="keyword">thus</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> A6, A15;
+<a class='lineno' href='#line-443' id='line-443'>443</a>         <span class="keyword">end</span>;
+<a class='lineno' href='#line-444' id='line-444'>444</a>       <span class="keyword">end</span>;
+<a class='lineno' href='#line-445' id='line-445'>445</a>       [q,x] <span class="keyword">in</span> D1 <span class="keyword">by</span> A7, A12, <span class="reference">FUNCT_1:def 2</span>;
+<a class='lineno' href='#line-446' id='line-446'>446</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-447' id='line-447'>447</a>     A8: x <span class="keyword">in</span> rng D1 <span class="keyword">by</span> <span class="reference">XTUPLE_0:def 13</span>;
+<a class='lineno' href='#line-448' id='line-448'>448</a>       rng D1 c= X <span class="keyword">by</span> A4, <span class="reference">RELAT_1:def 19</span>;
+<a class='lineno' href='#line-449' id='line-449'>449</a>       <span class="keyword">then</span> x <span class="keyword">in</span> X <span class="keyword">by</span> A8;
+<a class='lineno' href='#line-450' id='line-450'>450</a>       <span class="keyword">hence</span> x <span class="keyword">in</span> (X \/ Y) <span class="keyword">by</span> <span class="reference">XBOOLE_0:def 3</span>;
+<a class='lineno' href='#line-451' id='line-451'>451</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-452' id='line-452'>452</a>     <span class="keyword">suppose</span> <span class="keyword">not</span> (<span class="keyword">not</span> p is_a_prefix_of q &amp; D.q = D1.q);
+<a class='lineno' href='#line-453' id='line-453'>453</a>       <span class="keyword">then</span> (<span class="keyword">ex</span> r <span class="keyword">st</span> r <span class="keyword">in</span> dom D2 &amp; q = p^r &amp; D.q = D2.r) <span class="keyword">by</span> A3;
+<a class='lineno' href='#line-454' id='line-454'>454</a>       <span class="keyword">then</span> <span class="keyword">consider</span> r <span class="keyword">such</span> <span class="keyword">that</span>
+<a class='lineno' href='#line-455' id='line-455'>455</a>     A9: r <span class="keyword">in</span> dom D2 &amp; q = p^r &amp; D.q = D2.r;
+<a class='lineno' href='#line-456' id='line-456'>456</a>       [q,x] <span class="keyword">in</span> D <span class="keyword">by</span> A1;
+<a class='lineno' href='#line-457' id='line-457'>457</a>       <span class="keyword">then</span> D.q = x <span class="keyword">by</span> A2, <span class="reference">FUNCT_1:def 2</span>;
+<a class='lineno' href='#line-458' id='line-458'>458</a>       <span class="keyword">then</span> D2.r = x <span class="keyword">by</span> A9;
+<a class='lineno' href='#line-459' id='line-459'>459</a>       <span class="keyword">then</span> [r,x] <span class="keyword">in</span> D2 <span class="keyword">by</span> A9, <span class="reference">FUNCT_1:def 2</span>;
+<a class='lineno' href='#line-460' id='line-460'>460</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-461' id='line-461'>461</a>     A11: x <span class="keyword">in</span> rng D2 <span class="keyword">by</span> <span class="reference">XTUPLE_0:def 13</span>;
+<a class='lineno' href='#line-462' id='line-462'>462</a>       rng D2 c= Y <span class="keyword">by</span> A5, <span class="reference">RELAT_1:def 19</span>;
+<a class='lineno' href='#line-463' id='line-463'>463</a>       <span class="keyword">then</span> x <span class="keyword">in</span> Y <span class="keyword">by</span> A11;
+<a class='lineno' href='#line-464' id='line-464'>464</a>       <span class="keyword">hence</span> x <span class="keyword">in</span> (X \/ Y) <span class="keyword">by</span> <span class="reference">XBOOLE_0:def 3</span>;
+<a class='lineno' href='#line-465' id='line-465'>465</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-466' id='line-466'>466</a>   <span class="keyword">end</span>;
+<a class='lineno' href='#line-467' id='line-467'>467</a>   <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> <span class="reference">RELAT_1:def 19</span>;
+<a class='lineno' href='#line-468' id='line-468'>468</a> <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-469' id='line-469'>469</a> 
+<a class='lineno' href='#line-470' id='line-470'>470</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-471' id='line-471'>471</a>   <span class="keyword">let</span> P,Q <span class="keyword">be</span> LambdaTerm,
+<a class='lineno' href='#line-472' id='line-472'>472</a>       p <span class="keyword">be</span> Element <span class="keyword">of</span> dom P;
+<a class='lineno' href='#line-473' id='line-473'>473</a> 
+<a class='lineno' href='#line-474' id='line-474'>474</a>   <span class="keyword">cluster</span> P with-replacement (p,Q) -&gt; NAT-valued;
+<a class='lineno' href='#line-475' id='line-475'>475</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-476' id='line-476'>476</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-477' id='line-477'>477</a>   A1: P <span class="keyword">is</span> NAT-valued <span class="keyword">by</span> <span class="reference">Def1</span>;
+<a class='lineno' href='#line-478' id='line-478'>478</a>   A2: Q <span class="keyword">is</span> NAT-valued <span class="keyword">by</span> <span class="reference">Def1</span>;
+<a class='lineno' href='#line-479' id='line-479'>479</a>     P with-replacement (p,Q) <span class="keyword">is</span> (NAT \/ NAT)-valued <span class="keyword">by</span> A1, A2, Th1;
+<a class='lineno' href='#line-480' id='line-480'>480</a>     <span class="keyword">hence</span> P with-replacement (p,Q) <span class="keyword">is</span> NAT-valued <span class="keyword">by</span> <span class="reference">XBOOLE_0:def 3</span>;
+<a class='lineno' href='#line-481' id='line-481'>481</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-482' id='line-482'>482</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-483' id='line-483'>483</a> 
+<a class='lineno' href='#line-484' id='line-484'>484</a> <span class="keyword">reserve</span> R <span class="keyword">for</span> DecoratedTree,
+<a class='lineno' href='#line-485' id='line-485'>485</a>         p <span class="keyword">for</span> Element <span class="keyword">of</span> dom P;
+<a class='lineno' href='#line-486' id='line-486'>486</a> 
+<a class='lineno' href='#line-487' id='line-487'>487</a> <span class="keyword">theorem</span> Th2:
+<a class='lineno' href='#line-488' id='line-488'>488</a>   P with-replacement (p,Q) <span class="keyword">is</span> LambdaTerm-like
+<a class='lineno' href='#line-489' id='line-489'>489</a> <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-490' id='line-490'>490</a> <span class="set-keyword">  <span class="keyword">set</span></span> R = P with-replacement (p,Q);
+<a class='lineno' href='#line-491' id='line-491'>491</a>   <span class="keyword">thus</span> dom R <span class="keyword">is</span> finite
+<a class='lineno' href='#line-492' id='line-492'>492</a>   <span class="keyword">proof</span>
+<a class='lineno' href='#line-493' id='line-493'>493</a>   A1: dom P <span class="keyword">is</span> finite <span class="keyword">by</span> <span class="reference">Def1</span>;
+<a class='lineno' href='#line-494' id='line-494'>494</a>   A2: dom Q <span class="keyword">is</span> finite <span class="keyword">by</span> <span class="reference">Def1</span>;
+<a class='lineno' href='#line-495' id='line-495'>495</a>     dom R = (dom P) with-replacement (p,dom Q) <span class="keyword">by</span> <span class="reference">TREES_2:def 11</span>;
+<a class='lineno' href='#line-496' id='line-496'>496</a>     <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> A1, A2;
+<a class='lineno' href='#line-497' id='line-497'>497</a>   <span class="keyword">end</span>;
+<a class='lineno' href='#line-498' id='line-498'>498</a> 
+<a class='lineno' href='#line-499' id='line-499'>499</a>   <span class="keyword">let</span> r;
+<a class='lineno' href='#line-500' id='line-500'>500</a>   <span class="keyword">assume</span>
+<a class='lineno' href='#line-501' id='line-501'>501</a> A3: r <span class="keyword">in</span> dom R;
+<a class='lineno' href='#line-502' id='line-502'>502</a>   <span class="keyword">thus</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1}
+<a class='lineno' href='#line-503' id='line-503'>503</a>   <span class="keyword">proof</span>
+<a class='lineno' href='#line-504' id='line-504'>504</a>     dom R = (dom P) with-replacement (p,dom Q) <span class="keyword">by</span> <span class="reference">TREES_2:def 11</span>;
+<a class='lineno' href='#line-505' id='line-505'>505</a>     <span class="keyword">then</span>
+<a class='lineno' href='#line-506' id='line-506'>506</a>   A4: ((r <span class="keyword">in</span> dom P &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r) <span class="keyword">or</span>
+<a class='lineno' href='#line-507' id='line-507'>507</a>       (<span class="keyword">ex</span> q <span class="keyword">st</span> q <span class="keyword">in</span> dom Q &amp; r = p^q)) <span class="keyword">by</span> A3, <span class="reference">TREES_1:def 9</span>;
+<a class='lineno' href='#line-508' id='line-508'>508</a>     <span class="keyword">per</span> <span class="keyword">cases</span>;
+<a class='lineno' href='#line-509' id='line-509'>509</a>     <span class="keyword">suppose</span> (r <span class="keyword">in</span> dom P &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r);
+<a class='lineno' href='#line-510' id='line-510'>510</a>       <span class="keyword">hence</span> r <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> <span class="reference">Def1</span>;
+<a class='lineno' href='#line-511' id='line-511'>511</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-512' id='line-512'>512</a>     <span class="keyword">suppose</span> <span class="keyword">not</span> (r <span class="keyword">in</span> dom P &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r);
+<a class='lineno' href='#line-513' id='line-513'>513</a>       <span class="keyword">then</span> (<span class="keyword">ex</span> q <span class="keyword">st</span> q <span class="keyword">in</span> dom Q &amp; r = p^q) <span class="keyword">by</span> A4;
+<a class='lineno' href='#line-514' id='line-514'>514</a>       <span class="keyword">then</span> <span class="keyword">consider</span> q <span class="keyword">such</span> <span class="keyword">that</span>
+<a class='lineno' href='#line-515' id='line-515'>515</a>     A5: q <span class="keyword">in</span> dom Q &amp; r = p^q;
+<a class='lineno' href='#line-516' id='line-516'>516</a>       q <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> A5, <span class="reference">Def1</span>;
+<a class='lineno' href='#line-517' id='line-517'>517</a>       <span class="keyword">then</span> <span class="keyword">reconsider</span> q <span class="keyword">as</span> FinSequence <span class="keyword">of</span> {0,1};
+<a class='lineno' href='#line-518' id='line-518'>518</a>       p <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1} <span class="keyword">by</span> <span class="reference">Def1</span>;
+<a class='lineno' href='#line-519' id='line-519'>519</a>       <span class="keyword">then</span> <span class="keyword">reconsider</span> p <span class="keyword">as</span> FinSequence <span class="keyword">of</span> {0,1};
+<a class='lineno' href='#line-520' id='line-520'>520</a>       p^q <span class="keyword">is</span> FinSequence <span class="keyword">of</span> {0,1};
+<a class='lineno' href='#line-521' id='line-521'>521</a>       <span class="keyword">hence</span> <span class="keyword">thesis</span> <span class="keyword">by</span> A5;
+<a class='lineno' href='#line-522' id='line-522'>522</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-523' id='line-523'>523</a>   <span class="keyword">end</span>;
+<a class='lineno' href='#line-524' id='line-524'>524</a> <span class="set-keyword">  <span class="keyword">set</span></span> r0 = r^&lt;*0*&gt;;
+<a class='lineno' href='#line-525' id='line-525'>525</a>   <span class="keyword">assume</span>
+<a class='lineno' href='#line-526' id='line-526'>526</a> A6: r0 <span class="keyword">in</span> dom R;
+<a class='lineno' href='#line-527' id='line-527'>527</a>   <span class="keyword">then</span> r0 <span class="keyword">in</span> (dom P) with-replacement (p,dom Q) <span class="keyword">by</span> <span class="reference">TREES_2:def 11</span>;
+<a class='lineno' href='#line-528' id='line-528'>528</a>   <span class="keyword">then</span>
+<a class='lineno' href='#line-529' id='line-529'>529</a> A7: ((r0 <span class="keyword">in</span> (dom P) &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r0) <span class="keyword">or</span>
+<a class='lineno' href='#line-530' id='line-530'>530</a>      (<span class="keyword">ex</span> q <span class="keyword">st</span> q <span class="keyword">in</span> (dom Q) &amp; r0 = p^q)) <span class="keyword">by</span> <span class="reference">TREES_1:def 9</span>;
+<a class='lineno' href='#line-531' id='line-531'>531</a>   <span class="keyword">per</span> <span class="keyword">cases</span>;
+<a class='lineno' href='#line-532' id='line-532'>532</a>   <span class="keyword">suppose</span>
+<a class='lineno' href='#line-533' id='line-533'>533</a>   A13: (r0 <span class="keyword">in</span> (dom P) &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r0);
+<a class='lineno' href='#line-534' id='line-534'>534</a>     <span class="keyword">then</span>
+<a class='lineno' href='#line-535' id='line-535'>535</a>   A8: r0 <span class="keyword">in</span> dom P;
+<a class='lineno' href='#line-536' id='line-536'>536</a>     <span class="keyword">then</span>
+<a class='lineno' href='#line-537' id='line-537'>537</a>   A12: r <span class="keyword">in</span> dom P <span class="keyword">by</span> <span class="reference">TREES_1:21</span>;
+<a class='lineno' href='#line-538' id='line-538'>538</a>     <span class="keyword">then</span>
+<a class='lineno' href='#line-539' id='line-539'>539</a>   A9: P.r = 0 <span class="keyword">by</span> A8, <span class="reference">Def1</span>;
+<a class='lineno' href='#line-540' id='line-540'>540</a>   A10: <span class="keyword">not</span> p is_a_prefix_of r
+<a class='lineno' href='#line-541' id='line-541'>541</a>     <span class="keyword">proof</span>
+<a class='lineno' href='#line-542' id='line-542'>542</a>       <span class="keyword">assume</span> p is_a_prefix_of r;
+<a class='lineno' href='#line-543' id='line-543'>543</a>       <span class="keyword">then</span> p is_a_proper_prefix_of r0 <span class="keyword">by</span> <span class="reference">TREES_1:8</span>;
+<a class='lineno' href='#line-544' id='line-544'>544</a>       <span class="keyword">hence</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> A13;
+<a class='lineno' href='#line-545' id='line-545'>545</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-546' id='line-546'>546</a>     R.r = P.r <span class="keyword">by</span> A10, A12, <span class="reference">TREES_3:45</span>;
+<a class='lineno' href='#line-547' id='line-547'>547</a>     <span class="keyword">hence</span> R.r = 0 <span class="keyword">by</span> A9;
+<a class='lineno' href='#line-548' id='line-548'>548</a>   <span class="keyword">end</span>;
+<a class='lineno' href='#line-549' id='line-549'>549</a>   <span class="keyword">suppose</span> <span class="keyword">not</span> (r0 <span class="keyword">in</span> (dom P) &amp; <span class="keyword">not</span> p is_a_proper_prefix_of r0);
+<a class='lineno' href='#line-550' id='line-550'>550</a>     <span class="keyword">then</span> (<span class="keyword">ex</span> q <span class="keyword">st</span> q <span class="keyword">in</span> (dom Q) &amp; r0 = p^q) <span class="keyword">by</span> A7;
+<a class='lineno' href='#line-551' id='line-551'>551</a>     <span class="keyword">then</span> <span class="keyword">consider</span> q <span class="keyword">such</span> <span class="keyword">that</span>
+<a class='lineno' href='#line-552' id='line-552'>552</a>   A14: q <span class="keyword">in</span> (dom Q) &amp; r0 = p^q;
+<a class='lineno' href='#line-553' id='line-553'>553</a>     <span class="keyword">per</span> <span class="keyword">cases</span>;
+<a class='lineno' href='#line-554' id='line-554'>554</a>     <span class="keyword">suppose</span> <span class="keyword">ex</span> q2 <span class="keyword">being</span> FinSequence, n <span class="keyword">being</span> set <span class="keyword">st</span> q = q2^&lt;*n*&gt;;
+<a class='lineno' href='#line-555' id='line-555'>555</a>       <span class="keyword">then</span> <span class="keyword">consider</span> q2 <span class="keyword">being</span> FinSequence, n <span class="keyword">being</span> set <span class="keyword">such</span> <span class="keyword">that</span>
+<a class='lineno' href='#line-556' id='line-556'>556</a>     A15: q = q2^&lt;*n*&gt;;
+<a class='lineno' href='#line-557' id='line-557'>557</a>       q2 <span class="keyword">is</span> FinSequence <span class="keyword">of</span> NAT <span class="keyword">by</span> A15, <span class="reference">FINSEQ_1:36</span>;
+<a class='lineno' href='#line-558' id='line-558'>558</a>       <span class="keyword">then</span> <span class="keyword">reconsider</span> q2 <span class="keyword">as</span> FinSequence <span class="keyword">of</span> NAT;
+<a class='lineno' href='#line-559' id='line-559'>559</a>       r^&lt;*0*&gt; = r0
+<a class='lineno' href='#line-560' id='line-560'>560</a>         .= p^q <span class="keyword">by</span> A14
+<a class='lineno' href='#line-561' id='line-561'>561</a>         .= p^(q2^&lt;*n*&gt;) <span class="keyword">by</span> A15
+<a class='lineno' href='#line-562' id='line-562'>562</a>         .= (p^q2)^&lt;*n*&gt; <span class="keyword">by</span> <span class="reference">FINSEQ_1:32</span>;
+<a class='lineno' href='#line-563' id='line-563'>563</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-564' id='line-564'>564</a>     A19: r = (p^q2) &amp; &lt;*0*&gt; = &lt;*n*&gt; <span class="keyword">by</span> <span class="reference">FINSEQ_2:17</span>;
+<a class='lineno' href='#line-565' id='line-565'>565</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-566' id='line-566'>566</a>     A16: 0 = n <span class="keyword">by</span> <span class="reference">FINSEQ_1:76</span>;
+<a class='lineno' href='#line-567' id='line-567'>567</a>       q <span class="keyword">in</span> dom Q <span class="keyword">by</span> A14;
+<a class='lineno' href='#line-568' id='line-568'>568</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-569' id='line-569'>569</a>     A17: q2^&lt;*0*&gt; <span class="keyword">in</span> dom Q <span class="keyword">by</span> A14, A15, A16;
+<a class='lineno' href='#line-570' id='line-570'>570</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-571' id='line-571'>571</a>     A18: q2 <span class="keyword">in</span> dom Q <span class="keyword">by</span> <span class="reference">TREES_1:21</span>;
+<a class='lineno' href='#line-572' id='line-572'>572</a>       <span class="keyword">then</span> Q.q2 = 0 <span class="keyword">by</span> <span class="reference">Def1</span>, A17;
+<a class='lineno' href='#line-573' id='line-573'>573</a>       <span class="keyword">then</span> R.(p^q2) = 0 <span class="keyword">by</span> A18, <span class="reference">TREES_3:46</span>;
+<a class='lineno' href='#line-574' id='line-574'>574</a>       <span class="keyword">hence</span> R.r = 0 <span class="keyword">by</span> A19;
+<a class='lineno' href='#line-575' id='line-575'>575</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-576' id='line-576'>576</a>     <span class="keyword">suppose</span>
+<a class='lineno' href='#line-577' id='line-577'>577</a>     A20: <span class="keyword">not</span> <span class="keyword">ex</span> q2 <span class="keyword">being</span> FinSequence, n <span class="keyword">being</span> set <span class="keyword">st</span> q = q2^&lt;*n*&gt;;
+<a class='lineno' href='#line-578' id='line-578'>578</a>     A21: q = {}
+<a class='lineno' href='#line-579' id='line-579'>579</a>       <span class="keyword">proof</span>
+<a class='lineno' href='#line-580' id='line-580'>580</a>         <span class="keyword">assume</span> q &lt;&gt; {};
+<a class='lineno' href='#line-581' id='line-581'>581</a>         <span class="keyword">then</span> <span class="keyword">ex</span> q2 <span class="keyword">being</span> FinSequence,
+<a class='lineno' href='#line-582' id='line-582'>582</a>           n <span class="keyword">being</span> set <span class="keyword">st</span> q = q2^&lt;*n*&gt; <span class="keyword">by</span> <span class="reference">FINSEQ_1:46</span>;
+<a class='lineno' href='#line-583' id='line-583'>583</a>         <span class="keyword">hence</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> A20;
+<a class='lineno' href='#line-584' id='line-584'>584</a>       <span class="keyword">end</span>;
+<a class='lineno' href='#line-585' id='line-585'>585</a>     A30: r0 = p <span class="keyword">by</span> A14, A21, <span class="reference">FINSEQ_1:34</span>;
+<a class='lineno' href='#line-586' id='line-586'>586</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-587' id='line-587'>587</a>     A22: r0 <span class="keyword">in</span> dom P;
+<a class='lineno' href='#line-588' id='line-588'>588</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-589' id='line-589'>589</a>     A23: r <span class="keyword">in</span> dom P <span class="keyword">by</span> A22, <span class="reference">TREES_1:21</span>;
+<a class='lineno' href='#line-590' id='line-590'>590</a>       <span class="keyword">then</span>
+<a class='lineno' href='#line-591' id='line-591'>591</a>     A24: P.r = 0 <span class="keyword">by</span> A22, <span class="reference">Def1</span>;
+<a class='lineno' href='#line-592' id='line-592'>592</a>     A27: <span class="keyword">not</span> p is_a_prefix_of r
+<a class='lineno' href='#line-593' id='line-593'>593</a>       <span class="keyword">proof</span>
+<a class='lineno' href='#line-594' id='line-594'>594</a>         <span class="keyword">assume</span> p is_a_prefix_of r;
+<a class='lineno' href='#line-595' id='line-595'>595</a>         <span class="keyword">then</span>
+<a class='lineno' href='#line-596' id='line-596'>596</a>       A28: p c= r;
+<a class='lineno' href='#line-597' id='line-597'>597</a>         r0 = p <span class="keyword">by</span> A30;
+<a class='lineno' href='#line-598' id='line-598'>598</a>         <span class="keyword">then</span> r0 c= p <span class="keyword">by</span> <span class="reference">XBOOLE_0:def 10</span>;
+<a class='lineno' href='#line-599' id='line-599'>599</a>         <span class="keyword">then</span> r0 is_a_prefix_of p;
+<a class='lineno' href='#line-600' id='line-600'>600</a>         <span class="keyword">then</span> r is_a_proper_prefix_of p <span class="keyword">by</span> <span class="reference">TREES_1:7</span>;
+<a class='lineno' href='#line-601' id='line-601'>601</a>         <span class="keyword">then</span>
+<a class='lineno' href='#line-602' id='line-602'>602</a>       A32: r c&lt; p;
+<a class='lineno' href='#line-603' id='line-603'>603</a>         <span class="keyword">then</span> r c= p <span class="keyword">by</span> <span class="reference">XBOOLE_0:def 8</span>;
+<a class='lineno' href='#line-604' id='line-604'>604</a>         <span class="keyword">then</span>
+<a class='lineno' href='#line-605' id='line-605'>605</a>       A31: r = p <span class="keyword">by</span> A28, <span class="reference">XBOOLE_0:def 10</span>;
+<a class='lineno' href='#line-606' id='line-606'>606</a>         r &lt;&gt; p <span class="keyword">by</span> A32, <span class="reference">XBOOLE_0:def 8</span>;
+<a class='lineno' href='#line-607' id='line-607'>607</a>         <span class="keyword">hence</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> A31;
+<a class='lineno' href='#line-608' id='line-608'>608</a>       <span class="keyword">end</span>;
+<a class='lineno' href='#line-609' id='line-609'>609</a>       R.r = P.r <span class="keyword">by</span> A23, A27, <span class="reference">TREES_3:45</span>;
+<a class='lineno' href='#line-610' id='line-610'>610</a>       <span class="keyword">hence</span> R.r = 0 <span class="keyword">by</span> A24;
+<a class='lineno' href='#line-611' id='line-611'>611</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-612' id='line-612'>612</a>   <span class="keyword">end</span>;
+<a class='lineno' href='#line-613' id='line-613'>613</a> <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-614' id='line-614'>614</a> 
+<a class='lineno' href='#line-615' id='line-615'>615</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-616' id='line-616'>616</a>   <span class="keyword">let</span> P,Q <span class="keyword">be</span> LambdaTerm,
+<a class='lineno' href='#line-617' id='line-617'>617</a>       p <span class="keyword">be</span> Element <span class="keyword">of</span> dom P;
+<a class='lineno' href='#line-618' id='line-618'>618</a> 
+<a class='lineno' href='#line-619' id='line-619'>619</a>   <span class="keyword">cluster</span> P with-replacement (p,Q) -&gt; LambdaTerm-like;
+<a class='lineno' href='#line-620' id='line-620'>620</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-621' id='line-621'>621</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-622' id='line-622'>622</a>     <span class="keyword">thus</span> <span class="keyword">thesis</span> <span class="keyword">by</span> Th2;
+<a class='lineno' href='#line-623' id='line-623'>623</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-624' id='line-624'>624</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-625' id='line-625'>625</a> 
+<a class='lineno' href='#line-626' id='line-626'>626</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-627' id='line-627'>627</a>   <span class="keyword">let</span> P <span class="keyword">be</span> LambdaTerm,
+<a class='lineno' href='#line-628' id='line-628'>628</a>       p <span class="keyword">be</span> Element <span class="keyword">of</span> dom P,
+<a class='lineno' href='#line-629' id='line-629'>629</a>       Q <span class="keyword">be</span> LambdaTerm;
+<a class='lineno' href='#line-630' id='line-630'>630</a> 
+<a class='lineno' href='#line-631' id='line-631'>631</a>   <span class="keyword">redefine</span> <span class="keyword">func</span> P with-replacement (p,Q) -&gt; LambdaTerm;
+<a class='lineno' href='#line-632' id='line-632'>632</a>   <span class="keyword">coherence</span>;
+<a class='lineno' href='#line-633' id='line-633'>633</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h3 id="1.2"><a class="headnumber" href="#1.2">1.2</a> Helper definitions</h3>
+
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>Some helper definitions for working with lambda terms.</p>
+<h4 id="1.2.1"><a class="headnumber" href="#1.2.1">1.2.1</a> Variable occurences</h4>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-643"><code>is_variable_in</code></a></li>
+                
+                
+                <li><a href="#line-646"><code>is_abstraction_in</code></a></li>
+                
+                
+                <li><a href="#line-649"><code>is_application_in</code></a></li>
+                
+                
+                <li><a href="#line-657"><code>abstr-depth</code></a></li>
+                
+                
+                <li><a href="#line-678"><code>is_active_variable_in</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-639' id='line-639'>639</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-640' id='line-640'>640</a>   <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+<a class='lineno' href='#line-641' id='line-641'>641</a>       r <span class="keyword">be</span> Node <span class="keyword">of</span> M;
+<a class='lineno' href='#line-642' id='line-642'>642</a>   
+<a class='lineno' href='#line-643' id='line-643'>643</a>   <span class="keyword">pred</span> r is_variable_in M <span class="keyword">means</span>
+<a class='lineno' href='#line-644' id='line-644'>644</a>     <span class="keyword">not</span> r^&lt;*0*&gt; <span class="keyword">in</span> dom M;
+<a class='lineno' href='#line-645' id='line-645'>645</a> 
+<a class='lineno' href='#line-646' id='line-646'>646</a>   <span class="keyword">pred</span> r is_abstraction_in M <span class="keyword">means</span>
+<a class='lineno' href='#line-647' id='line-647'>647</a>     r^&lt;*0*&gt; <span class="keyword">in</span> dom M &amp; <span class="keyword">not</span> r^&lt;*1*&gt; <span class="keyword">in</span> dom M;
+<a class='lineno' href='#line-648' id='line-648'>648</a> 
+<a class='lineno' href='#line-649' id='line-649'>649</a>   <span class="keyword">pred</span> r is_application_in M <span class="keyword">means</span>
+<a class='lineno' href='#line-650' id='line-650'>650</a>     r^&lt;*0*&gt; <span class="keyword">in</span> dom M &amp; r^&lt;*1*&gt; <span class="keyword">in</span> dom M;
+<a class='lineno' href='#line-651' id='line-651'>651</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-652' id='line-652'>652</a> 
+<a class='lineno' href='#line-653' id='line-653'>653</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-654' id='line-654'>654</a>   <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+<a class='lineno' href='#line-655' id='line-655'>655</a>       r <span class="keyword">be</span> Node <span class="keyword">of</span> M;
+<a class='lineno' href='#line-656' id='line-656'>656</a> 
+<a class='lineno' href='#line-657' id='line-657'>657</a>   <span class="keyword">func</span> abstr-depth (r,M) -&gt; Element <span class="keyword">of</span> NAT <span class="keyword">equals</span>
+<a class='lineno' href='#line-658' id='line-658'>658</a>     card { p where p <span class="keyword">is</span> Node <span class="keyword">of</span> M
+<a class='lineno' href='#line-659' id='line-659'>659</a>            : p is_a_proper_prefix_of r &amp;
+<a class='lineno' href='#line-660' id='line-660'>660</a>              p is_abstraction_in M };
+<a class='lineno' href='#line-661' id='line-661'>661</a>   <span class="keyword">coherence</span>
+<a class='lineno' href='#line-662' id='line-662'>662</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-663' id='line-663'>663</a> <span class="set-keyword">    <span class="keyword">set</span></span> abstractions = { p where p <span class="keyword">is</span> Node <span class="keyword">of</span> M
+<a class='lineno' href='#line-664' id='line-664'>664</a>                          : p is_a_proper_prefix_of r &amp;
+<a class='lineno' href='#line-665' id='line-665'>665</a>                            p is_abstraction_in M };
+<a class='lineno' href='#line-666' id='line-666'>666</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-667' id='line-667'>667</a> <span class="error">::&gt; *70</span>
+<a class='lineno' href='#line-668' id='line-668'>668</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>By $r$ being an <em>active variable</em> of some term $M$ (or more precisely,
+ a path identifying an active variable), I mean that if $\lambda M$ were
+ to be applied to some other term $N$, we would substitute this variable
+ by $M$.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-674' id='line-674'>674</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-675' id='line-675'>675</a>   <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
+<a class='lineno' href='#line-676' id='line-676'>676</a>       r <span class="keyword">be</span> Node <span class="keyword">of</span> M;
+<a class='lineno' href='#line-677' id='line-677'>677</a>   
+<a class='lineno' href='#line-678' id='line-678'>678</a>   <span class="keyword">pred</span> r is_active_variable_in M <span class="keyword">means</span>
+<a class='lineno' href='#line-679' id='line-679'>679</a>     r is_variable_in M &amp;
+<a class='lineno' href='#line-680' id='line-680'>680</a>     M.r = abstr-depth (r,M);
+<a class='lineno' href='#line-681' id='line-681'>681</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h4 id="1.2.2"><a class="headnumber" href="#1.2.2">1.2.2</a> Abstraction and application</h4>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-689"><code>Abs</code></a></li>
+                
+                
+                <li><a href="#line-712"><code>App</code></a></li>
+                
+                
+                <li><a href="#line-749"><code>SubstituteActiveVar</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>Then we can define abstraction and application</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-686' id='line-686'>686</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-687' id='line-687'>687</a>   <span class="keyword">let</span> M;
+<a class='lineno' href='#line-688' id='line-688'>688</a>   
+<a class='lineno' href='#line-689' id='line-689'>689</a>   <span class="keyword">func</span> Abs(M) -&gt; LambdaTerm <span class="keyword">means</span>
+<a class='lineno' href='#line-690' id='line-690'>690</a>     it|&lt;*0*&gt; = M &amp; <span class="keyword">not</span> &lt;*1*&gt; <span class="keyword">in</span> dom it;
+<a class='lineno' href='#line-691' id='line-691'>691</a>   <span class="keyword">existence</span>
+<a class='lineno' href='#line-692' id='line-692'>692</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-693' id='line-693'>693</a> <span class="set-keyword">    <span class="keyword">set</span></span> e = &lt;*0*&gt;;
+<a class='lineno' href='#line-694' id='line-694'>694</a>     dom PreAbstractionTerm = { {}, &lt;*0*&gt; } <span class="keyword">by</span> <span class="reference">FUNCOP_1:13</span>;
+<a class='lineno' href='#line-695' id='line-695'>695</a>     <span class="keyword">then</span> &lt;*0*&gt; <span class="keyword">in</span> dom PreAbstractionTerm <span class="keyword">by</span> <span class="reference">TARSKI:def 2</span>;
+<a class='lineno' href='#line-696' id='line-696'>696</a>     <span class="keyword">then</span> <span class="keyword">reconsider</span> e <span class="keyword">as</span> Element <span class="keyword">of</span> dom PreAbstractionTerm;
+<a class='lineno' href='#line-697' id='line-697'>697</a> <span class="set-keyword">    <span class="keyword">set</span></span> D = PreAbstractionTerm with-replacement (e, M);
+<a class='lineno' href='#line-698' id='line-698'>698</a> 
+<a class='lineno' href='#line-699' id='line-699'>699</a>     <span class="keyword">take</span> D;
+<a class='lineno' href='#line-700' id='line-700'>700</a>     <span class="keyword">thus</span> D|&lt;*0*&gt; = M;
+<a class='lineno' href='#line-701' id='line-701'>701</a> <span class="error">::&gt;                *4</span>
+<a class='lineno' href='#line-702' id='line-702'>702</a>     <span class="keyword">thus</span> <span class="keyword">not</span> &lt;*1*&gt; <span class="keyword">in</span> dom D;
+<a class='lineno' href='#line-703' id='line-703'>703</a> <span class="error">::&gt;                       *4</span>
+<a class='lineno' href='#line-704' id='line-704'>704</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-705' id='line-705'>705</a>   <span class="keyword">uniqueness</span>;
+<a class='lineno' href='#line-706' id='line-706'>706</a> <span class="error">::&gt;        *4</span>
+<a class='lineno' href='#line-707' id='line-707'>707</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-708' id='line-708'>708</a> 
+<a class='lineno' href='#line-709' id='line-709'>709</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-710' id='line-710'>710</a>   <span class="keyword">let</span> M,N;
+<a class='lineno' href='#line-711' id='line-711'>711</a> 
+<a class='lineno' href='#line-712' id='line-712'>712</a>   <span class="keyword">func</span> App(M,N) -&gt; LambdaTerm <span class="keyword">means</span>
+<a class='lineno' href='#line-713' id='line-713'>713</a>     it|&lt;*0*&gt; = M &amp; it|&lt;*1*&gt; = N;
+<a class='lineno' href='#line-714' id='line-714'>714</a>   <span class="keyword">existence</span>
+<a class='lineno' href='#line-715' id='line-715'>715</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-716' id='line-716'>716</a> <span class="set-keyword">    <span class="keyword">set</span></span> e0 = &lt;*0*&gt;;
+<a class='lineno' href='#line-717' id='line-717'>717</a>     dom PreApplicationTerm = { {}, &lt;*0*&gt;, &lt;*1*&gt; } <span class="keyword">by</span> <span class="reference">FUNCOP_1:13</span>;
+<a class='lineno' href='#line-718' id='line-718'>718</a>     <span class="keyword">then</span> &lt;*0*&gt; <span class="keyword">in</span> dom PreApplicationTerm <span class="keyword">by</span> <span class="reference">ENUMSET1:def 1</span>;
+<a class='lineno' href='#line-719' id='line-719'>719</a>     <span class="keyword">then</span> <span class="keyword">reconsider</span> e0 <span class="keyword">as</span> Element <span class="keyword">of</span> dom PreApplicationTerm;
+<a class='lineno' href='#line-720' id='line-720'>720</a> <span class="set-keyword">    <span class="keyword">set</span></span> preD = PreApplicationTerm with-replacement (e0, M);
+<a class='lineno' href='#line-721' id='line-721'>721</a>     preD <span class="keyword">is</span> LambdaTerm;
+<a class='lineno' href='#line-722' id='line-722'>722</a> <span class="set-keyword">
+<a class='lineno' href='#line-723' id='line-723'>723</a>     <span class="keyword">set</span></span> e1 = &lt;*1*&gt;;
+<a class='lineno' href='#line-724' id='line-724'>724</a>   A1: dom preD = (dom PreApplicationTerm) with-replacement (e0, dom M)
+<a class='lineno' href='#line-725' id='line-725'>725</a>       <span class="keyword">by</span> <span class="reference">TREES_2:def 11</span>;
+<a class='lineno' href='#line-726' id='line-726'>726</a>     dom PreApplicationTerm = { {}, &lt;*0*&gt;, &lt;*1*&gt; } <span class="keyword">by</span> <span class="reference">FUNCOP_1:13</span>;
+<a class='lineno' href='#line-727' id='line-727'>727</a>     <span class="keyword">then</span>
+<a class='lineno' href='#line-728' id='line-728'>728</a>   A2: &lt;*1*&gt; <span class="keyword">in</span> dom PreApplicationTerm <span class="keyword">by</span> <span class="reference">ENUMSET1:def 1</span>;
+<a class='lineno' href='#line-729' id='line-729'>729</a>     <span class="keyword">not</span> e0 is_a_proper_prefix_of e1;
+<a class='lineno' href='#line-730' id='line-730'>730</a> <span class="error">::&gt;                               *4</span>
+<a class='lineno' href='#line-731' id='line-731'>731</a>     <span class="keyword">then</span> &lt;*1*&gt; <span class="keyword">in</span> dom preD <span class="keyword">by</span> A1, A2, <span class="reference">TREES_1:def 9</span>;
+<a class='lineno' href='#line-732' id='line-732'>732</a>     <span class="keyword">then</span> <span class="keyword">reconsider</span> e1 <span class="keyword">as</span> Element <span class="keyword">of</span> dom preD;
+<a class='lineno' href='#line-733' id='line-733'>733</a> <span class="set-keyword">    <span class="keyword">set</span></span> D = preD with-replacement (e1, N);
+<a class='lineno' href='#line-734' id='line-734'>734</a>     D <span class="keyword">is</span> LambdaTerm;
+<a class='lineno' href='#line-735' id='line-735'>735</a>     
+<a class='lineno' href='#line-736' id='line-736'>736</a>     <span class="keyword">take</span> D;
+<a class='lineno' href='#line-737' id='line-737'>737</a>     <span class="keyword">thus</span> D|&lt;*0*&gt; = M;
+<a class='lineno' href='#line-738' id='line-738'>738</a> <span class="error">::&gt;                *4</span>
+<a class='lineno' href='#line-739' id='line-739'>739</a>     <span class="keyword">thus</span> D|&lt;*1*&gt; = N;
+<a class='lineno' href='#line-740' id='line-740'>740</a> <span class="error">::&gt;                *4</span>
+<a class='lineno' href='#line-741' id='line-741'>741</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-742' id='line-742'>742</a>   <span class="keyword">uniqueness</span>;
+<a class='lineno' href='#line-743' id='line-743'>743</a> <span class="error">::&gt;        *4</span>
+<a class='lineno' href='#line-744' id='line-744'>744</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-745' id='line-745'>745</a> 
+<a class='lineno' href='#line-746' id='line-746'>746</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-747' id='line-747'>747</a>   <span class="keyword">let</span> M,N;
+<a class='lineno' href='#line-748' id='line-748'>748</a> 
+<a class='lineno' href='#line-749' id='line-749'>749</a>   <span class="keyword">func</span> SubstituteActiveVar(M,N) -&gt; LambdaTerm <span class="keyword">means</span>
+<a class='lineno' href='#line-750' id='line-750'>750</a>     <span class="comment">:: most things are the same,</span>
+<a class='lineno' href='#line-751' id='line-751'>751</a>     (<span class="keyword">for</span> r <span class="keyword">st</span> <span class="keyword">not</span> (<span class="keyword">ex</span> p <span class="keyword">being</span> Element <span class="keyword">of</span> dom N
+<a class='lineno' href='#line-752' id='line-752'>752</a>                       <span class="keyword">st</span> p is_active_variable_in N &amp; p is_a_prefix_of r)
+<a class='lineno' href='#line-753' id='line-753'>753</a>            <span class="keyword">holds</span> [r,x] <span class="keyword">in</span> it <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N
+<a class='lineno' href='#line-754' id='line-754'>754</a>     ) &amp;
+<a class='lineno' href='#line-755' id='line-755'>755</a>     <span class="comment">:: except that the active variables are replaced with M</span>
+<a class='lineno' href='#line-756' id='line-756'>756</a>     (<span class="keyword">for</span> r <span class="keyword">being</span> Element <span class="keyword">of</span> dom N
+<a class='lineno' href='#line-757' id='line-757'>757</a>             <span class="keyword">st</span> r is_active_variable_in N
+<a class='lineno' href='#line-758' id='line-758'>758</a>             <span class="keyword">holds</span> it|r = M);
+<a class='lineno' href='#line-759' id='line-759'>759</a>   <span class="keyword">existence</span>;
+<a class='lineno' href='#line-760' id='line-760'>760</a> <span class="error">::&gt;       *4</span>
+<a class='lineno' href='#line-761' id='line-761'>761</a>   <span class="keyword">uniqueness</span>;
+<a class='lineno' href='#line-762' id='line-762'>762</a> <span class="error">::&gt;        *4</span>
+<a class='lineno' href='#line-763' id='line-763'>763</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h3 id="1.3"><a class="headnumber" href="#1.3">1.3</a> Reduction and conversion</h3>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-775"><code>beta_shallow</code></a></li>
+                
+                
+                <li><a href="#line-794"><code>beta</code></a></li>
+                
+                
+                <li><a href="#line-809"><code>beta*</code></a></li>
+                
+                
+                <li><a href="#line-818"><code>beta=</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>First I define <em>shallow</em> one-step beta substitution, which only
+ states (the De Bruijn equivalent of)
+ $(\lambda x.N)M \to_{\beta} N[x:=M]$.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-771' id='line-771'>771</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-772' id='line-772'>772</a>   <span class="keyword">let</span> P,Q;
+<a class='lineno' href='#line-773' id='line-773'>773</a>   
+<a class='lineno' href='#line-774' id='line-774'>774</a>   <span class="comment">:: P === (\x.N)M --&gt; N[x:=M] === Q</span>
+<a class='lineno' href='#line-775' id='line-775'>775</a>   <span class="keyword">pred</span> P beta_shallow Q <span class="keyword">means</span>
+<a class='lineno' href='#line-776' id='line-776'>776</a>     <span class="keyword">ex</span> M,N <span class="keyword">st</span>
+<a class='lineno' href='#line-777' id='line-777'>777</a>       <span class="comment">:: P === (\x.N)M</span>
+<a class='lineno' href='#line-778' id='line-778'>778</a>       P = App(Abs(N),M) &amp;
+<a class='lineno' href='#line-779' id='line-779'>779</a> 
+<a class='lineno' href='#line-780' id='line-780'>780</a>       <span class="comment">:: Q === N[x:=M]</span>
+<a class='lineno' href='#line-781' id='line-781'>781</a>       Q = SubstituteActiveVar(N,M);
+<a class='lineno' href='#line-782' id='line-782'>782</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>Then we extend this ordinary one-step beta reduction, that is,
+ any subterm is also allowed to reduce.</p>
+<p>Note that I had to use a work-around here, where I have two
+ set-theoretically identical elements <code>p</code> and <code>q</code>, but considered
+ in Mizar as having different types to enable the two <code>|</code> operations
+ to work. I also tried defining something like <code>Element of (dom M),(dom N)</code>,
+ but this is extremely difficult, if not impossible.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-791' id='line-791'>791</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-792' id='line-792'>792</a>   <span class="keyword">let</span> M,N;
+<a class='lineno' href='#line-793' id='line-793'>793</a> 
+<a class='lineno' href='#line-794' id='line-794'>794</a>   <span class="keyword">pred</span> M beta N <span class="keyword">means</span>
+<a class='lineno' href='#line-795' id='line-795'>795</a>     <span class="keyword">ex</span>
+<a class='lineno' href='#line-796' id='line-796'>796</a>       p <span class="keyword">being</span> Element <span class="keyword">of</span> dom M,
+<a class='lineno' href='#line-797' id='line-797'>797</a>       q <span class="keyword">being</span> Element <span class="keyword">of</span> dom N <span class="keyword">st</span>
+<a class='lineno' href='#line-798' id='line-798'>798</a>         p = q &amp;
+<a class='lineno' href='#line-799' id='line-799'>799</a>         M|p beta_shallow N|q &amp;
+<a class='lineno' href='#line-800' id='line-800'>800</a>         <span class="keyword">for</span> q <span class="keyword">st</span> <span class="keyword">not</span> p is_a_prefix_of q <span class="keyword">holds</span>
+<a class='lineno' href='#line-801' id='line-801'>801</a>           [r,x] <span class="keyword">in</span> M <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N;
+<a class='lineno' href='#line-802' id='line-802'>802</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>We close the relation under transitivity and reflexivity
+ to get the full beta reduction relation.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-806' id='line-806'>806</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-807' id='line-807'>807</a>   <span class="keyword">let</span> M,N;
+<a class='lineno' href='#line-808' id='line-808'>808</a>   
+<a class='lineno' href='#line-809' id='line-809'>809</a>   <span class="keyword">pred</span> M beta* N <span class="keyword">means</span>
+<a class='lineno' href='#line-810' id='line-810'>810</a>     M = N <span class="keyword">or</span>
+<a class='lineno' href='#line-811' id='line-811'>811</a>     <span class="keyword">ex</span> P <span class="keyword">st</span> M beta P &amp; P beta N;
+<a class='lineno' href='#line-812' id='line-812'>812</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>And then close under symmetry to get beta conversion.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-815' id='line-815'>815</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-816' id='line-816'>816</a>   <span class="keyword">let</span> M,N;
+<a class='lineno' href='#line-817' id='line-817'>817</a>   
+<a class='lineno' href='#line-818' id='line-818'>818</a>   <span class="keyword">pred</span> M beta= N <span class="keyword">means</span>
+<a class='lineno' href='#line-819' id='line-819'>819</a>     M beta* N <span class="keyword">or</span> N beta* M;
+<a class='lineno' href='#line-820' id='line-820'>820</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h2 id="2"><a class="headnumber" href="#2">2</a> CPO&#39;s</h2>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-833"><code>PartialOrder</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-824' id='line-824'>824</a> <span class="keyword">reserve</span> x,y,z,z2 <span class="keyword">for</span> set;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>We start off by defining
+ a mode for partial orders upon some set <code>D</code>. I don&#39;t really
+ get why de Mizar guys wrote their order definitions the way
+ they did (in <code>ORDERS_1</code>, <code>ORDERS_2</code>, etc...)</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-831' id='line-831'>831</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-832' id='line-832'>832</a>   <span class="keyword">let</span> D <span class="keyword">be</span> set;
+<a class='lineno' href='#line-833' id='line-833'>833</a>   <span class="keyword">mode</span> PartialOrder <span class="keyword">of</span> D <span class="keyword">is</span> transitive reflexive antisymmetric (Relation <span class="keyword">of</span> D);
+<a class='lineno' href='#line-834' id='line-834'>834</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h3 id="2.1"><a class="headnumber" href="#2.1">2.1</a> (Least) upper bounds</h3>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-858"><code>-ub</code></a></li>
+                
+                
+                <li><a href="#line-869"><code>-lub</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>An element $u$ of $D$ is an <em>upper bound</em> of a
+ subset $X\subseteq D$ iff for all $x\in X$,
+ $x\sqsubseteq u$.</p>
+<p>I often encountered *100 errors (also elsewhere, but most notably)
+ here. Note: a *100 error occurs when not all loci (which are variables
+ introduced by the <code>let</code> statement) are used <em>in the attribute name</em>.
+&quot;Transitive&quot; usage <em>is</em> allowed: in the below definition of
+ upper bounds, the variable <code>D</code> is not explicitly stated in the name
+ of the attribute, however it is used in the <code>let</code> introduction rule of
+ <code>R</code>, <code>X</code> and <code>u</code>, so it is allowed.
+However, I had to explicitly add <code>R</code> to the attribute name, because even
+ though it is used in the defining formula, it is not included in the
+ introductory rules of <code>D</code>, <code>X</code> or <code>u</code>.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-852' id='line-852'>852</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-853' id='line-853'>853</a>   <span class="keyword">let</span> D <span class="keyword">be</span> set,
+<a class='lineno' href='#line-854' id='line-854'>854</a>       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+<a class='lineno' href='#line-855' id='line-855'>855</a>       X <span class="keyword">be</span> Subset <span class="keyword">of</span> D,
+<a class='lineno' href='#line-856' id='line-856'>856</a>       u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+<a class='lineno' href='#line-857' id='line-857'>857</a> 
+<a class='lineno' href='#line-858' id='line-858'>858</a>   <span class="keyword">attr</span> u <span class="keyword">is</span> X,R-ub <span class="keyword">means</span>
+<a class='lineno' href='#line-859' id='line-859'>859</a>     <span class="keyword">for</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X <span class="keyword">holds</span> [x,u] <span class="keyword">in</span> R;
+<a class='lineno' href='#line-860' id='line-860'>860</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>Least upper bounds</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-863' id='line-863'>863</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-864' id='line-864'>864</a>   <span class="keyword">let</span> D <span class="keyword">be</span> set,
+<a class='lineno' href='#line-865' id='line-865'>865</a>       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+<a class='lineno' href='#line-866' id='line-866'>866</a>       X <span class="keyword">be</span> Subset <span class="keyword">of</span> D,
+<a class='lineno' href='#line-867' id='line-867'>867</a>       u <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+<a class='lineno' href='#line-868' id='line-868'>868</a> 
+<a class='lineno' href='#line-869' id='line-869'>869</a>   <span class="keyword">attr</span> u <span class="keyword">is</span> X,R-lub <span class="keyword">means</span>
+<a class='lineno' href='#line-870' id='line-870'>870</a>     u <span class="keyword">is</span> X,R-ub &amp;
+<a class='lineno' href='#line-871' id='line-871'>871</a>     <span class="keyword">for</span> u2 <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u2 <span class="keyword">is</span> X,R-ub <span class="keyword">holds</span>
+<a class='lineno' href='#line-872' id='line-872'>872</a>       [u,u2] <span class="keyword">in</span> R;
+<a class='lineno' href='#line-873' id='line-873'>873</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h3 id="2.2"><a class="headnumber" href="#2.2">2.2</a> Directed sets</h3>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-886"><code>-directed</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>If $D$ is a set, and $R$ a partial order on $D$,
+ then an $X\subseteq D$ is called <em>directed</em> iff
+ for all $x,y \in X$, there is some $z \in X$,
+ such that $x\sqsubseteq z$ and $y\sqsubseteq z$.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-881' id='line-881'>881</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-882' id='line-882'>882</a>   <span class="keyword">let</span> D <span class="keyword">be</span> set,
+<a class='lineno' href='#line-883' id='line-883'>883</a>       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+<a class='lineno' href='#line-884' id='line-884'>884</a>       X <span class="keyword">be</span> Subset <span class="keyword">of</span> D;
+<a class='lineno' href='#line-885' id='line-885'>885</a> 
+<a class='lineno' href='#line-886' id='line-886'>886</a>   <span class="keyword">attr</span> X <span class="keyword">is</span> R-directed <span class="keyword">means</span>
+<a class='lineno' href='#line-887' id='line-887'>887</a>     <span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
+<a class='lineno' href='#line-888' id='line-888'>888</a>       <span class="keyword">ex</span> z <span class="keyword">st</span>
+<a class='lineno' href='#line-889' id='line-889'>889</a>         z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R;
+<a class='lineno' href='#line-890' id='line-890'>890</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>this registration is actually useless..</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-893' id='line-893'>893</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-894' id='line-894'>894</a>   <span class="keyword">let</span> D <span class="keyword">be</span> set,
+<a class='lineno' href='#line-895' id='line-895'>895</a>       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
+<a class='lineno' href='#line-896' id='line-896'>896</a> 
+<a class='lineno' href='#line-897' id='line-897'>897</a>   <span class="keyword">cluster</span> R-directed <span class="keyword">for</span> Subset <span class="keyword">of</span> D;
+<a class='lineno' href='#line-898' id='line-898'>898</a>   <span class="keyword">existence</span>
+<a class='lineno' href='#line-899' id='line-899'>899</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-900' id='line-900'>900</a> <span class="set-keyword">    <span class="keyword">set</span></span> X = {};
+<a class='lineno' href='#line-901' id='line-901'>901</a>     <span class="keyword">reconsider</span> X <span class="keyword">as</span> Subset <span class="keyword">of</span> D <span class="keyword">by</span> <span class="reference">SUBSET_1:1</span>;
+<a class='lineno' href='#line-902' id='line-902'>902</a>     <span class="keyword">take</span> X;
+<a class='lineno' href='#line-903' id='line-903'>903</a>     <span class="keyword">thus</span> X <span class="keyword">is</span> R-directed
+<a class='lineno' href='#line-904' id='line-904'>904</a>     <span class="keyword">proof</span>
+<a class='lineno' href='#line-905' id='line-905'>905</a>       <span class="keyword">assume</span> <span class="keyword">not</span> (<span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
+<a class='lineno' href='#line-906' id='line-906'>906</a>       <span class="keyword">ex</span> z <span class="keyword">st</span>
+<a class='lineno' href='#line-907' id='line-907'>907</a>         z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+<a class='lineno' href='#line-908' id='line-908'>908</a>       <span class="keyword">then</span> <span class="keyword">consider</span> x,y <span class="keyword">such</span> <span class="keyword">that</span>
+<a class='lineno' href='#line-909' id='line-909'>909</a>     A1: x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">and</span>
+<a class='lineno' href='#line-910' id='line-910'>910</a>     A2: <span class="keyword">not</span> (<span class="keyword">ex</span> z <span class="keyword">st</span> z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+<a class='lineno' href='#line-911' id='line-911'>911</a>       x <span class="keyword">in</span> X <span class="keyword">by</span> A1;
+<a class='lineno' href='#line-912' id='line-912'>912</a>       <span class="keyword">then</span> <span class="keyword">ex</span> x <span class="keyword">st</span> x <span class="keyword">in</span> X;
+<a class='lineno' href='#line-913' id='line-913'>913</a>       <span class="keyword">hence</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> <span class="reference">XBOOLE_0:def 1</span>;
+<a class='lineno' href='#line-914' id='line-914'>914</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-915' id='line-915'>915</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-916' id='line-916'>916</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-917' id='line-917'>917</a> 
+<a class='lineno' href='#line-918' id='line-918'>918</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-919' id='line-919'>919</a>   <span class="keyword">let</span> D <span class="keyword">be</span> non empty set,
+<a class='lineno' href='#line-920' id='line-920'>920</a>       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
+<a class='lineno' href='#line-921' id='line-921'>921</a> 
+<a class='lineno' href='#line-922' id='line-922'>922</a>   <span class="keyword">cluster</span> R-directed <span class="keyword">for</span> non empty Subset <span class="keyword">of</span> D;
+<a class='lineno' href='#line-923' id='line-923'>923</a>   <span class="keyword">existence</span>
+<a class='lineno' href='#line-924' id='line-924'>924</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-925' id='line-925'>925</a>     <span class="keyword">ex</span> d <span class="keyword">being</span> set <span class="keyword">st</span> d <span class="keyword">in</span> D <span class="keyword">by</span> <span class="reference">XBOOLE_0:def 1</span>;
+<a class='lineno' href='#line-926' id='line-926'>926</a>     <span class="keyword">then</span> <span class="keyword">consider</span> d <span class="keyword">being</span> set <span class="keyword">such</span> <span class="keyword">that</span>
+<a class='lineno' href='#line-927' id='line-927'>927</a>   A1: d <span class="keyword">in</span> D;
+<a class='lineno' href='#line-928' id='line-928'>928</a> <span class="set-keyword">    <span class="keyword">set</span></span> X = {d};
+<a class='lineno' href='#line-929' id='line-929'>929</a>     d <span class="keyword">is</span> Element <span class="keyword">of</span> D <span class="keyword">by</span> A1;
+<a class='lineno' href='#line-930' id='line-930'>930</a>     <span class="keyword">then</span> X <span class="keyword">is</span> Subset <span class="keyword">of</span> D <span class="keyword">by</span> <span class="reference">SUBSET_1:33</span>;
+<a class='lineno' href='#line-931' id='line-931'>931</a>     <span class="keyword">then</span> <span class="keyword">reconsider</span> X <span class="keyword">as</span> non empty Subset <span class="keyword">of</span> D;
+<a class='lineno' href='#line-932' id='line-932'>932</a>     <span class="keyword">take</span> X;
+<a class='lineno' href='#line-933' id='line-933'>933</a>     <span class="keyword">thus</span> X <span class="keyword">is</span> R-directed
+<a class='lineno' href='#line-934' id='line-934'>934</a>     <span class="keyword">proof</span>
+<a class='lineno' href='#line-935' id='line-935'>935</a>       <span class="keyword">assume</span> <span class="keyword">not</span> (<span class="keyword">for</span> x,y <span class="keyword">st</span> x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">holds</span>
+<a class='lineno' href='#line-936' id='line-936'>936</a>       <span class="keyword">ex</span> z <span class="keyword">st</span>
+<a class='lineno' href='#line-937' id='line-937'>937</a>         z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+<a class='lineno' href='#line-938' id='line-938'>938</a>       <span class="keyword">then</span> <span class="keyword">consider</span> x,y <span class="keyword">such</span> <span class="keyword">that</span>
+<a class='lineno' href='#line-939' id='line-939'>939</a>     A2: x <span class="keyword">in</span> X &amp; y <span class="keyword">in</span> X <span class="keyword">and</span>
+<a class='lineno' href='#line-940' id='line-940'>940</a>     A3: <span class="keyword">not</span> (<span class="keyword">ex</span> z <span class="keyword">st</span> z <span class="keyword">in</span> X &amp; [x,z] <span class="keyword">in</span> R &amp; [y,z] <span class="keyword">in</span> R);
+<a class='lineno' href='#line-941' id='line-941'>941</a>       <span class="keyword">per</span> <span class="keyword">cases</span>;
+<a class='lineno' href='#line-942' id='line-942'>942</a>       <span class="keyword">suppose</span> x = y;
+<a class='lineno' href='#line-943' id='line-943'>943</a>         <span class="comment">:: idea: use x = y = d to show that</span>
+<a class='lineno' href='#line-944' id='line-944'>944</a>         <span class="comment">::  ex d, because [x,d] = [x,x] in R by reflexivity, ..</span>
+<a class='lineno' href='#line-945' id='line-945'>945</a>         <span class="keyword">thus</span> <span class="keyword">contradiction</span>;
+<a class='lineno' href='#line-946' id='line-946'>946</a> <span class="error">::&gt;                      *1</span>
+<a class='lineno' href='#line-947' id='line-947'>947</a>       <span class="keyword">end</span>;
+<a class='lineno' href='#line-948' id='line-948'>948</a>       <span class="keyword">suppose</span> x &lt;&gt; y;
+<a class='lineno' href='#line-949' id='line-949'>949</a>         <span class="keyword">per</span> <span class="keyword">cases</span>;
+<a class='lineno' href='#line-950' id='line-950'>950</a>         <span class="keyword">suppose</span> x = d;
+<a class='lineno' href='#line-951' id='line-951'>951</a>           <span class="comment">:: idea: then d &lt;&gt; y, but both in X,</span>
+<a class='lineno' href='#line-952' id='line-952'>952</a>           <span class="comment">::  but that contradicts X being a singleton</span>
+<a class='lineno' href='#line-953' id='line-953'>953</a>           <span class="keyword">thus</span> <span class="keyword">contradiction</span>;
+<a class='lineno' href='#line-954' id='line-954'>954</a> <span class="error">::&gt;                        *1</span>
+<a class='lineno' href='#line-955' id='line-955'>955</a>         <span class="keyword">end</span>;
+<a class='lineno' href='#line-956' id='line-956'>956</a>         <span class="keyword">suppose</span> x &lt;&gt; d;
+<a class='lineno' href='#line-957' id='line-957'>957</a>           <span class="comment">:: idea: then d &lt;&gt; x, but both in X,</span>
+<a class='lineno' href='#line-958' id='line-958'>958</a>           <span class="comment">::  but that contradicts X being a singleton</span>
+<a class='lineno' href='#line-959' id='line-959'>959</a>           <span class="keyword">thus</span> <span class="keyword">contradiction</span>;
+<a class='lineno' href='#line-960' id='line-960'>960</a> <span class="error">::&gt;                        *1</span>
+<a class='lineno' href='#line-961' id='line-961'>961</a>         <span class="keyword">end</span>;
+<a class='lineno' href='#line-962' id='line-962'>962</a>       <span class="keyword">end</span>;
+<a class='lineno' href='#line-963' id='line-963'>963</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-964' id='line-964'>964</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-965' id='line-965'>965</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h3 id="2.3"><a class="headnumber" href="#2.3">2.3</a> Completeness</h3>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-975"><code>complete</code></a></li>
+                
+                
+                <li><a href="#line-1007"><code>LUB</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>A partial ordered set is complete iff every directed set has
+ a least upper bound.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-971' id='line-971'>971</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-972' id='line-972'>972</a>   <span class="keyword">let</span> D <span class="keyword">be</span> non empty set,
+<a class='lineno' href='#line-973' id='line-973'>973</a>       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
+<a class='lineno' href='#line-974' id='line-974'>974</a> 
+<a class='lineno' href='#line-975' id='line-975'>975</a>   <span class="keyword">attr</span> R <span class="keyword">is</span> complete <span class="keyword">means</span>
+<a class='lineno' href='#line-976' id='line-976'>976</a>     <span class="keyword">for</span> X <span class="keyword">being</span> R-directed non empty Subset <span class="keyword">of</span> D <span class="keyword">holds</span>
+<a class='lineno' href='#line-977' id='line-977'>977</a>       <span class="keyword">ex</span> u <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">st</span> u <span class="keyword">is</span> X,R-lub;
+<a class='lineno' href='#line-978' id='line-978'>978</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>Here again, what I want to express is that such complete partial
+ orders exist, not that for every $D$, any partial order is $D$-complete,
+ or something weird like that...</p>
+<p>What are the precise semantics of these clusters?</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-985' id='line-985'>985</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-986' id='line-986'>986</a>   <span class="keyword">let</span> D <span class="keyword">be</span> non empty set;
+<a class='lineno' href='#line-987' id='line-987'>987</a> 
+<a class='lineno' href='#line-988' id='line-988'>988</a>   <span class="keyword">cluster</span> complete <span class="keyword">for</span> PartialOrder <span class="keyword">of</span> D;
+<a class='lineno' href='#line-989' id='line-989'>989</a>   <span class="keyword">existence</span>
+<a class='lineno' href='#line-990' id='line-990'>990</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-991' id='line-991'>991</a> <span class="set-keyword">    <span class="keyword">set</span></span> I = id D;
+<a class='lineno' href='#line-992' id='line-992'>992</a>     <span class="keyword">reconsider</span> I <span class="keyword">as</span> PartialOrder <span class="keyword">of</span> D;
+<a class='lineno' href='#line-993' id='line-993'>993</a>     <span class="keyword">take</span> I;
+<a class='lineno' href='#line-994' id='line-994'>994</a>     <span class="keyword">thus</span> I <span class="keyword">is</span> complete
+<a class='lineno' href='#line-995' id='line-995'>995</a>     <span class="keyword">proof</span>
+<a class='lineno' href='#line-996' id='line-996'>996</a>       <span class="keyword">let</span> X <span class="keyword">be</span> I-directed Subset <span class="keyword">of</span> D;
+<a class='lineno' href='#line-997' id='line-997'>997</a> <span class="error">::&gt;                            *56</span>
+<a class='lineno' href='#line-998' id='line-998'>998</a>     <span class="keyword">end</span>;
+<a class='lineno' href='#line-999' id='line-999'>999</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-1000' id='line-1000'>1000</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1001' id='line-1001'>1001</a> 
+<a class='lineno' href='#line-1002' id='line-1002'>1002</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1003' id='line-1003'>1003</a>   <span class="keyword">let</span> D <span class="keyword">be</span> non empty set,
+<a class='lineno' href='#line-1004' id='line-1004'>1004</a>       R <span class="keyword">be</span> complete PartialOrder <span class="keyword">of</span> D,
+<a class='lineno' href='#line-1005' id='line-1005'>1005</a>       X <span class="keyword">be</span> R-directed Subset <span class="keyword">of</span> D;
+<a class='lineno' href='#line-1006' id='line-1006'>1006</a> 
+<a class='lineno' href='#line-1007' id='line-1007'>1007</a>   <span class="keyword">func</span> LUB(X) -&gt; Element <span class="keyword">of</span> D <span class="keyword">means</span>
+<a class='lineno' href='#line-1008' id='line-1008'>1008</a>     it <span class="keyword">is</span> X,R-lub;
+<a class='lineno' href='#line-1009' id='line-1009'>1009</a>   <span class="keyword">existence</span>;
+<a class='lineno' href='#line-1010' id='line-1010'>1010</a> <span class="error">::&gt;       *4</span>
+<a class='lineno' href='#line-1011' id='line-1011'>1011</a>   <span class="keyword">uniqueness</span>;
+<a class='lineno' href='#line-1012' id='line-1012'>1012</a> <span class="error">::&gt;        *4</span>
+<a class='lineno' href='#line-1013' id='line-1013'>1013</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h3 id="2.4"><a class="headnumber" href="#2.4">2.4</a> Bottom element</h3>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-1021"><code>-bottom</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1016' id='line-1016'>1016</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1017' id='line-1017'>1017</a>   <span class="keyword">let</span> D <span class="keyword">be</span> set,
+<a class='lineno' href='#line-1018' id='line-1018'>1018</a>       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D,
+<a class='lineno' href='#line-1019' id='line-1019'>1019</a>       b <span class="keyword">be</span> Element <span class="keyword">of</span> D;
+<a class='lineno' href='#line-1020' id='line-1020'>1020</a> 
+<a class='lineno' href='#line-1021' id='line-1021'>1021</a>   <span class="keyword">attr</span> b <span class="keyword">is</span> R-bottom <span class="keyword">means</span>
+<a class='lineno' href='#line-1022' id='line-1022'>1022</a>     <span class="keyword">for</span> y <span class="keyword">st</span> y <span class="keyword">in</span> D <span class="keyword">holds</span> [b,y] <span class="keyword">in</span> R;
+<a class='lineno' href='#line-1023' id='line-1023'>1023</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1024' id='line-1024'>1024</a> 
+<a class='lineno' href='#line-1025' id='line-1025'>1025</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-1026' id='line-1026'>1026</a>   <span class="keyword">let</span> D <span class="keyword">be</span> set,
+<a class='lineno' href='#line-1027' id='line-1027'>1027</a>       R <span class="keyword">be</span> PartialOrder <span class="keyword">of</span> D;
+<a class='lineno' href='#line-1028' id='line-1028'>1028</a> 
+<a class='lineno' href='#line-1029' id='line-1029'>1029</a>   <span class="keyword">cluster</span> R-bottom <span class="keyword">for</span> Element <span class="keyword">of</span> D;
+<a class='lineno' href='#line-1030' id='line-1030'>1030</a>   <span class="keyword">existence</span>;
+<a class='lineno' href='#line-1031' id='line-1031'>1031</a> <span class="error">::&gt;       *4</span>
+<a class='lineno' href='#line-1032' id='line-1032'>1032</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h3 id="2.5"><a class="headnumber" href="#2.5">2.5</a> The CPO structure</h3>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-1036"><code>CPO</code></a></li>
+                
+                
+                <li><a href="#line-1037"><code>carrier</code></a></li>
+                
+                
+                <li><a href="#line-1038"><code>BinRel</code></a></li>
+                
+                
+                <li><a href="#line-1039"><code>Bot</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1035' id='line-1035'>1035</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1036' id='line-1036'>1036</a>   <span class="keyword">struct</span> CPO (#
+<a class='lineno' href='#line-1037' id='line-1037'>1037</a>     carrier -&gt; non empty set,
+<a class='lineno' href='#line-1038' id='line-1038'>1038</a>     BinRel -&gt; complete PartialOrder <span class="keyword">of</span> (the carrier),
+<a class='lineno' href='#line-1039' id='line-1039'>1039</a>     Bot -&gt; (the BinRel)-bottom Element <span class="keyword">of</span> the carrier
+<a class='lineno' href='#line-1040' id='line-1040'>1040</a>   #);
+<a class='lineno' href='#line-1041' id='line-1041'>1041</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h3 id="2.6"><a class="headnumber" href="#2.6">2.6</a> Continuity</h3>
+
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h4 id="2.6.1"><a class="headnumber" href="#2.6.1">2.6.1</a> Monotonicity</h4>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-1049"><code>monotone</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1045' id='line-1045'>1045</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1046' id='line-1046'>1046</a>   <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO,
+<a class='lineno' href='#line-1047' id='line-1047'>1047</a>       f <span class="keyword">be</span> Function <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> E);
+<a class='lineno' href='#line-1048' id='line-1048'>1048</a> 
+<a class='lineno' href='#line-1049' id='line-1049'>1049</a>   <span class="keyword">attr</span> f <span class="keyword">is</span> monotone <span class="keyword">means</span>
+<a class='lineno' href='#line-1050' id='line-1050'>1050</a>     <span class="keyword">for</span> x,y <span class="keyword">st</span> [x,y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> D) <span class="keyword">holds</span>
+<a class='lineno' href='#line-1051' id='line-1051'>1051</a>       [f.x,f.y] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> E);
+<a class='lineno' href='#line-1052' id='line-1052'>1052</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h4 id="2.6.2"><a class="headnumber" href="#2.6.2">2.6.2</a> Continuity</h4>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-1059"><code>continuous</code></a></li>
+                
+                
+                <li><a href="#line-1082"><code>ContinuousFunc</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1055' id='line-1055'>1055</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1056' id='line-1056'>1056</a>   <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO,
+<a class='lineno' href='#line-1057' id='line-1057'>1057</a>       f <span class="keyword">be</span> Function <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> E);
+<a class='lineno' href='#line-1058' id='line-1058'>1058</a> 
+<a class='lineno' href='#line-1059' id='line-1059'>1059</a>   <span class="keyword">attr</span> f <span class="keyword">is</span> continuous <span class="keyword">means</span>
+<a class='lineno' href='#line-1060' id='line-1060'>1060</a>     f <span class="keyword">is</span> monotone &amp;
+<a class='lineno' href='#line-1061' id='line-1061'>1061</a>     <span class="keyword">for</span> X <span class="keyword">being</span> (the BinRel <span class="keyword">of</span> D)-directed
+<a class='lineno' href='#line-1062' id='line-1062'>1062</a>                 Subset <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D)
+<a class='lineno' href='#line-1063' id='line-1063'>1063</a>       <span class="keyword">holds</span>
+<a class='lineno' href='#line-1064' id='line-1064'>1064</a>         f.LUB(X) = LUB(f.:X);
+<a class='lineno' href='#line-1065' id='line-1065'>1065</a> <span class="error">::&gt;                  *103</span>
+<a class='lineno' href='#line-1066' id='line-1066'>1066</a> <span class="comment">::                 This is indeed somewhat complicated,</span>
+<a class='lineno' href='#line-1067' id='line-1067'>1067</a> <span class="comment">::                  why would it necessarily be directed,</span>
+<a class='lineno' href='#line-1068' id='line-1068'>1068</a> <span class="comment">::                  and thus eligible for LUB ?</span>
+<a class='lineno' href='#line-1069' id='line-1069'>1069</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1070' id='line-1070'>1070</a> 
+<a class='lineno' href='#line-1071' id='line-1071'>1071</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-1072' id='line-1072'>1072</a>   <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO;
+<a class='lineno' href='#line-1073' id='line-1073'>1073</a> 
+<a class='lineno' href='#line-1074' id='line-1074'>1074</a>   <span class="keyword">cluster</span> continuous <span class="keyword">for</span> Function <span class="keyword">of</span> (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> E);
+<a class='lineno' href='#line-1075' id='line-1075'>1075</a>   <span class="keyword">existence</span>;
+<a class='lineno' href='#line-1076' id='line-1076'>1076</a> <span class="error">::&gt;       *4</span>
+<a class='lineno' href='#line-1077' id='line-1077'>1077</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1078' id='line-1078'>1078</a> 
+<a class='lineno' href='#line-1079' id='line-1079'>1079</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1080' id='line-1080'>1080</a>   <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO;
+<a class='lineno' href='#line-1081' id='line-1081'>1081</a> 
+<a class='lineno' href='#line-1082' id='line-1082'>1082</a>   <span class="keyword">mode</span> ContinuousFunc <span class="keyword">of</span> D,E <span class="keyword">is</span> continuous Function <span class="keyword">of</span>
+<a class='lineno' href='#line-1083' id='line-1083'>1083</a>     (the carrier <span class="keyword">of</span> D),(the carrier <span class="keyword">of</span> E);
+<a class='lineno' href='#line-1084' id='line-1084'>1084</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h4 id="2.6.3"><a class="headnumber" href="#2.6.3">2.6.3</a> Continuous function space</h4>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-1090"><code>ContinuousFuncs</code></a></li>
+                
+                
+                <li><a href="#line-1102"><code>piecewise_le</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1087' id='line-1087'>1087</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1088' id='line-1088'>1088</a>   <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO;
+<a class='lineno' href='#line-1089' id='line-1089'>1089</a> 
+<a class='lineno' href='#line-1090' id='line-1090'>1090</a>   <span class="keyword">func</span> ContinuousFuncs(D,E) -&gt; set <span class="keyword">means</span>
+<a class='lineno' href='#line-1091' id='line-1091'>1091</a>     x <span class="keyword">in</span> it <span class="keyword">iff</span> x <span class="keyword">is</span> ContinuousFunc <span class="keyword">of</span> D,E;
+<a class='lineno' href='#line-1092' id='line-1092'>1092</a>   <span class="keyword">existence</span>;
+<a class='lineno' href='#line-1093' id='line-1093'>1093</a> <span class="error">::&gt;       *4</span>
+<a class='lineno' href='#line-1094' id='line-1094'>1094</a>   <span class="keyword">uniqueness</span>;
+<a class='lineno' href='#line-1095' id='line-1095'>1095</a> <span class="error">::&gt;        *4</span>
+<a class='lineno' href='#line-1096' id='line-1096'>1096</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1097' id='line-1097'>1097</a> 
+<a class='lineno' href='#line-1098' id='line-1098'>1098</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1099' id='line-1099'>1099</a>   <span class="keyword">let</span> D,E <span class="keyword">be</span> CPO,
+<a class='lineno' href='#line-1100' id='line-1100'>1100</a>       f,g <span class="keyword">be</span> ContinuousFunc <span class="keyword">of</span> D,E;
+<a class='lineno' href='#line-1101' id='line-1101'>1101</a> 
+<a class='lineno' href='#line-1102' id='line-1102'>1102</a>   <span class="keyword">pred</span> f piecewise_le g <span class="keyword">means</span>
+<a class='lineno' href='#line-1103' id='line-1103'>1103</a>     <span class="keyword">for</span> x <span class="keyword">being</span> Element <span class="keyword">of</span> D <span class="keyword">holds</span>
+<a class='lineno' href='#line-1104' id='line-1104'>1104</a>       [f.x, g.x] <span class="keyword">in</span> (the BinRel <span class="keyword">of</span> E);
+<a class='lineno' href='#line-1105' id='line-1105'>1105</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1106' id='line-1106'>1106</a> 
+<a class='lineno' href='#line-1107' id='line-1107'>1107</a> <span class="keyword">theorem</span>
+<a class='lineno' href='#line-1108' id='line-1108'>1108</a>   <span class="keyword">for</span> D,E <span class="keyword">being</span> CPO <span class="keyword">holds</span>
+<a class='lineno' href='#line-1109' id='line-1109'>1109</a>     CPO(# ContinuousFuncs(D,E),
+<a class='lineno' href='#line-1110' id='line-1110'>1110</a>           { [f,g] where f,g <span class="keyword">is</span> ContinuousFunc <span class="keyword">of</span> D,E : f piecewise_le g },
+<a class='lineno' href='#line-1111' id='line-1111'>1111</a>           {} #) <span class="keyword">is</span> CPO
+<a class='lineno' href='#line-1112' id='line-1112'>1112</a> <span class="error">::&gt;           *105</span>
+<a class='lineno' href='#line-1113' id='line-1113'>1113</a> <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-1114' id='line-1114'>1114</a>   <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<a class='lineno' href='#line-1115' id='line-1115'>1115</a> <span class="keyword">end</span></span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h4 id="2.6.4"><a class="headnumber" href="#2.6.4">2.6.4</a> The powerset CPO</h4>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-1121"><code>SubsetRelation</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1118' id='line-1118'>1118</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1119' id='line-1119'>1119</a>   <span class="keyword">let</span> A <span class="keyword">be</span> non empty set;
+<a class='lineno' href='#line-1120' id='line-1120'>1120</a> 
+<a class='lineno' href='#line-1121' id='line-1121'>1121</a>   <span class="keyword">func</span> SubsetRelation(A) -&gt; Relation <span class="keyword">of</span> bool A <span class="keyword">means</span>
+<a class='lineno' href='#line-1122' id='line-1122'>1122</a>     [x,y] <span class="keyword">in</span> it <span class="keyword">iff</span> x <span class="keyword">is</span> Subset <span class="keyword">of</span> y;
+<a class='lineno' href='#line-1123' id='line-1123'>1123</a>   <span class="keyword">existence</span>;
+<a class='lineno' href='#line-1124' id='line-1124'>1124</a> <span class="error">::&gt;       *4</span>
+<a class='lineno' href='#line-1125' id='line-1125'>1125</a>   <span class="keyword">uniqueness</span>;
+<a class='lineno' href='#line-1126' id='line-1126'>1126</a> <span class="error">::&gt;        *4</span>
+<a class='lineno' href='#line-1127' id='line-1127'>1127</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1128' id='line-1128'>1128</a> 
+<a class='lineno' href='#line-1129' id='line-1129'>1129</a> <span class="keyword">theorem</span>
+<a class='lineno' href='#line-1130' id='line-1130'>1130</a>   <span class="keyword">for</span> A <span class="keyword">being</span> non empty set <span class="keyword">holds</span>
+<a class='lineno' href='#line-1131' id='line-1131'>1131</a>     CPO(# bool A, SubsetRelation(A), {} #) <span class="keyword">is</span> CPO
+<a class='lineno' href='#line-1132' id='line-1132'>1132</a> <span class="error">::&gt;                                      *105</span>
+<a class='lineno' href='#line-1133' id='line-1133'>1133</a> <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-1134' id='line-1134'>1134</a>   <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<a class='lineno' href='#line-1135' id='line-1135'>1135</a> <span class="keyword">end</span></span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <h2 id="3"><a class="headnumber" href="#3">3</a> Graph Models</h2>
+
+              
+                <ul class="vocabulary">
+                
+                
+                <li><a href="#line-1143"><code>BnNext</code></a></li>
+                
+                
+                <li><a href="#line-1149"><code>Web</code></a></li>
+                
+                
+                <li><a href="#line-1166"><code>^<w</code></a></li>
+                
+                
+                <li><a href="#line-1217"><code>GraphModel</code></a></li>
+                
+                
+                <li><a href="#line-1218"><code>carrier</code></a></li>
+                
+                
+                <li><a href="#line-1219"><code>c</code></a></li>
+                
+                </ul>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1141' id='line-1141'>1141</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1142' id='line-1142'>1142</a>   <span class="keyword">let</span> Bn <span class="keyword">be</span> non empty set;
+<a class='lineno' href='#line-1143' id='line-1143'>1143</a>   <span class="keyword">func</span> BnNext(Bn) -&gt; set <span class="keyword">equals</span> Bn \/ [: Bn*, Bn :];
+<a class='lineno' href='#line-1144' id='line-1144'>1144</a>   <span class="keyword">coherence</span>;
+<a class='lineno' href='#line-1145' id='line-1145'>1145</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1146' id='line-1146'>1146</a> 
+<a class='lineno' href='#line-1147' id='line-1147'>1147</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1148' id='line-1148'>1148</a>   <span class="keyword">let</span> A <span class="keyword">be</span> non empty set;
+<a class='lineno' href='#line-1149' id='line-1149'>1149</a>   <span class="keyword">func</span> Web(A) -&gt; set <span class="keyword">equals</span> A;
+<a class='lineno' href='#line-1150' id='line-1150'>1150</a>   <span class="comment">:: TODO inductive construction</span>
+<a class='lineno' href='#line-1151' id='line-1151'>1151</a>   <span class="keyword">coherence</span>;
+<a class='lineno' href='#line-1152' id='line-1152'>1152</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1153' id='line-1153'>1153</a> 
+<a class='lineno' href='#line-1154' id='line-1154'>1154</a> <span class="keyword">theorem</span>
+<a class='lineno' href='#line-1155' id='line-1155'>1155</a>   <span class="keyword">for</span> A <span class="keyword">being</span> non empty set <span class="keyword">holds</span>
+<a class='lineno' href='#line-1156' id='line-1156'>1156</a>     id Web(A) <span class="keyword">is</span> one-to-one
+<a class='lineno' href='#line-1157' id='line-1157'>1157</a> <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-1158' id='line-1158'>1158</a>   <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<a class='lineno' href='#line-1159' id='line-1159'>1159</a> <span class="keyword">end</span></span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>Doesn&#39;t there already exist a notation for the set of all
+ finite subsets of a set in Mizar ?!</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1163' id='line-1163'>1163</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1164' id='line-1164'>1164</a>   <span class="keyword">let</span> B <span class="keyword">be</span> set;
+<a class='lineno' href='#line-1165' id='line-1165'>1165</a> 
+<a class='lineno' href='#line-1166' id='line-1166'>1166</a>   <span class="keyword">func</span> (B)^&lt;w -&gt; set <span class="keyword">equals</span>
+<a class='lineno' href='#line-1167' id='line-1167'>1167</a>     { X where X <span class="keyword">is</span> Subset <span class="keyword">of</span> B : X <span class="keyword">is</span> finite };
+<a class='lineno' href='#line-1168' id='line-1168'>1168</a>   <span class="keyword">coherence</span>;
+<a class='lineno' href='#line-1169' id='line-1169'>1169</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1170' id='line-1170'>1170</a> 
+<a class='lineno' href='#line-1171' id='line-1171'>1171</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1172' id='line-1172'>1172</a>   <span class="keyword">let</span> B <span class="keyword">be</span> set;
+<a class='lineno' href='#line-1173' id='line-1173'>1173</a> 
+<a class='lineno' href='#line-1174' id='line-1174'>1174</a>   <span class="keyword">redefine</span> <span class="keyword">func</span> (B)^&lt;w -&gt; set <span class="keyword">means</span>
+<a class='lineno' href='#line-1175' id='line-1175'>1175</a>     X <span class="keyword">in</span> it <span class="keyword">iff</span> X c= B &amp; X <span class="keyword">is</span> finite;
+<a class='lineno' href='#line-1176' id='line-1176'>1176</a>   <span class="keyword">compatibility</span>
+<a class='lineno' href='#line-1177' id='line-1177'>1177</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-1178' id='line-1178'>1178</a>     <span class="keyword">thus</span> <span class="keyword">thesis</span>;
+<a class='lineno' href='#line-1179' id='line-1179'>1179</a> <span class="error">::&gt;           *4,4,4</span>
+<a class='lineno' href='#line-1180' id='line-1180'>1180</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-1181' id='line-1181'>1181</a>   <span class="keyword">coherence</span>;
+<a class='lineno' href='#line-1182' id='line-1182'>1182</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>This is true if one assumes the axiom of choice, and
+ then still it might be a bit complicated to give a proof.
+(First show that <code>B</code> can be well-ordered, then define a
+ well-order on <code>[:B^&lt;w,B:]</code>, so that these two well-orders
+ become isomorphic..?)</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1189' id='line-1189'>1189</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-1190' id='line-1190'>1190</a>   <span class="keyword">let</span> B <span class="keyword">be</span> infinite set;
+<a class='lineno' href='#line-1191' id='line-1191'>1191</a>   <span class="keyword">cluster</span> one-to-one <span class="keyword">for</span> Function <span class="keyword">of</span> [:B^&lt;w,B:],B;
+<a class='lineno' href='#line-1192' id='line-1192'>1192</a>   <span class="keyword">existence</span>
+<a class='lineno' href='#line-1193' id='line-1193'>1193</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-1194' id='line-1194'>1194</a>     <span class="keyword">not</span> B <span class="keyword">is</span> finite;
+<a class='lineno' href='#line-1195' id='line-1195'>1195</a>     <span class="keyword">then</span> [:B,B:],B are_equipotent <span class="keyword">by</span> <span class="reference">CARD_4:18</span>; <span class="comment">:: &lt;-- though this</span>
+<a class='lineno' href='#line-1196' id='line-1196'>1196</a>         <span class="comment">:: won't get me there directly :(</span>
+<a class='lineno' href='#line-1197' id='line-1197'>1197</a>     <span class="comment">:: I'll probably "build up" (first finite sets of size 1, then 2, ...)</span>
+<a class='lineno' href='#line-1198' id='line-1198'>1198</a>     <span class="keyword">thus</span> <span class="keyword">ex</span> f <span class="keyword">being</span> Function <span class="keyword">of</span> [:B^&lt;w,B:],B <span class="keyword">st</span> f <span class="keyword">is</span> one-to-one;
+<a class='lineno' href='#line-1199' id='line-1199'>1199</a> <span class="error">::&gt;                                                           *4</span>
+<a class='lineno' href='#line-1200' id='line-1200'>1200</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-1201' id='line-1201'>1201</a> <span class="keyword">end</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li>
+            <div class="annotation">
+              <p>Easier, and probably good enough for our purposes, is to prove
+ this version, where we only prove it for countable sets.</p>
+
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1205' id='line-1205'>1205</a> <span class="keyword">registration</span>
+<a class='lineno' href='#line-1206' id='line-1206'>1206</a>   <span class="keyword">let</span> B <span class="keyword">be</span> countable infinite set;
+<a class='lineno' href='#line-1207' id='line-1207'>1207</a>   <span class="keyword">cluster</span> one-to-one <span class="keyword">for</span> Function <span class="keyword">of</span> [:B^&lt;w,B:],B;
+<a class='lineno' href='#line-1208' id='line-1208'>1208</a>   <span class="keyword">existence</span>
+<a class='lineno' href='#line-1209' id='line-1209'>1209</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
+<a class='lineno' href='#line-1210' id='line-1210'>1210</a>     <span class="keyword">thus</span> <span class="keyword">ex</span> f <span class="keyword">being</span> Function <span class="keyword">of</span> [:B^&lt;w,B:],B <span class="keyword">st</span> f <span class="keyword">is</span> one-to-one;
+<a class='lineno' href='#line-1211' id='line-1211'>1211</a> <span class="error">::&gt;                                                           *4</span>
+<a class='lineno' href='#line-1212' id='line-1212'>1212</a>   <span class="keyword">end</span></span>;
+<a class='lineno' href='#line-1213' id='line-1213'>1213</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1214' id='line-1214'>1214</a> 
+<a class='lineno' href='#line-1215' id='line-1215'>1215</a> <span class="comment">:: Graph models</span>
+<a class='lineno' href='#line-1216' id='line-1216'>1216</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-1217' id='line-1217'>1217</a>   <span class="keyword">struct</span> GraphModel (#
+<a class='lineno' href='#line-1218' id='line-1218'>1218</a>     carrier -&gt; infinite set,
+<a class='lineno' href='#line-1219' id='line-1219'>1219</a>     c -&gt; one-to-one (Function <span class="keyword">of</span>
+<a class='lineno' href='#line-1220' id='line-1220'>1220</a>       [:(the carrier)^&lt;w, the carrier:], the carrier)
+<a class='lineno' href='#line-1221' id='line-1221'>1221</a>   #);
+<a class='lineno' href='#line-1222' id='line-1222'>1222</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-1223' id='line-1223'>1223</a> 
+<a class='lineno' href='#line-1224' id='line-1224'>1224</a> 
+<a class='lineno' href='#line-1225' id='line-1225'>1225</a> <span class="error">::&gt;</span>
+<a class='lineno' href='#line-1226' id='line-1226'>1226</a> <span class="error">::&gt; 1: It is not true</span>
+<a class='lineno' href='#line-1227' id='line-1227'>1227</a> <span class="error">::&gt; 4: This inference is not accepted</span>
+<a class='lineno' href='#line-1228' id='line-1228'>1228</a> <span class="error">::&gt; 56: Disagreement of types</span>
+<a class='lineno' href='#line-1229' id='line-1229'>1229</a> <span class="error">::&gt; 60: Something remains to be proved in this case</span>
+<a class='lineno' href='#line-1230' id='line-1230'>1230</a> <span class="error">::&gt; 70: Something remains to be proved</span>
+<a class='lineno' href='#line-1231' id='line-1231'>1231</a> <span class="error">::&gt; 103: Unknown functor</span>
+<a class='lineno' href='#line-1232' id='line-1232'>1232</a> <span class="error">::&gt; 105: Illegal projection</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"], scale: 90 }
+  });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+$(function () {
+  
+  $(".collapsible").hide();
+  $("a.toggle-collapsible").click(function () {
+    $(this).next().toggle();
+    return false;
+  });
+
+});
+</script>
+</body>
+</html>
