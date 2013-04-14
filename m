@@ -23,7 +23,7 @@ predicates='s/^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/R$1/'
 
 hash=`md5sum text/lambda.miz | awk '{ print $1 }'`
 touch last
-if [ $hash != $(cat last) ]
+if [[ $hash != $(cat last) ]]
 then
   echo $hash > last
   mizf text/lambda.miz

@@ -7,11 +7,16 @@
   <meta charset="utf8">
 </head>
 <body>
+  <ul class="tools">
+    <li><a href="#top">▴</a></li>
+    <li><a href="#toc">□</a></li>
+  </ul>
   <%
     var printTOC = function () {
-      return '<div class="toc">' +
+      return '<div class="toc" id="toc">' +
         '<h2>Contents</h2>' +
         printTOCChildren(fragments.structure) +
+        '<div style="clear: both;"></div>' +
         '</div>';
     };
     var printTOCChildren = function (hd) {

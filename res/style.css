@@ -100,6 +100,23 @@ h4 {
   font-size: 20px;
 }
 
+ul.tools {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 999;
+}
+ul.tools li a {
+  display: block;
+  margin: 2px 5px;
+  text-decoration: none;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+}
+
 h1 {
   padding-top: 60px;
 }
