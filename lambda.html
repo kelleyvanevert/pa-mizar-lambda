@@ -14,9 +14,9 @@
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-0">
               
-                <h1 id="hd-">
+                <h1 id="hd-top">
                   
                   Lambda calculus
                 </h1>
@@ -29,26 +29,26 @@
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-1">
               
                 <p>Original files:
  <a href="text/lambda.abs">.abs</a>,
  <a href="text/lambda.miz">.miz</a>,
  <a href="dict/lambda.voc">.voc</a></p>
-<p><div class="toc"><h2>Contents</h2><ul><li><span class="headnumber">1</span><a href="#hd-1">Syntax and behaviour</a><ul><li><span class="headnumber">1.1</span><a href="#hd-1.1">Lambda terms</a><ul><li><span class="headnumber">1.1.1</span><a href="#hd-1.1.1">Preservation under operations</a></li></ul></li>
-<li><span class="headnumber">1.2</span><a href="#hd-1.2">Helper definitions</a><ul><li><span class="headnumber">1.2.1</span><a href="#hd-1.2.1">Variable occurences</a></li>
-<li><span class="headnumber">1.2.2</span><a href="#hd-1.2.2">Abstraction and application</a></li></ul></li>
-<li><span class="headnumber">1.3</span><a href="#hd-1.3">Reduction and conversion</a></li></ul></li>
-<li><span class="headnumber">2</span><a href="#hd-2">CPO's</a><ul><li><span class="headnumber">2.1</span><a href="#hd-2.1">(Least) upper bounds</a></li>
-<li><span class="headnumber">2.2</span><a href="#hd-2.2">Directed sets</a></li>
-<li><span class="headnumber">2.3</span><a href="#hd-2.3">Completeness</a></li>
-<li><span class="headnumber">2.4</span><a href="#hd-2.4">Bottom element</a></li>
-<li><span class="headnumber">2.5</span><a href="#hd-2.5">The CPO structure</a></li>
-<li><span class="headnumber">2.6</span><a href="#hd-2.6">Continuity</a><ul><li><span class="headnumber">2.6.1</span><a href="#hd-2.6.1">Monotonicity</a></li>
-<li><span class="headnumber">2.6.2</span><a href="#hd-2.6.2">Continuity</a></li>
-<li><span class="headnumber">2.6.3</span><a href="#hd-2.6.3">Continuous function space</a></li>
-<li><span class="headnumber">2.6.4</span><a href="#hd-2.6.4">The powerset CPO</a></li></ul></li></ul></li>
-<li><span class="headnumber">3</span><a href="#hd-3">Graph Models</a></li></ul></div></p>
+<p><div class="toc"><h2>Contents</h2><ul><li class="depth-2"><span class="headnumber depth-2">1</span><span class="contain depth-2"><a href="#hd-1" class="depth-2">Syntax and behaviour</a><ul><li class="depth-3"><span class="headnumber depth-3">1.1</span><span class="contain depth-3"><a href="#hd-1.1" class="depth-3">Lambda terms</a><ul><li class="depth-4"><span class="headnumber depth-4">1.1.1</span><span class="contain depth-4"><a href="#hd-1.1.1" class="depth-4">Preservation under operations</a></span></li></ul></span></li>
+<li class="depth-3"><span class="headnumber depth-3">1.2</span><span class="contain depth-3"><a href="#hd-1.2" class="depth-3">Helper definitions</a><ul><li class="depth-4"><span class="headnumber depth-4">1.2.1</span><span class="contain depth-4"><a href="#hd-1.2.1" class="depth-4">Variable occurences</a></span></li>
+<li class="depth-4"><span class="headnumber depth-4">1.2.2</span><span class="contain depth-4"><a href="#hd-1.2.2" class="depth-4">Abstraction and application</a></span></li></ul></span></li>
+<li class="depth-3"><span class="headnumber depth-3">1.3</span><span class="contain depth-3"><a href="#hd-1.3" class="depth-3">Reduction and conversion</a></span></li></ul></span></li>
+<li class="depth-2"><span class="headnumber depth-2">2</span><span class="contain depth-2"><a href="#hd-2" class="depth-2">CPO's</a><ul><li class="depth-3"><span class="headnumber depth-3">2.1</span><span class="contain depth-3"><a href="#hd-2.1" class="depth-3">(Least) upper bounds</a></span></li>
+<li class="depth-3"><span class="headnumber depth-3">2.2</span><span class="contain depth-3"><a href="#hd-2.2" class="depth-3">Directed sets</a></span></li>
+<li class="depth-3"><span class="headnumber depth-3">2.3</span><span class="contain depth-3"><a href="#hd-2.3" class="depth-3">Completeness</a></span></li>
+<li class="depth-3"><span class="headnumber depth-3">2.4</span><span class="contain depth-3"><a href="#hd-2.4" class="depth-3">Bottom element</a></span></li>
+<li class="depth-3"><span class="headnumber depth-3">2.5</span><span class="contain depth-3"><a href="#hd-2.5" class="depth-3">The CPO structure</a></span></li>
+<li class="depth-3"><span class="headnumber depth-3">2.6</span><span class="contain depth-3"><a href="#hd-2.6" class="depth-3">Continuity</a><ul><li class="depth-4"><span class="headnumber depth-4">2.6.1</span><span class="contain depth-4"><a href="#hd-2.6.1" class="depth-4">Monotonicity</a></span></li>
+<li class="depth-4"><span class="headnumber depth-4">2.6.2</span><span class="contain depth-4"><a href="#hd-2.6.2" class="depth-4">Continuity</a></span></li>
+<li class="depth-4"><span class="headnumber depth-4">2.6.3</span><span class="contain depth-4"><a href="#hd-2.6.3" class="depth-4">Continuous function space</a></span></li>
+<li class="depth-4"><span class="headnumber depth-4">2.6.4</span><span class="contain depth-4"><a href="#hd-2.6.4" class="depth-4">The powerset CPO</a></span></li></ul></span></li></ul></span></li>
+<li class="depth-2"><span class="headnumber depth-2">3</span><span class="contain depth-2"><a href="#hd-3" class="depth-2">Graph Models</a></span></li></ul></div></p>
 
               
 
@@ -134,11 +134,13 @@
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-2">
               
                 <h2 id="hd-1">
                   
-                  <span class="headnumber">1</span>
+                  <a href="#hd-1" class="headnumber">
+                    1
+                  </a>
                   
                   Syntax and behaviour
                 </h2>
@@ -151,7 +153,7 @@
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-3">
               
                 
               
@@ -169,11 +171,13 @@
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-4">
               
                 <h3 id="hd-1.1">
                   
-                  <span class="headnumber">1.1</span>
+                  <a href="#hd-1.1" class="headnumber">
+                    1.1
+                  </a>
                   
                   Lambda terms
                 </h3>
@@ -202,7 +206,7 @@
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-5">
               
                 <p>A <em>lambda term</em> is identified with it&#39;s AST (abstract
  syntax tree). More precisely, we identify a lambda term
@@ -245,7 +249,7 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-6">
               
                 <p>Some simple <code>LambdaTerm-like</code> things.</p>
 <p>TODO: some more of these simple trees, for easy usage
@@ -415,7 +419,7 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-7">
               
                 <p>And then we can easily define a <code>LambdaTerm-like</code> cluster,
  and make a mode <code>LambdaTerm</code> out of it.</p>
@@ -477,11 +481,13 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-8">
               
                 <h4 id="hd-1.1.1">
                   
-                  <span class="headnumber">1.1.1</span>
+                  <a href="#hd-1.1.1" class="headnumber">
+                    1.1.1
+                  </a>
                   
                   Preservation under operations
                 </h4>
@@ -494,7 +500,7 @@ Here <code>M</code> is the <code>DecoratedTree of NAT</code> which represents th
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-9">
               
                 <p><code>LambdaTerm</code>s are preserved under taking subterms, and composing
  terms. We&#39;ll register this knowledge in the type system.</p>
@@ -563,7 +569,7 @@ The definition of <code>|</code> that we are using is the definition
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-10">
               
                 <p>Let Mizar know that <code>P with-replacement (p,Q)</code> is also a <code>LambdaTerm</code>.
 First we prove a slightly more general theorem about the ranges of
@@ -819,11 +825,13 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-11">
               
                 <h3 id="hd-1.2">
                   
-                  <span class="headnumber">1.2</span>
+                  <a href="#hd-1.2" class="headnumber">
+                    1.2
+                  </a>
                   
                   Helper definitions
                 </h3>
@@ -836,7 +844,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-12">
               
                 <p>Some helper definitions for working with lambda terms.</p>
 
@@ -849,11 +857,13 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-13">
               
                 <h4 id="hd-1.2.1">
                   
-                  <span class="headnumber">1.2.1</span>
+                  <a href="#hd-1.2.1" class="headnumber">
+                    1.2.1
+                  </a>
                   
                   Variable occurences
                 </h4>
@@ -885,7 +895,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-14">
               
                 
               
@@ -928,7 +938,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-15">
               
                 <p>By $r$ being an <em>active variable</em> of some term $M$ (or more precisely,
  a path identifying an active variable), I mean that if $\lambda M$ were
@@ -953,11 +963,13 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-16">
               
                 <h4 id="hd-1.2.2">
                   
-                  <span class="headnumber">1.2.2</span>
+                  <a href="#hd-1.2.2" class="headnumber">
+                    1.2.2
+                  </a>
                   
                   Abstraction and application
                 </h4>
@@ -983,7 +995,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-17">
               
                 <p>Then we can define abstraction and application</p>
 
@@ -1075,11 +1087,13 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-18">
               
                 <h3 id="hd-1.3">
                   
-                  <span class="headnumber">1.3</span>
+                  <a href="#hd-1.3" class="headnumber">
+                    1.3
+                  </a>
                   
                   Reduction and conversion
                 </h3>
@@ -1108,7 +1122,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-19">
               
                 <p>First I define <em>shallow</em> one-step beta substitution, which only
  states (the De Bruijn equivalent of)
@@ -1136,7 +1150,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-20">
               
                 <p>Then we extend this ordinary one-step beta reduction, that is,
  any subterm is also allowed to reduce.</p>
@@ -1168,7 +1182,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-21">
               
                 <p>We close the relation under transitivity and reflexivity
  to get the full beta reduction relation.</p>
@@ -1190,7 +1204,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-22">
               
                 <p>And then close under symmetry to get beta conversion.</p>
 
@@ -1210,11 +1224,13 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-23">
               
                 <h2 id="hd-2">
                   
-                  <span class="headnumber">2</span>
+                  <a href="#hd-2" class="headnumber">
+                    2
+                  </a>
                   
                   CPO's
                 </h2>
@@ -1234,7 +1250,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-24">
               
                 
               
@@ -1248,7 +1264,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-25">
               
                 <p>We start off by defining
  a mode for partial orders upon some set <code>D</code>. I don&#39;t really
@@ -1269,11 +1285,13 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-26">
               
                 <h3 id="hd-2.1">
                   
-                  <span class="headnumber">2.1</span>
+                  <a href="#hd-2.1" class="headnumber">
+                    2.1
+                  </a>
                   
                   (Least) upper bounds
                 </h3>
@@ -1296,7 +1314,7 @@ First we prove a slightly more general theorem about the ranges of
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-27">
               
                 <p>An element $u$ of $D$ is an <em>upper bound</em> of a
  subset $X\subseteq D$ iff for all $x\in X$,
@@ -1331,7 +1349,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-28">
               
                 <p>Least upper bounds</p>
 
@@ -1356,11 +1374,13 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-29">
               
                 <h3 id="hd-2.2">
                   
-                  <span class="headnumber">2.2</span>
+                  <a href="#hd-2.2" class="headnumber">
+                    2.2
+                  </a>
                   
                   Directed sets
                 </h3>
@@ -1380,7 +1400,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-30">
               
                 <p>If $D$ is a set, and $R$ a partial order on $D$,
  then an $X\subseteq D$ is called <em>directed</em> iff
@@ -1407,7 +1427,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-31">
               
                 <p>this registration is actually useless..</p>
 
@@ -1494,11 +1514,13 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-32">
               
                 <h3 id="hd-2.3">
                   
-                  <span class="headnumber">2.3</span>
+                  <a href="#hd-2.3" class="headnumber">
+                    2.3
+                  </a>
                   
                   Completeness
                 </h3>
@@ -1521,7 +1543,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-33">
               
                 <p>A partial ordered set is complete iff every directed set has
  a least upper bound.</p>
@@ -1544,7 +1566,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-34">
               
                 <p>Here again, what I want to express is that such complete partial
  orders exist, not that for every $D$, any partial order is $D$-complete,
@@ -1590,11 +1612,13 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-35">
               
                 <h3 id="hd-2.4">
                   
-                  <span class="headnumber">2.4</span>
+                  <a href="#hd-2.4" class="headnumber">
+                    2.4
+                  </a>
                   
                   Bottom element
                 </h3>
@@ -1614,7 +1638,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-36">
               
                 
               
@@ -1644,11 +1668,13 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-37">
               
                 <h3 id="hd-2.5">
                   
-                  <span class="headnumber">2.5</span>
+                  <a href="#hd-2.5" class="headnumber">
+                    2.5
+                  </a>
                   
                   The CPO structure
                 </h3>
@@ -1677,7 +1703,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-38">
               
                 
               
@@ -1697,11 +1723,13 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-39">
               
                 <h3 id="hd-2.6">
                   
-                  <span class="headnumber">2.6</span>
+                  <a href="#hd-2.6" class="headnumber">
+                    2.6
+                  </a>
                   
                   Continuity
                 </h3>
@@ -1714,11 +1742,13 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-40">
               
                 <h4 id="hd-2.6.1">
                   
-                  <span class="headnumber">2.6.1</span>
+                  <a href="#hd-2.6.1" class="headnumber">
+                    2.6.1
+                  </a>
                   
                   Monotonicity
                 </h4>
@@ -1738,7 +1768,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-41">
               
                 
               
@@ -1759,11 +1789,13 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-42">
               
                 <h4 id="hd-2.6.2">
                   
-                  <span class="headnumber">2.6.2</span>
+                  <a href="#hd-2.6.2" class="headnumber">
+                    2.6.2
+                  </a>
                   
                   Continuity
                 </h4>
@@ -1786,7 +1818,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-43">
               
                 
               
@@ -1829,11 +1861,13 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-44">
               
                 <h4 id="hd-2.6.3">
                   
-                  <span class="headnumber">2.6.3</span>
+                  <a href="#hd-2.6.3" class="headnumber">
+                    2.6.3
+                  </a>
                   
                   Continuous function space
                 </h4>
@@ -1856,7 +1890,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-45">
               
                 
               
@@ -1898,11 +1932,13 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-46">
               
                 <h4 id="hd-2.6.4">
                   
-                  <span class="headnumber">2.6.4</span>
+                  <a href="#hd-2.6.4" class="headnumber">
+                    2.6.4
+                  </a>
                   
                   The powerset CPO
                 </h4>
@@ -1922,7 +1958,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-47">
               
                 
               
@@ -1953,11 +1989,13 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-48">
               
                 <h2 id="hd-3">
                   
-                  <span class="headnumber">3</span>
+                  <a href="#hd-3" class="headnumber">
+                    3
+                  </a>
                   
                   Graph Models
                 </h2>
@@ -1992,7 +2030,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-49">
               
                 
               
@@ -2024,7 +2062,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-50">
               
                 <p>Doesn&#39;t there already exist a notation for the set of all
  finite subsets of a set in Mizar ?!</p>
@@ -2059,7 +2097,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-51">
               
                 <p>This is true if one assumes the axiom of choice, and
  then still it might be a bit complicated to give a proof.
@@ -2090,7 +2128,7 @@ However, I had to explicitly add <code>R</code> to the attribute name, because e
         
         
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-52">
               
                 <p>Easier, and probably good enough for our purposes, is to prove
  this version, where we only prove it for countable sets.</p>

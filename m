@@ -21,8 +21,14 @@ predicates='s/^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/R$1/'
   done
 } > dict/lambda.voc
 
-mizf text/lambda.miz
-miz2abs text/lambda.miz
+hash=`md5sum text/lambda.miz | awk '{ print $1 }'`
+touch last
+if [ $hash != $(cat last) ]
+then
+  echo $hash > last
+  mizf text/lambda.miz
+  miz2abs text/lambda.miz
+fi
 
 # docs building
 #cd /opt/node/lib/node_modules/docco

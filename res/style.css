@@ -68,54 +68,36 @@ h4 {
 
 .toc ul {
   margin: 0;
+  padding: 0 !important;
 }
-.toc ul li {
-  margin: 2px 0;
-  padding: 0;
+.toc li {
+  margin: 0;
   list-style: none;
+  clear: both;
 }
-.toc ul li .headnumber {
-  display: inline-block;
-  margin-right: 0;
+.toc li .headnumber {
+  float: left;
+  margin-right: 15px;
 }
-.toc > ul > li > .headnumber {
-  width: 25px;
+.toc li .contain {
+  float: left;
 }
-.toc > ul > li > ul > li > .headnumber {
-  width: 38px;
-}
-.toc > ul > li > ul > li > ul > li > .headnumber {
-  width: 50px;
-}
-.toc ul li a {
+.toc a {
   text-decoration: none;
 }
-.toc > ul {
-  padding-left: 0px !important;
+.toc li.depth-2 {
+  padding-top: 20px;
 }
-.toc > ul > li {
-  margin-top: 20px;
+.toc li.depth-2:first-child {
+  padding-top: 10px;
 }
-.toc > ul > li > ul {
-  padding-left: 25px !important;
+.toc li.depth-3 {
+  padding-top: 2px;
 }
-.toc > ul > li > ul > li {
-  margin-top: 5px;
-}
-.toc > ul > li > ul > li > ul {
-  font-size: 16px;
-  line-height: 20px;
-}
-.toc > ul > li > ul > li > ul {
-  padding-left: 38px !important;
-}
-.toc > ul > li > a,
-.toc > ul > li > .headnumber {
+.toc .headnumber.depth-2,
+.toc a.depth-2 {
   font-family: "LatinModernRomanDemi10Regular";
   font-size: 20px;
-}
-.toc > ul > li > ul {
-  margin-top: 5px;
 }
 
 h1 {
@@ -297,7 +279,7 @@ ul.fragments > li > div {
   display: inline-block;
 }
 
-ul.fragments > li > div.annotation {
+.annotation {
   min-height: 5px;
   overflow-x: hidden;
   white-space: normal;
@@ -305,7 +287,10 @@ ul.fragments > li > div.annotation {
   width: 600px;
   padding: 10px 50px 1px 50px;
 }
-ul.fragments > li > div.annotation pre {
+.annotation-0 {
+  padding-top: 0;
+}
+.annotation pre {
   margin: 15px 0 15px;
   padding-left: 15px;
 }

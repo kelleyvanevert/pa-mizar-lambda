@@ -17,10 +17,13 @@
     var printTOCChildren = function (hd) {
       return '<ul>' +
         hd.children.map(function (child) {
-          return '<li>' +
-            '<span class="headnumber">' + child.headNumber() + '</span>' +
-            '<a href="#hd-' + child.headNumber() + '">' + child.title + '</a>' +
-            (child.children.length > 0 ? printTOCChildren(child) : '') +
+          var dc = 'depth-' + child.depth;
+          return '<li class="' + dc + '">' +
+            '<span class="headnumber ' + dc + '">' + child.headNumber() + '</span>' +
+            '<span class="contain ' + dc + '">' +
+              '<a href="#hd-' + child.headNumber() + '" class="' + dc + '">' + child.title + '</a>' +
+              (child.children.length > 0 ? printTOCChildren(child) : '') +
+            '</span>' +
             '</li>';
         }).join("\n") +
         '</ul>';
@@ -32,11 +35,13 @@
         <% for (var i=0, l=fragments.length; i<l; i++) { %>
         <% var fragment = fragments[i]; %>
         <li>
-            <div class="annotation">
+            <div class="annotation annotation-<%= i %>">
               <% if (fragment.type == "heading") { %>
-                <h<%= fragment.heading.depth %> id="hd-<%= fragment.heading.headNumber() %>">
+                <h<%= fragment.heading.depth %> id="hd-<%= (fragment.heading.headNumber() || 'top') %>">
                   <% if (fragment.heading.headNumber()) { %>
-                  <span class="headnumber"><%= fragment.heading.headNumber() %></span>
+                  <a href="#hd-<%= fragment.heading.headNumber() %>" class="headnumber">
+                    <%= fragment.heading.headNumber() %>
+                  </a>
                   <% } %>
                   <%= fragment.heading.title %>
                 </h<%= fragment.heading.depth %>>
