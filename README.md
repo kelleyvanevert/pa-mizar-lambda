@@ -1,9 +1,9 @@
-# A Mizar formalization of lambda terms, beta reduction and conversion
+## A Mizar formalization of lambda terms, beta reduction and conversion
 
 This is a small formalization project for Freek's [course](cs.ru.nl/~freek/courses/pa-2013/) on proof assistants. For the exercise description, refer to [exercise-mizar.pdf](exercise-mizar.pdf?raw=true).
 
 * Mizar version: 7.12.01
-* MML version 4.166.1132
+* MML version: 4.166.1132
 
 ### `TL;DR` Contents of the formalization
 
