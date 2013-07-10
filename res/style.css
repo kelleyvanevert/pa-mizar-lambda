@@ -1,6 +1,18 @@
 
 @import url("lmodern/stylesheet.css");
 
+@font-face {
+    font-family: "Junicode";
+    src: url('lmroman10-regular-webfont.eot');
+    src: url('lmroman10-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('lmroman10-regular-webfont.woff') format('woff'),
+         url('lmroman10-regular-webfont.ttf') format('truetype'),
+         url('lmroman10-regular-webfont.svg#LatinModernRoman10Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 html { height: 100%; }
 body {
   font-family: "LatinModernRoman10Regular", serif;

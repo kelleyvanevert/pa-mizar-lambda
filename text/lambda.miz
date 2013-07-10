@@ -7,6 +7,9 @@
 
 ::: @TOC
 
+::: TODO note how we almost never work by inductive/recursive means,
+:::  in constract with, say, Coq.
+
 :: Environ originally taken from `finseq_2`. Later, I added trees and orders.
 environ
 
@@ -57,12 +60,14 @@ environ
     FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
     ORDERS_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
-    XTUPLE_0;
+    ::XTUPLE_0;
+    MCART_1; ::, FUNCT_5, RECDEF_1;
 
   :: Registrations are for clusters (showing that a type exists (is non-empty),
   ::  and automatically adding adjectives)
   registrations XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
-    RELAT_2, RELAT_1,
+    ::RELAT_2,
+    RELAT_1,
     FUNCT_1, FUNCT_2,
     FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, FINSEQ_2, CARD_1, RELSET_1,
     PBOOLE, CARD_3,
@@ -71,12 +76,15 @@ environ
     FINSET_1;
 
   :: Load theorem en definition labels
-  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, FINSEQ_2, XTUPLE_0, FUNCT_1,
+  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, FINSEQ_2,
+    ::XTUPLE_0,
+    MCART_1, FUNCT_5, :: RECDEF_1,
+    FUNCT_1,
     TREES_4, TREES_3, TREES_2, TREES_1,
     XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
     CARD_1, CARD_2, CARD_3, CARD_4;
   
-  schemes RECDEF_1;
+  schemes RECDEF_1, TREES_2;
 
   requirements BOOLE, SUBSET, NUMERALS, ARITHM, REAL;
 
@@ -88,7 +96,7 @@ reserve T,T1,T2 for Tree,
         D for DecoratedTree,
         p,q,q2,r for FinSequence of NAT,
         x,y,X,Y for set,
-        n for Element of NAT;
+        i,j,k,l,m,n for Element of NAT;
 
 ::: ### Lambda terms
 
@@ -416,10 +424,10 @@ A5: D2 is Y-valued;
   proof
     let x be set;
     assume x in rng D;
-    then ex q being set st [q,x] in D by XTUPLE_0:def 13;
+    then ex q being set st [q,x] in D by RELAT_1:def 5;
     then consider q being set such that
   A1: [q,x] in D;
-  A2: q in T by A1, XTUPLE_0:def 12;
+  A2: q in T by A1, RELAT_1:def 4;
     T is Tree by TREES_2:def 8;
     then reconsider q as FinSequence of NAT by A2, TREES_1:19;
   A13: T = dom D1 with-replacement (p, dom D2) by TREES_2:def 11;
@@ -451,7 +459,7 @@ A5: D2 is Y-valued;
       end;
       [q,x] in D1 by A7, A12, FUNCT_1:def 2;
       then
-    A8: x in rng D1 by XTUPLE_0:def 13;
+    A8: x in rng D1 by RELAT_1:def 5;
       rng D1 c= X by A4, RELAT_1:def 19;
       then x in X by A8;
       hence x in (X \/ Y) by XBOOLE_0:def 3;
@@ -465,7 +473,7 @@ A5: D2 is Y-valued;
       then D2.r = x by A9;
       then [r,x] in D2 by A9, FUNCT_1:def 2;
       then
-    A11: x in rng D2 by XTUPLE_0:def 13;
+    A11: x in rng D2 by RELAT_1:def 5;
       rng D2 c= Y by A5, RELAT_1:def 19;
       then x in Y by A11;
       hence x in (X \/ Y) by XBOOLE_0:def 3;
@@ -645,15 +653,21 @@ end;
 ::: #### Variable occurences
 definition
   let M be LambdaTerm,
-      r be Node of M;
+      r; :: be Node of M;
   
   pred r is_variable_in M means
+    :Def5:
+    r in dom M &
     not r^<*0*> in dom M;
 
   pred r is_abstraction_in M means
+    :Def6:
+    r in dom M &
     r^<*0*> in dom M & not r^<*1*> in dom M;
 
   pred r is_application_in M means
+    :Def7:
+    r in dom M &
     r^<*0*> in dom M & r^<*1*> in dom M;
 end;
 
@@ -753,6 +767,8 @@ end;
 definition
   let M,N;
 
+  :: TODO better definition with decorated tree replacements
+
   func SubstituteActiveVar(M,N) -> LambdaTerm means
     :: most things are the same,
     (for r st not (ex p being Element of dom N
@@ -767,6 +783,274 @@ definition
 ::>       *4
   uniqueness;
 ::>        *4
+end;
+
+::: ### Lifting
+
+definition
+  let P,n,k;
+  let p be Node of P;
+
+  :: When lifting P with n and k, then x should be put to p.
+  func LiftVal(P,n,k,p) -> Nat means
+    :Def4:
+    (p is_variable_in P & P.p >= k & it = P.p + n) or
+    (p is_variable_in P & P.p < k  & it = P.p) or
+    (not p is_variable_in P & it = 0);
+
+  existence
+  proof
+    p is_variable_in P or not p is_variable_in P;
+    per cases;
+    suppose
+    A1: p is_variable_in P;
+      P.p >= k or not P.p >= k;
+      per cases;
+      suppose
+      A2: P.p >= k;
+        take P.p + n;
+        thus thesis by A1,A2;
+      end;
+      suppose
+      A3: not P.p >= k;
+        then P.p < k;
+        take P.p;
+        thus thesis by A1,A3;
+      end;
+    end;
+    suppose
+    A4: not p is_variable_in P;
+      take 0;
+      thus thesis by A4;
+    end;
+  end;
+  uniqueness;
+end;
+
+reserve p2,r2 for Node of P;
+
+definition
+  let P,n,k;
+  let p be set;
+
+  :: When lifting P with n and k, then x should be put to p.
+  func LiftVal2(P,n,k,p) -> Nat means
+    :Def2:
+    (ex p2 st p = p2 & it = LiftVal(P,n,k,p2)) or
+    ((not ex p2 st p = p2) & it = 0);
+    
+  existence
+  proof
+    (ex p2 st p = p2) or (not ex p2 st p = p2);
+    per cases;
+    suppose ex p2 st p = p2;
+      then consider p2 such that
+    A2: p = p2;
+      take LiftVal(P,n,k,p2);
+      thus thesis by A2;
+    end;
+    suppose
+    A1: not ex p2 st p = p2;
+      take 0;
+      thus thesis by A1;
+    end;
+  end;
+  uniqueness
+  proof
+    let i,j be Nat;
+    assume
+  A10: (ex p2 st p = p2 & i = LiftVal(P,n,k,p2)) or
+      ((not ex p2 st p = p2) & i = 0);
+    assume
+  A11: (ex p2 st p = p2 & j = LiftVal(P,n,k,p2)) or
+      ((not ex p2 st p = p2) & j = 0);
+    (ex p2 st p = p2) or (not ex p2 st p = p2);
+    per cases;
+    suppose
+    A13: ex p2 st p = p2;
+      then consider p2 such that
+    A12: p = p2;
+    A16: i = LiftVal(P,n,k,p2)
+      proof
+        assume
+      A14: not thesis;
+        ex p2 st p = p2 by A13;
+        then not ((not ex p2 st p = p2) & i = 0);
+        hence contradiction by A10,A12,A14;
+      end;
+    A17: j = LiftVal(P,n,k,p2)
+      proof
+        assume
+      A15: not thesis;
+        ex p2 st p = p2 by A13;
+        then not ((not ex p2 st p = p2) & j = 0);
+        hence contradiction by A11,A12,A15;
+      end;
+      thus i = j by A16,A17;
+    end;
+    suppose
+    A18: not ex p2 st p = p2;
+    A19: i = 0 by A10,A18;
+    A20: j = 0 by A11,A18;
+      thus i = j by A19,A20;
+    end;
+  end;
+end;
+
+definition
+  let P,n,k;
+
+  func Lift(P,n,k) -> LambdaTerm means
+    :Def3:
+    :: The resulting term is of the exact same size/shape,
+    dom it = dom P &
+    :: except that variables are lifted by $n$ iff they are greater/equal to $k$.
+    (for p st p in dom P holds [p,LiftVal(P,n,k,p)] in it);
+
+  :: Proof by TREES_2:sch 7
+  existence
+  proof
+    deffunc f(set) = LiftVal2(P,n,k,$1);
+    :: T() = dom P
+    :: f(set) -> set = LiftVal2(P,n,k,$1)
+    ex D st dom D = dom P &
+      for p being FinSequence of NAT st p in dom P holds D.p = f(p)
+      from TREES_2:sch 7;
+    then consider D such that
+  A1: dom D = dom P and
+  A2: for p being FinSequence of NAT st p in dom P holds D.p = f(p);
+  A3: D is NAT-valued
+    proof
+      rng D c= NAT
+      proof
+        let x;
+        assume x in rng D;
+        then ex p being set st [p,x] in D by RELAT_1:def 5;
+        then consider p being set such that
+      A14: [p,x] in D;
+      A18: p in dom D by A14, RELAT_1:def 4;
+        then
+      A15: p in dom P by A1;
+        set p3 = p;
+        reconsider p3 as FinSequence of NAT by A15,TREES_2:def 8, TREES_1:19;
+        ::reconsider p as Node of P by A15;
+      A17: D.p = x by FUNCT_1:1, A14, A18;
+      A16: x = LiftVal2(P,n,k,p3) by A2,A15,A17;
+        then
+      A20: (ex p2 st p = p2 & x = LiftVal(P,n,k,p2)) or
+          ((not ex p2 st p = p2) & x = 0) by Def2,A17;
+        per cases;
+        suppose ex p2 st p = p2 & x = LiftVal(P,n,k,p2);
+          then consider p2 such that
+        A21: p = p2 & x = LiftVal(P,n,k,p2);
+        A19: (p2 is_variable_in P & P.p2 >= k & x = P.p2 + n) or
+            (p2 is_variable_in P & P.p2 < k  & x = P.p2) or
+            (not p2 is_variable_in P & x = 0) by Def4,A21;
+          per cases;
+          suppose p2 is_variable_in P & P.p2 >= k & x = P.p2 + n;
+            hence x in NAT;
+          end;
+          suppose p2 is_variable_in P & P.p2 < k  & x = P.p2;
+            hence x in NAT;
+          end;
+          suppose not (p2 is_variable_in P & P.p2 >= k & x = P.p2 + n)
+                & not (p2 is_variable_in P & P.p2 < k  & x = P.p2);
+            then not p2 is_variable_in P & x = 0 by A19;
+            hence x in NAT;
+          end;
+        end;
+        suppose not (ex p2 st p = p2 & x = LiftVal(P,n,k,p2));
+          then (not ex p2 st p = p2) & x = 0 by A20;
+          hence x in NAT;
+        end;
+      end;
+      hence thesis by RELAT_1:def 19;
+    end;
+  A4: D is LambdaTerm-like
+    proof
+      dom P is finite by Def1;
+      hence dom D is finite by A1;
+      let r;
+      assume r in dom D;
+      then
+    A9: r in dom P by A1;
+      hence r is FinSequence of {0,1} by Def1;
+      assume r^<*0*> in dom D;
+      then
+    A12: r^<*0*> in dom P by A1;
+      then P.r = 0 by A9,Def1;
+      set r2 = r;
+      reconsider r2 as Node of P by A9;
+    A10: LiftVal2(P,n,k,r) = LiftVal(P,n,k,r2)
+      proof
+        assume not thesis;
+        then not (ex r2 st r = r2 & LiftVal2(P,n,k,r) = LiftVal(P,n,k,r2));
+        then
+      A11: (not ex r2 st r = r2) & LiftVal2(P,n,k,r) = 0 by Def2;
+        r is Node of P by A9;
+        then ex r2 st r = r2;
+        hence contradiction by A11;
+      end;
+    A13: not r2 is_variable_in P
+      proof
+        assume r2 is_variable_in P;
+        then not r^<*0*> in dom P by Def5;
+        hence contradiction by A12;
+      end;
+      LiftVal(P,n,k,r2) = 0 by A13, Def4;
+      then LiftVal2(P,n,k,r) = 0 by A10;
+      hence D.r = 0 by A2,A9;
+    end;
+    reconsider D as LambdaTerm by A3,A4;
+    take D;
+    thus dom D = dom P by A1;
+    let p;
+    assume
+  A6: p in dom P;
+    then p in dom D by A1;
+    then [p,D.p] in D by FUNCT_1:1;
+    then
+  A5: [p,LiftVal2(P,n,k,p)] in D by A2;
+  A7: LiftVal2(P,n,k,p) = LiftVal(P,n,k,p)
+    proof
+      assume not thesis;
+      then not (ex p2 st p = p2 & LiftVal2(P,n,k,p) = LiftVal(P,n,k,p2));
+      then
+    A8: (not ex p2 st p = p2) & LiftVal2(P,n,k,p) = 0 by Def2;
+      p is Node of P by A6;
+      then ex p2 st p = p2;
+      hence contradiction by A8;
+    end;
+    hence [p,LiftVal(P,n,k,p)] in D by A5,A7;
+  end;
+  uniqueness
+  proof
+    let Q1,Q2 be LambdaTerm;
+    assume
+  A1: dom Q1 = dom P &
+      (for p st p in dom P holds [p,LiftVal(P,n,k,p)] in Q1);
+    assume
+  A2: dom Q2 = dom P &
+      (for p st p in dom P holds [p,LiftVal(P,n,k,p)] in Q2);
+  A4: for p being set st p in dom Q1 holds Q1.p = Q2.p
+    proof
+      let p be set;
+      assume p in dom Q1;
+      then
+    A5: p in dom P by A1;
+      set p2 = p;
+      reconsider p2 as FinSequence of NAT by A5,TREES_2:def 8, TREES_1:19;
+      reconsider p2 as Node of P by A5;
+      [p2,LiftVal(P,n,k,p2)] in Q1 by A1,A5;
+      then
+    A6: Q1.p2 = LiftVal(P,n,k,p2) by FUNCT_1:1,A5;
+      [p2,LiftVal(P,n,k,p2)] in Q2 by A2,A5;
+      then
+    A7: Q2.p2 = LiftVal(P,n,k,p2) by FUNCT_1:1,A5;
+      thus Q1.p = Q2.p by A6,A7;
+    end;
+    thus Q1 = Q2 by A1,A2,A4,FUNCT_1:2;
+  end;
 end;
 
 ::: ### Reduction and conversion
@@ -787,6 +1071,7 @@ definition
       :: Q === N[x:=M]
       Q = SubstituteActiveVar(N,M);
 end;
+
 ::: Then we extend this ordinary one-step beta reduction, that is,
 :::  any subterm is also allowed to reduce.
 
@@ -826,414 +1111,8 @@ definition
     M beta* N or N beta* M;
 end;
 
-::: ## CPO's
-
-reserve x,y,z,z2 for set;
-
-::: We start off by defining
-:::  a mode for partial orders upon some set `D`. I don't really
-:::  get why de Mizar guys wrote their order definitions the way
-:::  they did (in `ORDERS_1`, `ORDERS_2`, etc...)
-
-definition
-  let D be set;
-  mode PartialOrder of D is transitive reflexive antisymmetric (Relation of D);
-end;
-
-::: ### (Least) upper bounds
-
-::: An element $u$ of $D$ is an _upper bound_ of a
-:::  subset $X\\subseteq D$ iff for all $x\\in X$,
-:::  $x\\sqsubseteq u$.
-
-::: I often encountered \*100 errors (also elsewhere, but most notably)
-:::  here. Note: a \*100 error occurs when not all loci (which are variables
-:::  introduced by the `let` statement) are used _in the attribute name_.
-::: "Transitive" usage _is_ allowed: in the below definition of
-:::  upper bounds, the variable `D` is not explicitly stated in the name
-:::  of the attribute, however it is used in the `let` introduction rule of
-:::  `R`, `X` and `u`, so it is allowed.
-::: However, I had to explicitly add `R` to the attribute name, because even
-:::  though it is used in the defining formula, it is not included in the
-:::  introductory rules of `D`, `X` or `u`.
-definition
-  let D be set,
-      R be PartialOrder of D,
-      X be Subset of D,
-      u be Element of D;
-
-  attr u is X,R-ub means
-    for x st x in X holds [x,u] in R;
-end;
-
-::: Least upper bounds
-definition
-  let D be set,
-      R be PartialOrder of D,
-      X be Subset of D,
-      u be Element of D;
-
-  attr u is X,R-lub means
-    u is X,R-ub &
-    for u2 being Element of D st u2 is X,R-ub holds
-      [u,u2] in R;
-end;
-
-::: ### Directed sets
-
-::: If $D$ is a set, and $R$ a partial order on $D$,
-:::  then an $X\\subseteq D$ is called _directed_ iff
-:::  for all $x,y \\in X$, there is some $z \\in X$,
-:::  such that $x\\sqsubseteq z$ and $y\\sqsubseteq z$.
-definition
-  let D be set,
-      R be PartialOrder of D,
-      X be Subset of D;
-
-  attr X is R-directed means
-    for x,y st x in X & y in X holds
-      ex z st
-        z in X & [x,z] in R & [y,z] in R;
-end;
-
-::: this registration is actually useless..
-registration
-  let D be set,
-      R be PartialOrder of D;
-
-  cluster R-directed for Subset of D;
-  existence
-  proof
-    set X = {};
-    reconsider X as Subset of D by SUBSET_1:1;
-    take X;
-    thus X is R-directed
-    proof
-      assume not (for x,y st x in X & y in X holds
-      ex z st
-        z in X & [x,z] in R & [y,z] in R);
-      then consider x,y such that
-    A1: x in X & y in X and
-    A2: not (ex z st z in X & [x,z] in R & [y,z] in R);
-      x in X by A1;
-      then ex x st x in X;
-      hence contradiction by XBOOLE_0:def 1;
-    end;
-  end;
-end;
-
-registration
-  let D be non empty set,
-      R be PartialOrder of D;
-
-  cluster R-directed for non empty Subset of D;
-  existence
-  proof
-    ex d being set st d in D by XBOOLE_0:def 1;
-    then consider d being set such that
-  A1: d in D;
-    set X = {d};
-    d is Element of D by A1;
-    then X is Subset of D by SUBSET_1:33;
-    then reconsider X as non empty Subset of D;
-    take X;
-    thus X is R-directed
-    proof
-      assume not (for x,y st x in X & y in X holds
-      ex z st
-        z in X & [x,z] in R & [y,z] in R);
-      then consider x,y such that
-    A2: x in X & y in X and
-    A3: not (ex z st z in X & [x,z] in R & [y,z] in R);
-      per cases;
-      suppose x = y;
-        :: idea: use x = y = d to show that
-        ::  ex d, because [x,d] = [x,x] in R by reflexivity, ..
-        thus contradiction;
-::>                      *1
-      end;
-      suppose x <> y;
-        per cases;
-        suppose x = d;
-          :: idea: then d <> y, but both in X,
-          ::  but that contradicts X being a singleton
-          thus contradiction;
-::>                        *1
-        end;
-        suppose x <> d;
-          :: idea: then d <> x, but both in X,
-          ::  but that contradicts X being a singleton
-          thus contradiction;
-::>                        *1
-        end;
-      end;
-    end;
-  end;
-end;
-
-::: ### Completeness
-
-::: A partial ordered set is complete iff every directed set has
-:::  a least upper bound.
-definition
-  let D be non empty set,
-      R be PartialOrder of D;
-
-  attr R is complete means
-    for X being R-directed non empty Subset of D holds
-      ex u being Element of D st u is X,R-lub;
-end;
-
-::: Here again, what I want to express is that such complete partial
-:::  orders exist, not that for every $D$, any partial order is $D$-complete,
-:::  or something weird like that...
-:::
-::: What are the precise semantics of these clusters?
-registration
-  let D be non empty set;
-
-  cluster complete for PartialOrder of D;
-  existence
-  proof
-    set I = id D;
-    reconsider I as PartialOrder of D;
-    take I;
-    thus I is complete
-    proof
-      let X be I-directed Subset of D;
-::>                            *56
-    end;
-  end;
-end;
-
-definition
-  let D be non empty set,
-      R be complete PartialOrder of D,
-      X be R-directed Subset of D;
-
-  func LUB(X) -> Element of D means
-    it is X,R-lub;
-  existence;
-::>       *4
-  uniqueness;
-::>        *4
-end;
-
-::: ### Bottom element
-definition
-  let D be set,
-      R be PartialOrder of D,
-      b be Element of D;
-
-  attr b is R-bottom means
-    for y st y in D holds [b,y] in R;
-end;
-
-registration
-  let D be set,
-      R be PartialOrder of D;
-
-  cluster R-bottom for Element of D;
-  existence;
-::>       *4
-end;
-
-::: ### The CPO structure
-definition
-  struct CPO (#
-    carrier -> non empty set,
-    BinRel -> complete PartialOrder of (the carrier),
-    Bot -> (the BinRel)-bottom Element of the carrier
-  #);
-end;
-
-::: ### Continuity
-::: #### Monotonicity
-definition
-  let D,E be CPO,
-      f be Function of (the carrier of D),(the carrier of E);
-
-  attr f is monotone means
-    for x,y st [x,y] in (the BinRel of D) holds
-      [f.x,f.y] in (the BinRel of E);
-end;
-
-::: #### Continuity
-definition
-  let D,E be CPO,
-      f be Function of (the carrier of D),(the carrier of E);
-
-  attr f is continuous means
-    f is monotone &
-    for X being (the BinRel of D)-directed
-                Subset of (the carrier of D)
-      holds
-        f.LUB(X) = LUB(f.:X);
-::>                  *103
-::                 This is indeed somewhat complicated,
-::                  why would it necessarily be directed,
-::                  and thus eligible for LUB ?
-end;
-
-registration
-  let D,E be CPO;
-
-  cluster continuous for Function of (the carrier of D),(the carrier of E);
-  existence;
-::>       *4
-end;
-
-definition
-  let D,E be CPO;
-
-  mode ContinuousFunc of D,E is continuous Function of
-    (the carrier of D),(the carrier of E);
-end;
-
-::: #### Continuous function space
-definition
-  let D,E be CPO;
-
-  func ContinuousFuncs(D,E) -> set means
-    x in it iff x is ContinuousFunc of D,E;
-  existence;
-::>       *4
-  uniqueness;
-::>        *4
-end;
-
-definition
-  let D,E be CPO,
-      f,g be ContinuousFunc of D,E;
-
-  pred f piecewise_le g means
-    for x being Element of D holds
-      [f.x, g.x] in (the BinRel of E);
-end;
-
-theorem
-  for D,E being CPO holds
-    CPO(# ContinuousFuncs(D,E),
-          { [f,g] where f,g is ContinuousFunc of D,E : f piecewise_le g },
-          {} #) is CPO
-::>           *105
-proof
-  thus thesis;
-end;
-
-::: #### The powerset CPO
-definition
-  let A be non empty set;
-
-  func SubsetRelation(A) -> Relation of bool A means
-    [x,y] in it iff x is Subset of y;
-  existence;
-::>       *4
-  uniqueness;
-::>        *4
-end;
-
-theorem
-  for A being non empty set holds
-    CPO(# bool A, SubsetRelation(A), {} #) is CPO
-::>                                      *105
-proof
-  thus thesis;
-end;
-
-
-
-::: ## Graph Models
-
-definition
-  let Bn be non empty set;
-  func BnNext(Bn) -> set equals Bn \/ [: Bn*, Bn :];
-  coherence;
-end;
-
-definition
-  let A be non empty set;
-  func Web(A) -> set equals A;
-  :: TODO inductive construction
-  coherence;
-end;
-
-theorem
-  for A being non empty set holds
-    id Web(A) is one-to-one
-proof
-  thus thesis;
-end;
-
-::: Doesn't there already exist a notation for the set of all
-:::  finite subsets of a set in Mizar ?!
-definition
-  let B be set;
-
-  func (B)^<w -> set equals
-    { X where X is Subset of B : X is finite };
-  coherence;
-end;
-
-definition
-  let B be set;
-
-  redefine func (B)^<w -> set means
-    X in it iff X c= B & X is finite;
-  compatibility
-  proof
-    thus thesis;
-::>           *4,4,4
-  end;
-  coherence;
-end;
-
-::: This is true if one assumes the axiom of choice, and
-:::  then still it might be a bit complicated to give a proof.
-::: (First show that `B` can be well-ordered, then define a
-:::  well-order on `[:B^<w,B:]`, so that these two well-orders
-:::  become isomorphic..?)
-registration
-  let B be infinite set;
-  cluster one-to-one for Function of [:B^<w,B:],B;
-  existence
-  proof
-    not B is finite;
-    then [:B,B:],B are_equipotent by CARD_4:18; :: <-- though this
-        :: won't get me there directly :(
-    :: I'll probably "build up" (first finite sets of size 1, then 2, ...)
-    thus ex f being Function of [:B^<w,B:],B st f is one-to-one;
-::>                                                           *4
-  end;
-end;
-
-::: Easier, and probably good enough for our purposes, is to prove
-:::  this version, where we only prove it for countable sets.
-registration
-  let B be countable infinite set;
-  cluster one-to-one for Function of [:B^<w,B:],B;
-  existence
-  proof
-    thus ex f being Function of [:B^<w,B:],B st f is one-to-one;
-::>                                                           *4
-  end;
-end;
-
-:: Graph models
-definition
-  struct GraphModel (#
-    carrier -> infinite set,
-    c -> one-to-one (Function of
-      [:(the carrier)^<w, the carrier:], the carrier)
-  #);
-end;
-
 
 ::>
-::> 1: It is not true
 ::> 4: This inference is not accepted
-::> 56: Disagreement of types
 ::> 60: Something remains to be proved in this case
 ::> 70: Something remains to be proved
-::> 103: Unknown functor
-::> 105: Illegal projection

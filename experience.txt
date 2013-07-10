@@ -40,3 +40,12 @@
 
                                      (ix) Remembering error counts to get a feel
                                       of "how happy" Mizar is.
+
+ 1. Syntax error:
+    suppose ex q st ...
+    then consider q such that ... )  <-- an extra trailing paren
+ 
+ 2. Mizar's error message:
+    395 "Justification expected"
+
+ 3. WTF

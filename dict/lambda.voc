@@ -6,47 +6,29 @@
 OAbs
 Oabstr-depth
 OApp
-OBnNext
-OContinuousFuncs
-OLUB
+OLift
+OLiftVal
+OLiftVal2
 OPreAbstractionTerm
 OPreApplicationTerm
-OSubsetRelation
 OSubstituteActiveVar
-O^<w
-OWeb
 
 ::: ## Selectors
 ::: `perl -ne "s/^ *([a-zA-Z]+) ->.*$/U$1/ && print" text/lambda.miz | sort -u`
-UBinRel
-UBot
-Uc
-Ucarrier
 
 ::: ## Structures
 ::: `perl -ne "s/^ *struct ([a-zA-Z-]+).*$/G$1/ && print" text/lambda.miz | sort -u`
-GCPO
-GGraphModel
 
 ::: ## Attributes
 ::: `perl -ne "s/^ *attr [a-zA-Z] is (?:(?:[a-zA-Z],)*[a-zA-Z](?=-))?([a-zA-Z-]+) .*$/V$1/ && print" text/lambda.miz | sort -u`
-V-bottom
-Vcomplete
-Vcontinuous
-V-directed
 VLambdaTerm-like
-V-lub
-Vmonotone
-V-ub
 
 ::: ## Modes
 ::: `perl -ne "s/^ *mode ([a-zA-Z-]+).*$/M$1/ && print" text/lambda.miz | sort -u`
-MContinuousFunc
 MLambdaTerm
-MPartialOrder
 
 ::: ## Predicates
-::: `perl -ne "s/^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/R$1/ && print" text/lambda.miz | sort -u`
+::: `perl -ne "s/^ *pred (?:[a-zA-Z](?:, ?[a-zA-Z])* )?([^ ]{2,}) .*$/R$1/ && print" text/lambda.miz | sort -u`
 Rbeta
 Rbeta=
 Rbeta*
@@ -55,4 +37,3 @@ Ris_abstraction_in
 Ris_active_variable_in
 Ris_application_in
 Ris_variable_in
-Rpiecewise_le

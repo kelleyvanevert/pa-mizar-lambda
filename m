@@ -5,7 +5,7 @@ selectors='s/^ *([a-zA-Z]+) ->.*$/U$1/'
 structures='s/^ *struct ([a-zA-Z-]+).*$/G$1/'
 attributes='s/^ *attr [a-zA-Z] is (?:(?:[a-zA-Z],)*[a-zA-Z](?=-))?([a-zA-Z-]+) .*$/V$1/'
 modes='s/^ *mode ([a-zA-Z-]+).*$/M$1/'
-predicates='s/^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/R$1/'
+predicates='s/^ *pred (?:[a-zA-Z](?:, ?[a-zA-Z])* )?([^ ]{2,}) .*$/R$1/'
 
 # record the following to the vocabulary file...
 {
