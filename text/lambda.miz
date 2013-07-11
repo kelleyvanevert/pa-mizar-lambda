@@ -130,7 +130,8 @@ definition
     dom D is finite &
     for r st r in dom D holds
       r is FinSequence of {0,1} &
-      (r^<*0*> in dom D implies D.r = 0);
+      ((r^<*0*> in dom D & r^<*1*> in dom D)
+          implies D.r = 0);
 end;
 
 ::: Some simple `LambdaTerm-like` things.
@@ -153,6 +154,7 @@ registration
     then r = <*> {0,1} by FINSEQ_1:def 6;
     hence r is FinSequence of {0,1};
     assume r^<*0*> in dom D;
+    assume r^<*1*> in dom D;
     thus D.r = 0 by A1, FUNCOP_1:7;
   end;
 end;
@@ -208,6 +210,7 @@ registration
       then r = <*> {0,1} by FINSEQ_1:def 6;
       hence r is FinSequence of {0,1};
       assume r^<*0*> in dom D;
+      assume r^<*1*> in dom D;
       ::thus D.r = 0 by A1, FUNCOP_1:7;
     end;
     suppose
@@ -222,6 +225,7 @@ registration
        .= <*Zero*>;
       hence r is FinSequence of {0,1} by A4;
       assume r^<*0*> in dom D;
+      assume r^<*1*> in dom D;
       thus D.r = 0 by A1, FUNCOP_1:7;
     end;
   end;
@@ -259,6 +263,7 @@ registration
       then r = <*> {0,1} by FINSEQ_1:def 6;
       hence r is FinSequence of {0,1};
       assume r^<*0*> in dom D;
+      assume r^<*1*> in dom D;
       thus D.r = 0 by A1, FUNCOP_1:7;
     end;
     suppose
@@ -273,6 +278,7 @@ registration
        .= <*Zero*>;
       hence r is FinSequence of {0,1} by A4;
       assume r^<*0*> in dom D;
+      assume r^<*1*> in dom D;
       thus D.r = 0 by A1, FUNCOP_1:7;
     end;
     suppose not (r = {} or r = <*0*>);
@@ -288,6 +294,7 @@ registration
        .= <*One*>;
       hence r is FinSequence of {0,1};
       assume r^<*0*> in dom D;
+      assume r^<*1*> in dom D;
       thus D.r = 0 by A1, FUNCOP_1:7;
     end;
   end;
@@ -379,21 +386,36 @@ registration
 
     :: r^p^<*0*>
     set p0 = p^<*0*>;
+    set p1 = p^<*1*>;
     set rp = r^p;
     assume
   A4: p0 in dom (M|r);
+    assume
+  A9: p1 in dom (M|r);
     thus (M|r).p = 0 proof
-      dom (M|r) is Tree-like;
-      then
-    A5: p0 in dom (M|r) by A4, TREES_1:21;
-      then reconsider p0 as Element of dom (M|r);
-      reconsider p0 as Element of (dom M)|r by TREES_2:def 10;
-      p0 in (dom M)|r;
-      then r^p0 in dom M by TREES_1:def 6;
-      then
-    A6: rp^<*0*> in dom M by FINSEQ_1:32;
-      then rp in dom M by TREES_1:21;
-      then M.rp = 0 by A6, Def1;
+    A6: rp^<*0*> in dom M
+      proof
+        dom (M|r) is Tree-like;
+        then p0 in dom (M|r) by A4, TREES_1:21;
+        then reconsider p0 as Element of dom (M|r);
+        reconsider p0 as Element of (dom M)|r by TREES_2:def 10;
+        p0 in (dom M)|r;
+        then r^p0 in dom M by TREES_1:def 6;
+        hence thesis by FINSEQ_1:32;
+      end;
+    A7: rp^<*1*> in dom M
+      proof
+        dom (M|r) is Tree-like;
+        then p1 in dom (M|r) by A9, TREES_1:21;
+        then reconsider p1 as Element of dom (M|r);
+        reconsider p1 as Element of (dom M)|r by TREES_2:def 10;
+        p1 in (dom M)|r;
+        then r^p1 in dom M by TREES_1:def 6;
+        then rp^<*1*> in dom M by FINSEQ_1:32;
+        hence thesis by FINSEQ_1:32;
+      end;
+      rp in dom M by TREES_1:21, A6, A7;
+      then M.rp = 0 by A6, A7, Def1;
       then
     A8: M.(r^p) = 0;
       p in (dom M)|r by A3, TREES_2:def 10;
@@ -537,9 +559,12 @@ A3: r in dom R;
     end;
   end;
   set r0 = r^<*0*>;
+  set r1 = r^<*1*>;
   assume
 A6: r0 in dom R;
-  then r0 in (dom P) with-replacement (p,dom Q) by TREES_2:def 11;
+  assume
+A32: r1 in dom R;
+  r0 in (dom P) with-replacement (p,dom Q) by A6, TREES_2:def 11;
   then
 A7: ((r0 in (dom P) & not p is_a_proper_prefix_of r0) or
      (ex q st q in (dom Q) & r0 = p^q)) by TREES_1:def 9;
@@ -551,7 +576,8 @@ A7: ((r0 in (dom P) & not p is_a_proper_prefix_of r0) or
     then
   A12: r in dom P by TREES_1:21;
     then
-  A9: P.r = 0 by A8, Def1;
+  A9: P.r = 0 by A8, Def1; :: -> named vars transition error
+::>            *4
   A10: not p is_a_prefix_of r
     proof
       assume p is_a_prefix_of r;
@@ -584,7 +610,8 @@ A7: ((r0 in (dom P) & not p is_a_proper_prefix_of r0) or
     A17: q2^<*0*> in dom Q by A14, A15, A16;
       then
     A18: q2 in dom Q by TREES_1:21;
-      then Q.q2 = 0 by Def1, A17;
+      then Q.q2 = 0 by Def1, A17; :: -> named vars transition error
+::>                  *4
       then R.(p^q2) = 0 by A18, TREES_3:46;
       hence R.r = 0 by A19;
     end;
@@ -603,7 +630,8 @@ A7: ((r0 in (dom P) & not p is_a_proper_prefix_of r0) or
       then
     A23: r in dom P by A22, TREES_1:21;
       then
-    A24: P.r = 0 by A22, Def1;
+    A24: P.r = 0 by A22, Def1; :: -> named vars transition error
+::>               *4
     A27: not p is_a_prefix_of r
       proof
         assume p is_a_prefix_of r;
@@ -672,42 +700,36 @@ definition
 end;
 
 definition
-  let M be LambdaTerm,
-      r be Node of M;
+  let M,r,n;
 
-  func abstr-depth (r,M) -> Element of NAT equals
-    card { p where p is Node of M
-           : p is_a_proper_prefix_of r &
-             p is_abstraction_in M };
-  coherence
-  proof
-    set abstractions = { p where p is Node of M
-                         : p is_a_proper_prefix_of r &
-                           p is_abstraction_in M };
-  end;
-::> *70
-end;
-
-::: By $r$ being an _active variable_ of some term $M$ (or more precisely,
-:::  a path identifying an active variable), I mean that if $\lambda M$ were
-:::  to be applied to some other term $N$, we would substitute this variable
-:::  by $M$.
-definition
-  let M be LambdaTerm,
-      r be Node of M;
-  
-  pred r is_active_variable_in M means
+  pred M,r holds_variable n means
+    :Def8:
     r is_variable_in M &
-    M.r = abstr-depth (r,M);
+    M.r = n;
+
+  pred M,r abstracts n means
+    :Def8:
+    r is_abstraction_in M &
+    M.r = n;
 end;
+
+::::definition
+::::  let M be LambdaTerm,
+::::      r be Node of M;
+::::  
+::::  pred r is_active_variable_in M means
+::::    r is_variable_in M &
+::::    M.r = abstr-depth (r,M);
+::::end;
 
 ::: #### Abstraction and application
 
 ::: Then we can define abstraction and application
 definition
-  let M;
+  let n,M;
   
-  func Abs(M) -> LambdaTerm means
+  func Abs(n,M) -> LambdaTerm means
+    it,(<*> NAT) abstracts n &
     it|<*0*> = M & not <*1*> in dom it;
   existence
   proof
@@ -719,7 +741,7 @@ definition
 
     take D;
     thus D|<*0*> = M;
-::>                *4
+::>      *51       *4
     thus not <*1*> in dom D;
 ::>                       *4
   end;
@@ -765,311 +787,41 @@ definition
 end;
 
 definition
-  let M,N;
+  let N,n,M;
 
-  :: TODO better definition with decorated tree replacements
+  :: TODO better definition with decorated tree replacements!
 
-  func SubstituteActiveVar(M,N) -> LambdaTerm means
-    :: most things are the same,
-    (for r st not (ex p being Element of dom N
-                      st p is_active_variable_in N & p is_a_prefix_of r)
-           holds [r,x] in it iff [r,x] in N
-    ) &
-    :: except that the active variables are replaced with M
-    (for r being Element of dom N
-            st r is_active_variable_in N
-            holds it|r = M);
+  func N with-substitution (n,M) -> LambdaTerm means
+    it = N;
+::    :: most things are the same,
+::    (for r st not (ex p being Element of dom N
+::                      st p is_active_variable_in N & p is_a_prefix_of r)
+::           holds [r,x] in it iff [r,x] in N
+::    ) &
+::    :: except that the active variables are replaced with M
+::    (for r being Element of dom N
+::            st r is_active_variable_in N
+::            holds it|r = M);
   existence;
-::>       *4
   uniqueness;
-::>        *4
-end;
-
-::: ### Lifting
-
-definition
-  let P,n,k;
-  let p be Node of P;
-
-  :: When lifting P with n and k, then x should be put to p.
-  func LiftVal(P,n,k,p) -> Nat means
-    :Def4:
-    (p is_variable_in P & P.p >= k & it = P.p + n) or
-    (p is_variable_in P & P.p < k  & it = P.p) or
-    (not p is_variable_in P & it = 0);
-
-  existence
-  proof
-    p is_variable_in P or not p is_variable_in P;
-    per cases;
-    suppose
-    A1: p is_variable_in P;
-      P.p >= k or not P.p >= k;
-      per cases;
-      suppose
-      A2: P.p >= k;
-        take P.p + n;
-        thus thesis by A1,A2;
-      end;
-      suppose
-      A3: not P.p >= k;
-        then P.p < k;
-        take P.p;
-        thus thesis by A1,A3;
-      end;
-    end;
-    suppose
-    A4: not p is_variable_in P;
-      take 0;
-      thus thesis by A4;
-    end;
-  end;
-  uniqueness;
-end;
-
-reserve p2,r2 for Node of P;
-
-definition
-  let P,n,k;
-  let p be set;
-
-  :: When lifting P with n and k, then x should be put to p.
-  func LiftVal2(P,n,k,p) -> Nat means
-    :Def2:
-    (ex p2 st p = p2 & it = LiftVal(P,n,k,p2)) or
-    ((not ex p2 st p = p2) & it = 0);
-    
-  existence
-  proof
-    (ex p2 st p = p2) or (not ex p2 st p = p2);
-    per cases;
-    suppose ex p2 st p = p2;
-      then consider p2 such that
-    A2: p = p2;
-      take LiftVal(P,n,k,p2);
-      thus thesis by A2;
-    end;
-    suppose
-    A1: not ex p2 st p = p2;
-      take 0;
-      thus thesis by A1;
-    end;
-  end;
-  uniqueness
-  proof
-    let i,j be Nat;
-    assume
-  A10: (ex p2 st p = p2 & i = LiftVal(P,n,k,p2)) or
-      ((not ex p2 st p = p2) & i = 0);
-    assume
-  A11: (ex p2 st p = p2 & j = LiftVal(P,n,k,p2)) or
-      ((not ex p2 st p = p2) & j = 0);
-    (ex p2 st p = p2) or (not ex p2 st p = p2);
-    per cases;
-    suppose
-    A13: ex p2 st p = p2;
-      then consider p2 such that
-    A12: p = p2;
-    A16: i = LiftVal(P,n,k,p2)
-      proof
-        assume
-      A14: not thesis;
-        ex p2 st p = p2 by A13;
-        then not ((not ex p2 st p = p2) & i = 0);
-        hence contradiction by A10,A12,A14;
-      end;
-    A17: j = LiftVal(P,n,k,p2)
-      proof
-        assume
-      A15: not thesis;
-        ex p2 st p = p2 by A13;
-        then not ((not ex p2 st p = p2) & j = 0);
-        hence contradiction by A11,A12,A15;
-      end;
-      thus i = j by A16,A17;
-    end;
-    suppose
-    A18: not ex p2 st p = p2;
-    A19: i = 0 by A10,A18;
-    A20: j = 0 by A11,A18;
-      thus i = j by A19,A20;
-    end;
-  end;
-end;
-
-definition
-  let P,n,k;
-
-  func Lift(P,n,k) -> LambdaTerm means
-    :Def3:
-    :: The resulting term is of the exact same size/shape,
-    dom it = dom P &
-    :: except that variables are lifted by $n$ iff they are greater/equal to $k$.
-    (for p st p in dom P holds [p,LiftVal(P,n,k,p)] in it);
-
-  :: Proof by TREES_2:sch 7
-  existence
-  proof
-    deffunc f(set) = LiftVal2(P,n,k,$1);
-    :: T() = dom P
-    :: f(set) -> set = LiftVal2(P,n,k,$1)
-    ex D st dom D = dom P &
-      for p being FinSequence of NAT st p in dom P holds D.p = f(p)
-      from TREES_2:sch 7;
-    then consider D such that
-  A1: dom D = dom P and
-  A2: for p being FinSequence of NAT st p in dom P holds D.p = f(p);
-  A3: D is NAT-valued
-    proof
-      rng D c= NAT
-      proof
-        let x;
-        assume x in rng D;
-        then ex p being set st [p,x] in D by RELAT_1:def 5;
-        then consider p being set such that
-      A14: [p,x] in D;
-      A18: p in dom D by A14, RELAT_1:def 4;
-        then
-      A15: p in dom P by A1;
-        set p3 = p;
-        reconsider p3 as FinSequence of NAT by A15,TREES_2:def 8, TREES_1:19;
-        ::reconsider p as Node of P by A15;
-      A17: D.p = x by FUNCT_1:1, A14, A18;
-      A16: x = LiftVal2(P,n,k,p3) by A2,A15,A17;
-        then
-      A20: (ex p2 st p = p2 & x = LiftVal(P,n,k,p2)) or
-          ((not ex p2 st p = p2) & x = 0) by Def2,A17;
-        per cases;
-        suppose ex p2 st p = p2 & x = LiftVal(P,n,k,p2);
-          then consider p2 such that
-        A21: p = p2 & x = LiftVal(P,n,k,p2);
-        A19: (p2 is_variable_in P & P.p2 >= k & x = P.p2 + n) or
-            (p2 is_variable_in P & P.p2 < k  & x = P.p2) or
-            (not p2 is_variable_in P & x = 0) by Def4,A21;
-          per cases;
-          suppose p2 is_variable_in P & P.p2 >= k & x = P.p2 + n;
-            hence x in NAT;
-          end;
-          suppose p2 is_variable_in P & P.p2 < k  & x = P.p2;
-            hence x in NAT;
-          end;
-          suppose not (p2 is_variable_in P & P.p2 >= k & x = P.p2 + n)
-                & not (p2 is_variable_in P & P.p2 < k  & x = P.p2);
-            then not p2 is_variable_in P & x = 0 by A19;
-            hence x in NAT;
-          end;
-        end;
-        suppose not (ex p2 st p = p2 & x = LiftVal(P,n,k,p2));
-          then (not ex p2 st p = p2) & x = 0 by A20;
-          hence x in NAT;
-        end;
-      end;
-      hence thesis by RELAT_1:def 19;
-    end;
-  A4: D is LambdaTerm-like
-    proof
-      dom P is finite by Def1;
-      hence dom D is finite by A1;
-      let r;
-      assume r in dom D;
-      then
-    A9: r in dom P by A1;
-      hence r is FinSequence of {0,1} by Def1;
-      assume r^<*0*> in dom D;
-      then
-    A12: r^<*0*> in dom P by A1;
-      then P.r = 0 by A9,Def1;
-      set r2 = r;
-      reconsider r2 as Node of P by A9;
-    A10: LiftVal2(P,n,k,r) = LiftVal(P,n,k,r2)
-      proof
-        assume not thesis;
-        then not (ex r2 st r = r2 & LiftVal2(P,n,k,r) = LiftVal(P,n,k,r2));
-        then
-      A11: (not ex r2 st r = r2) & LiftVal2(P,n,k,r) = 0 by Def2;
-        r is Node of P by A9;
-        then ex r2 st r = r2;
-        hence contradiction by A11;
-      end;
-    A13: not r2 is_variable_in P
-      proof
-        assume r2 is_variable_in P;
-        then not r^<*0*> in dom P by Def5;
-        hence contradiction by A12;
-      end;
-      LiftVal(P,n,k,r2) = 0 by A13, Def4;
-      then LiftVal2(P,n,k,r) = 0 by A10;
-      hence D.r = 0 by A2,A9;
-    end;
-    reconsider D as LambdaTerm by A3,A4;
-    take D;
-    thus dom D = dom P by A1;
-    let p;
-    assume
-  A6: p in dom P;
-    then p in dom D by A1;
-    then [p,D.p] in D by FUNCT_1:1;
-    then
-  A5: [p,LiftVal2(P,n,k,p)] in D by A2;
-  A7: LiftVal2(P,n,k,p) = LiftVal(P,n,k,p)
-    proof
-      assume not thesis;
-      then not (ex p2 st p = p2 & LiftVal2(P,n,k,p) = LiftVal(P,n,k,p2));
-      then
-    A8: (not ex p2 st p = p2) & LiftVal2(P,n,k,p) = 0 by Def2;
-      p is Node of P by A6;
-      then ex p2 st p = p2;
-      hence contradiction by A8;
-    end;
-    hence [p,LiftVal(P,n,k,p)] in D by A5,A7;
-  end;
-  uniqueness
-  proof
-    let Q1,Q2 be LambdaTerm;
-    assume
-  A1: dom Q1 = dom P &
-      (for p st p in dom P holds [p,LiftVal(P,n,k,p)] in Q1);
-    assume
-  A2: dom Q2 = dom P &
-      (for p st p in dom P holds [p,LiftVal(P,n,k,p)] in Q2);
-  A4: for p being set st p in dom Q1 holds Q1.p = Q2.p
-    proof
-      let p be set;
-      assume p in dom Q1;
-      then
-    A5: p in dom P by A1;
-      set p2 = p;
-      reconsider p2 as FinSequence of NAT by A5,TREES_2:def 8, TREES_1:19;
-      reconsider p2 as Node of P by A5;
-      [p2,LiftVal(P,n,k,p2)] in Q1 by A1,A5;
-      then
-    A6: Q1.p2 = LiftVal(P,n,k,p2) by FUNCT_1:1,A5;
-      [p2,LiftVal(P,n,k,p2)] in Q2 by A2,A5;
-      then
-    A7: Q2.p2 = LiftVal(P,n,k,p2) by FUNCT_1:1,A5;
-      thus Q1.p = Q2.p by A6,A7;
-    end;
-    thus Q1 = Q2 by A1,A2,A4,FUNCT_1:2;
-  end;
 end;
 
 ::: ### Reduction and conversion
 
 ::: First I define _shallow_ one-step beta substitution, which only
-:::  states (the De Bruijn equivalent of)
-:::  $(\\lambda x.N)M \\to_{\\beta} N[x:=M]$.
+:::  states $(\\lambda x.N)M \\to_{\\beta} N[x:=M]$.
 
 definition
   let P,Q;
   
   :: P === (\x.N)M --> N[x:=M] === Q
   pred P beta_shallow Q means
-    ex M,N st
+    ex N,n,M st
       :: P === (\x.N)M
-      P = App(Abs(N),M) &
+      P = App(Abs(n,N),M) &
 
       :: Q === N[x:=M]
-      Q = SubstituteActiveVar(N,M);
+      Q = N with-substitution (n,M);
 end;
 
 ::: Then we extend this ordinary one-step beta reduction, that is,
@@ -1082,6 +834,8 @@ end;
 :::  but this is extremely difficult, if not impossible.
 definition
   let M,N;
+
+  :: TODO better definition with tree operations
 
   pred M beta N means
     ex
@@ -1111,8 +865,7 @@ definition
     M beta* N or N beta* M;
 end;
 
-
 ::>
 ::> 4: This inference is not accepted
+::> 51: Invalid conclusion
 ::> 60: Something remains to be proved in this case
-::> 70: Something remains to be proved

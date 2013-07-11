@@ -131,7 +131,8 @@ definition
     dom D is finite &
     for r st r in dom D holds
       r is FinSequence of {0,1} &
-      (r^<*0*> in dom D implies D.r = 0);
+      ((r^<*0*> in dom D & r^<*1*> in dom D)
+          implies D.r = 0);
 end;
 
 ::: Some simple `LambdaTerm-like` things.
@@ -275,39 +276,39 @@ definition
 end;
 
 definition
-  let M be LambdaTerm,
-      r be Node of M;
+  let M,r,n;
 
-  func abstr-depth (r,M) -> Element of NAT equals
+  pred M,r holds_variable n means
 :: LAMBDA:def 7
-    card { p where p is Node of M
-           : p is_a_proper_prefix_of r &
-             p is_abstraction_in M };
-::> *70
-end;
 
-::: By $r$ being an _active variable_ of some term $M$ (or more precisely,
-:::  a path identifying an active variable), I mean that if $\lambda M$ were
-:::  to be applied to some other term $N$, we would substitute this variable
-:::  by $M$.
-definition
-  let M be LambdaTerm,
-      r be Node of M;
-
-  pred r is_active_variable_in M means
-:: LAMBDA:def 8
     r is_variable_in M &
-    M.r = abstr-depth (r,M);
+    M.r = n;
+
+  pred M,r abstracts n means
+:: LAMBDA:def 8
+
+    r is_abstraction_in M &
+    M.r = n;
 end;
+
+::::definition
+::::  let M be LambdaTerm,
+::::      r be Node of M;
+::::
+::::  pred r is_active_variable_in M means
+::::    r is_variable_in M &
+::::    M.r = abstr-depth (r,M);
+::::end;
 
 ::: #### Abstraction and application
 
 ::: Then we can define abstraction and application
 definition
-  let M;
+  let n,M;
 
-  func Abs(M) -> LambdaTerm means
+  func Abs(n,M) -> LambdaTerm means
 :: LAMBDA:def 9
+    it,(<*> NAT) abstracts n &
     it|<*0*> = M & not <*1*> in dom it;
 ::>        *4
 end;
@@ -322,83 +323,32 @@ definition
 end;
 
 definition
-  let M,N;
+  let N,n,M;
 
-  :: TODO better definition with decorated tree replacements
+  :: TODO better definition with decorated tree replacements!
 
-  func SubstituteActiveVar(M,N) -> LambdaTerm means
+  func N with-substitution (n,M) -> LambdaTerm means
 :: LAMBDA:def 11
-    :: most things are the same,
-    (for r st not (ex p being Element of dom N
-                      st p is_active_variable_in N & p is_a_prefix_of r)
-           holds [r,x] in it iff [r,x] in N
-    ) &
-    :: except that the active variables are replaced with M
-    (for r being Element of dom N
-            st r is_active_variable_in N
-            holds it|r = M);
-::>        *4
-end;
-
-::: ### Lifting
-
-definition
-  let P,n,k;
-  let p be Node of P;
-
-  :: When lifting P with n and k, then x should be put to p.
-  func LiftVal(P,n,k,p) -> Nat means
-:: LAMBDA:def 12
-
-    (p is_variable_in P & P.p >= k & it = P.p + n) or
-    (p is_variable_in P & P.p < k  & it = P.p) or
-    (not p is_variable_in P & it = 0);
-end;
-
-reserve p2,r2 for Node of P;
-
-definition
-  let P,n,k;
-  let p be set;
-
-  :: When lifting P with n and k, then x should be put to p.
-  func LiftVal2(P,n,k,p) -> Nat means
-:: LAMBDA:def 13
-
-    (ex p2 st p = p2 & it = LiftVal(P,n,k,p2)) or
-    ((not ex p2 st p = p2) & it = 0);
-end;
-
-definition
-  let P,n,k;
-
-  func Lift(P,n,k) -> LambdaTerm means
-:: LAMBDA:def 14
-
-    :: The resulting term is of the exact same size/shape,
-    dom it = dom P &
-    :: except that variables are lifted by $n$ iff they are greater/equal to $k$.
-    (for p st p in dom P holds [p,LiftVal(P,n,k,p)] in it);
+    it = N;
 end;
 
 ::: ### Reduction and conversion
 
 ::: First I define _shallow_ one-step beta substitution, which only
-:::  states (the De Bruijn equivalent of)
-:::  $(\\lambda x.N)M \\to_{\\beta} N[x:=M]$.
+:::  states $(\\lambda x.N)M \\to_{\\beta} N[x:=M]$.
 
 definition
   let P,Q;
 
   :: P === (\x.N)M --> N[x:=M] === Q
   pred P beta_shallow Q means
-:: LAMBDA:def 15
-    ex M,N st
+:: LAMBDA:def 12
+    ex N,n,M st
       :: P === (\x.N)M
-      P = App(Abs(N),M) &
+      P = App(Abs(n,N),M) &
 
       :: Q === N[x:=M]
-      Q = SubstituteActiveVar(N,M);
+      Q = N with-substitution (n,M);
 end;
 
 ::: Then we extend this ordinary one-step beta reduction, that is,
@@ -412,8 +362,10 @@ end;
 definition
   let M,N;
 
+  :: TODO better definition with tree operations
+
   pred M beta N means
-:: LAMBDA:def 16
+:: LAMBDA:def 13
     ex
       p being Element of dom M,
       q being Element of dom N st
@@ -429,7 +381,7 @@ definition
   let M,N;
 
   pred M beta* N means
-:: LAMBDA:def 17
+:: LAMBDA:def 14
     M = N or
     ex P st M beta P & P beta N;
 end;
@@ -439,12 +391,11 @@ definition
   let M,N;
 
   pred M beta= N means
-:: LAMBDA:def 18
+:: LAMBDA:def 15
     M beta* N or N beta* M;
 end;
 
-
 ::>
 ::> 4: This inference is not accepted
+::> 51: Invalid conclusion
 ::> 60: Something remains to be proved in this case
-::> 70: Something remains to be proved

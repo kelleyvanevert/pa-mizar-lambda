@@ -2,16 +2,12 @@
 ::: (This file was automatically created.)
 
 ::: ## Functors
-::: `perl -ne "s/^ *func (?:\([^\)]*\))?([^\( ]+).*$/O$1/ && print" text/lambda.miz | sort -u`
+::: `perl -ne "s/^ *func \(?(?:[a-zA-Z](?:, ?[a-zA-Z])*\)? )?([^\( ]{2,}).*$/O$1/ && print" text/lambda.miz | sort -u`
 OAbs
-Oabstr-depth
 OApp
-OLift
-OLiftVal
-OLiftVal2
 OPreAbstractionTerm
 OPreApplicationTerm
-OSubstituteActiveVar
+Owith-substitution
 
 ::: ## Selectors
 ::: `perl -ne "s/^ *([a-zA-Z]+) ->.*$/U$1/ && print" text/lambda.miz | sort -u`
@@ -29,11 +25,12 @@ MLambdaTerm
 
 ::: ## Predicates
 ::: `perl -ne "s/^ *pred (?:[a-zA-Z](?:, ?[a-zA-Z])* )?([^ ]{2,}) .*$/R$1/ && print" text/lambda.miz | sort -u`
+Rabstracts
 Rbeta
 Rbeta=
 Rbeta*
 Rbeta_shallow
+Rholds_variable
 Ris_abstraction_in
-Ris_active_variable_in
 Ris_application_in
 Ris_variable_in

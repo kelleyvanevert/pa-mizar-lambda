@@ -1,6 +1,6 @@
 #!/bin/bash
 
-functors='s/^ *func (?:\([^\)]*\))?([^\( ]+).*$/O$1/'
+functors='s/^ *func \(?(?:[a-zA-Z](?:, ?[a-zA-Z])*\)? )?([^\( ]{2,}).*$/O$1/'
 selectors='s/^ *([a-zA-Z]+) ->.*$/U$1/'
 structures='s/^ *struct ([a-zA-Z-]+).*$/G$1/'
 attributes='s/^ *attr [a-zA-Z] is (?:(?:[a-zA-Z],)*[a-zA-Z](?=-))?([a-zA-Z-]+) .*$/V$1/'
