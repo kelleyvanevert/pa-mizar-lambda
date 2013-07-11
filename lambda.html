@@ -1131,16 +1131,16 @@ First we prove a slightly more general theorem about the ranges of
                 <ul class="vocabulary">
                 
                 
-                <li class="type-pred"><a href="#line-818"><code>beta_shallow</code></a></li>
+                <li class="type-pred"><a href="#line-817"><code>beta-&gt;shallow</code></a></li>
                 
                 
-                <li class="type-pred"><a href="#line-840"><code>beta</code></a></li>
+                <li class="type-pred"><a href="#line-838"><code>beta-&gt;</code></a></li>
                 
                 
-                <li class="type-pred"><a href="#line-855"><code>beta*</code></a></li>
+                <li class="type-pred"><a href="#line-853"><code>beta-&gt;*</code></a></li>
                 
                 
-                <li class="type-pred"><a href="#line-864"><code>beta=</code></a></li>
+                <li class="type-pred"><a href="#line-862"><code>beta=</code></a></li>
                 
                 </ul>
               
@@ -1152,26 +1152,25 @@ First we prove a slightly more general theorem about the ranges of
         <li>
             <div class="annotation annotation-19">
               
-                <p>First I define <em>shallow</em> one-step beta substitution, which only
- states $(\lambda x.N)M \to_{\beta} N[x:=M]$.</p>
+                <p>First we define one-step toplevel (<em>shallow</em>) reduction.</p>
 
               
 
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-814' id='line-814'>814</a> <span class="keyword">definition</span>
-<a class='lineno' href='#line-815' id='line-815'>815</a>   <span class="keyword">let</span> P,Q;
-<a class='lineno' href='#line-816' id='line-816'>816</a>   
-<a class='lineno' href='#line-817' id='line-817'>817</a>   <span class="comment">:: P === (\x.N)M --&gt; N[x:=M] === Q</span>
-<a class='lineno' href='#line-818' id='line-818'>818</a>   <span class="keyword">pred</span> P beta_shallow Q <span class="keyword">means</span>
-<a class='lineno' href='#line-819' id='line-819'>819</a>     <span class="keyword">ex</span> N,n,M <span class="keyword">st</span>
-<a class='lineno' href='#line-820' id='line-820'>820</a>       <span class="comment">:: P === (\x.N)M</span>
-<a class='lineno' href='#line-821' id='line-821'>821</a>       P = App(Abs(n,N),M) &amp;
-<a class='lineno' href='#line-822' id='line-822'>822</a> 
-<a class='lineno' href='#line-823' id='line-823'>823</a>       <span class="comment">:: Q === N[x:=M]</span>
-<a class='lineno' href='#line-824' id='line-824'>824</a>       Q = N with-substitution (n,M);
-<a class='lineno' href='#line-825' id='line-825'>825</a> <span class="keyword">end</span>;</pre></div></div>
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-813' id='line-813'>813</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-814' id='line-814'>814</a>   <span class="keyword">let</span> P,Q;
+<a class='lineno' href='#line-815' id='line-815'>815</a>   
+<a class='lineno' href='#line-816' id='line-816'>816</a>   <span class="comment">:: P === (\x.N)M --&gt; N[x:=M] === Q</span>
+<a class='lineno' href='#line-817' id='line-817'>817</a>   <span class="keyword">pred</span> P beta-&gt;shallow Q <span class="keyword">means</span>
+<a class='lineno' href='#line-818' id='line-818'>818</a>     <span class="keyword">ex</span> N,n,M <span class="keyword">st</span>
+<a class='lineno' href='#line-819' id='line-819'>819</a>       <span class="comment">:: P === (\x.N)M</span>
+<a class='lineno' href='#line-820' id='line-820'>820</a>       P = App(Abs(n,N),M) &amp;
+<a class='lineno' href='#line-821' id='line-821'>821</a> 
+<a class='lineno' href='#line-822' id='line-822'>822</a>       <span class="comment">:: Q === N[x:=M]</span>
+<a class='lineno' href='#line-823' id='line-823'>823</a>       Q = N with-substitution (n,M);
+<a class='lineno' href='#line-824' id='line-824'>824</a> <span class="keyword">end</span>;</pre></div></div>
             
         </li>
         
@@ -1179,8 +1178,7 @@ First we prove a slightly more general theorem about the ranges of
         <li>
             <div class="annotation annotation-20">
               
-                <p>Then we extend this ordinary one-step beta reduction, that is,
- any subterm is also allowed to reduce.</p>
+                <p>Then we close under subterm reduction to get actual one-step beta reduction.</p>
 <p>Note that I had to use a work-around here, where I have two
  set-theoretically identical elements <code>p</code> and <code>q</code>, but considered
  in Mizar as having different types to enable the two <code>|</code> operations
@@ -1192,20 +1190,20 @@ First we prove a slightly more general theorem about the ranges of
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-835' id='line-835'>835</a> <span class="keyword">definition</span>
-<a class='lineno' href='#line-836' id='line-836'>836</a>   <span class="keyword">let</span> M,N;
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-833' id='line-833'>833</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-834' id='line-834'>834</a>   <span class="keyword">let</span> M,N;
+<a class='lineno' href='#line-835' id='line-835'>835</a> 
+<a class='lineno' href='#line-836' id='line-836'>836</a>   <span class="comment">:: TODO better definition with tree operations</span>
 <a class='lineno' href='#line-837' id='line-837'>837</a> 
-<a class='lineno' href='#line-838' id='line-838'>838</a>   <span class="comment">:: TODO better definition with tree operations</span>
-<a class='lineno' href='#line-839' id='line-839'>839</a> 
-<a class='lineno' href='#line-840' id='line-840'>840</a>   <span class="keyword">pred</span> M beta N <span class="keyword">means</span>
-<a class='lineno' href='#line-841' id='line-841'>841</a>     <span class="keyword">ex</span>
-<a class='lineno' href='#line-842' id='line-842'>842</a>       p <span class="keyword">being</span> Element <span class="keyword">of</span> dom M,
-<a class='lineno' href='#line-843' id='line-843'>843</a>       q <span class="keyword">being</span> Element <span class="keyword">of</span> dom N <span class="keyword">st</span>
-<a class='lineno' href='#line-844' id='line-844'>844</a>         p = q &amp;
-<a class='lineno' href='#line-845' id='line-845'>845</a>         M|p beta_shallow N|q &amp;
-<a class='lineno' href='#line-846' id='line-846'>846</a>         <span class="keyword">for</span> q <span class="keyword">st</span> <span class="keyword">not</span> p is_a_prefix_of q <span class="keyword">holds</span>
-<a class='lineno' href='#line-847' id='line-847'>847</a>           [r,x] <span class="keyword">in</span> M <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N;
-<a class='lineno' href='#line-848' id='line-848'>848</a> <span class="keyword">end</span>;</pre></div></div>
+<a class='lineno' href='#line-838' id='line-838'>838</a>   <span class="keyword">pred</span> M beta-&gt; N <span class="keyword">means</span>
+<a class='lineno' href='#line-839' id='line-839'>839</a>     <span class="keyword">ex</span>
+<a class='lineno' href='#line-840' id='line-840'>840</a>       p <span class="keyword">being</span> Element <span class="keyword">of</span> dom M,
+<a class='lineno' href='#line-841' id='line-841'>841</a>       q <span class="keyword">being</span> Element <span class="keyword">of</span> dom N <span class="keyword">st</span>
+<a class='lineno' href='#line-842' id='line-842'>842</a>         p = q &amp;
+<a class='lineno' href='#line-843' id='line-843'>843</a>         M|p beta-&gt;shallow N|q &amp;
+<a class='lineno' href='#line-844' id='line-844'>844</a>         <span class="keyword">for</span> q <span class="keyword">st</span> <span class="keyword">not</span> p is_a_prefix_of q <span class="keyword">holds</span>
+<a class='lineno' href='#line-845' id='line-845'>845</a>           [r,x] <span class="keyword">in</span> M <span class="keyword">iff</span> [r,x] <span class="keyword">in</span> N;
+<a class='lineno' href='#line-846' id='line-846'>846</a> <span class="keyword">end</span>;</pre></div></div>
             
         </li>
         
@@ -1213,21 +1211,21 @@ First we prove a slightly more general theorem about the ranges of
         <li>
             <div class="annotation annotation-21">
               
-                <p>We close the relation under transitivity and reflexivity
- to get the full beta reduction relation.</p>
+                <p>We close under transitivity and reflexivity
+ to get full beta reduction.</p>
 
               
 
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-852' id='line-852'>852</a> <span class="keyword">definition</span>
-<a class='lineno' href='#line-853' id='line-853'>853</a>   <span class="keyword">let</span> M,N;
-<a class='lineno' href='#line-854' id='line-854'>854</a>   
-<a class='lineno' href='#line-855' id='line-855'>855</a>   <span class="keyword">pred</span> M beta* N <span class="keyword">means</span>
-<a class='lineno' href='#line-856' id='line-856'>856</a>     M = N <span class="keyword">or</span>
-<a class='lineno' href='#line-857' id='line-857'>857</a>     <span class="keyword">ex</span> P <span class="keyword">st</span> M beta P &amp; P beta N;
-<a class='lineno' href='#line-858' id='line-858'>858</a> <span class="keyword">end</span>;</pre></div></div>
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-850' id='line-850'>850</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-851' id='line-851'>851</a>   <span class="keyword">let</span> M,N;
+<a class='lineno' href='#line-852' id='line-852'>852</a>   
+<a class='lineno' href='#line-853' id='line-853'>853</a>   <span class="keyword">pred</span> M beta-&gt;* N <span class="keyword">means</span>
+<a class='lineno' href='#line-854' id='line-854'>854</a>     M = N <span class="keyword">or</span>
+<a class='lineno' href='#line-855' id='line-855'>855</a>     <span class="keyword">ex</span> P <span class="keyword">st</span> M beta-&gt; P &amp; P beta-&gt; N;
+<a class='lineno' href='#line-856' id='line-856'>856</a> <span class="keyword">end</span>;</pre></div></div>
             
         </li>
         
@@ -1242,17 +1240,17 @@ First we prove a slightly more general theorem about the ranges of
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-861' id='line-861'>861</a> <span class="keyword">definition</span>
-<a class='lineno' href='#line-862' id='line-862'>862</a>   <span class="keyword">let</span> M,N;
-<a class='lineno' href='#line-863' id='line-863'>863</a>   
-<a class='lineno' href='#line-864' id='line-864'>864</a>   <span class="keyword">pred</span> M beta= N <span class="keyword">means</span>
-<a class='lineno' href='#line-865' id='line-865'>865</a>     M beta* N <span class="keyword">or</span> N beta* M;
-<a class='lineno' href='#line-866' id='line-866'>866</a> <span class="keyword">end</span>;
-<a class='lineno' href='#line-867' id='line-867'>867</a> 
-<a class='lineno' href='#line-868' id='line-868'>868</a> <span class="error">::&gt;</span>
-<a class='lineno' href='#line-869' id='line-869'>869</a> <span class="error">::&gt; 4: This inference is not accepted</span>
-<a class='lineno' href='#line-870' id='line-870'>870</a> <span class="error">::&gt; 51: Invalid conclusion</span>
-<a class='lineno' href='#line-871' id='line-871'>871</a> <span class="error">::&gt; 60: Something remains to be proved in this case</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-859' id='line-859'>859</a> <span class="keyword">definition</span>
+<a class='lineno' href='#line-860' id='line-860'>860</a>   <span class="keyword">let</span> M,N;
+<a class='lineno' href='#line-861' id='line-861'>861</a>   
+<a class='lineno' href='#line-862' id='line-862'>862</a>   <span class="keyword">pred</span> M beta= N <span class="keyword">means</span>
+<a class='lineno' href='#line-863' id='line-863'>863</a>     M beta-&gt;* N <span class="keyword">or</span> N beta-&gt;* M;
+<a class='lineno' href='#line-864' id='line-864'>864</a> <span class="keyword">end</span>;
+<a class='lineno' href='#line-865' id='line-865'>865</a> 
+<a class='lineno' href='#line-866' id='line-866'>866</a> <span class="error">::&gt;</span>
+<a class='lineno' href='#line-867' id='line-867'>867</a> <span class="error">::&gt; 4: This inference is not accepted</span>
+<a class='lineno' href='#line-868' id='line-868'>868</a> <span class="error">::&gt; 51: Invalid conclusion</span>
+<a class='lineno' href='#line-869' id='line-869'>869</a> <span class="error">::&gt; 60: Something remains to be proved in this case</span></pre></div></div>
             
         </li>
         

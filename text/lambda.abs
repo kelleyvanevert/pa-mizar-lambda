@@ -334,14 +334,13 @@ end;
 
 ::: ### Reduction and conversion
 
-::: First I define _shallow_ one-step beta substitution, which only
-:::  states $(\\lambda x.N)M \\to_{\\beta} N[x:=M]$.
+::: First we define one-step toplevel (_shallow_) reduction.
 
 definition
   let P,Q;
 
   :: P === (\x.N)M --> N[x:=M] === Q
-  pred P beta_shallow Q means
+  pred P beta->shallow Q means
 :: LAMBDA:def 12
     ex N,n,M st
       :: P === (\x.N)M
@@ -351,8 +350,7 @@ definition
       Q = N with-substitution (n,M);
 end;
 
-::: Then we extend this ordinary one-step beta reduction, that is,
-:::  any subterm is also allowed to reduce.
+::: Then we close under subterm reduction to get actual one-step beta reduction.
 
 ::: Note that I had to use a work-around here, where I have two
 :::  set-theoretically identical elements `p` and `q`, but considered
@@ -364,26 +362,26 @@ definition
 
   :: TODO better definition with tree operations
 
-  pred M beta N means
+  pred M beta-> N means
 :: LAMBDA:def 13
     ex
       p being Element of dom M,
       q being Element of dom N st
         p = q &
-        M|p beta_shallow N|q &
+        M|p beta->shallow N|q &
         for q st not p is_a_prefix_of q holds
           [r,x] in M iff [r,x] in N;
 end;
 
-::: We close the relation under transitivity and reflexivity
-:::  to get the full beta reduction relation.
+::: We close under transitivity and reflexivity
+:::  to get full beta reduction.
 definition
   let M,N;
 
-  pred M beta* N means
+  pred M beta->* N means
 :: LAMBDA:def 14
     M = N or
-    ex P st M beta P & P beta N;
+    ex P st M beta-> P & P beta-> N;
 end;
 
 ::: And then close under symmetry to get beta conversion.
@@ -392,7 +390,7 @@ definition
 
   pred M beta= N means
 :: LAMBDA:def 15
-    M beta* N or N beta* M;
+    M beta->* N or N beta->* M;
 end;
 
 ::>
