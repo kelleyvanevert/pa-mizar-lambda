@@ -5,9 +5,16 @@
 ::: `perl -ne "s/^ *func \(?(?:[a-zA-Z](?:, ?[a-zA-Z])*\)? )?([^\( ]{2,}).*$/O$1/ && print" text/lambda.miz | sort -u`
 OAbs
 OApp
+OcDelta
+OcI
+OcK
+OcK*
+OcOmega
+OcOne
+OcY
 OPreAbstractionTerm
 OPreApplicationTerm
-Owith-substitution
+OVar
 
 ::: ## Selectors
 ::: `perl -ne "s/^ *([a-zA-Z]+) ->.*$/U$1/ && print" text/lambda.miz | sort -u`
@@ -22,6 +29,7 @@ VLambdaTerm-like
 ::: ## Modes
 ::: `perl -ne "s/^ *mode ([a-zA-Z-]+).*$/M$1/ && print" text/lambda.miz | sort -u`
 MLambdaTerm
+MVariable
 
 ::: ## Predicates
 ::: `perl -ne "s/^ *pred (?:[a-zA-Z](?:, ?[a-zA-Z])* )?([^ ]{2,}) .*$/R$1/ && print" text/lambda.miz | sort -u`
@@ -30,6 +38,7 @@ Rbeta=
 Rbeta->
 Rbeta->*
 Rbeta->shallow
+Rcontains_variable
 Rholds_variable
 Ris_abstraction_in
 Ris_application_in

@@ -23,8 +23,8 @@ environ
     FUNCT_1, FUNCT_2,
     ZFMISC_1, PARTFUN1,
     ORDERS_2, ORDERS_1,
-    FINSEQ_2, PBOOLE, CARD_3, VALUED_1,
-    TREES_4, TREES_3, TREES_2, TREES_1;
+    FINSEQ_2, FINSEQ_4, PBOOLE, CARD_3, VALUED_1,
+    TREES_1, TREES_2, TREES_3, TREES_4;
 
   :: Radix type specifications
   :: But it also helped [175 unknown attribute format] error with [finite set]
@@ -34,7 +34,7 @@ environ
     RELAT_2, RELSET_1,
     FUNCT_1, FUNCT_2,
     FUNCT_3, FINSEQ_1, FINSEQ_2, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
-    TREES_4, TREES_3, TREES_2, TREES_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
     ORDERS_1, ORDERS_2,
     XXREAL_0, VALUED_1,
     RECDEF_1;
@@ -46,7 +46,7 @@ environ
     FUNCOP_1,
     RELSET_1,
     SQUARE_1, NAT_1, FINSEQ_1, FINSEQ_2, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
-    TREES_4, TREES_3, TREES_2, TREES_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
     ORDERS_1, ORDERS_2,
     RECDEF_1,
     FINSET_1,
@@ -59,7 +59,7 @@ environ
     FUNCT_1, FUNCT_2,
     FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
     ORDERS_1,
-    TREES_4, TREES_3, TREES_2, TREES_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
     ::XTUPLE_0;
     MCART_1; ::, FUNCT_5, RECDEF_1;
 
@@ -72,7 +72,7 @@ environ
     FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, FINSEQ_2, CARD_1, RELSET_1,
     PBOOLE, CARD_3,
     ORDERS_2,
-    TREES_4, TREES_3, TREES_2, TREES_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
     FINSET_1;
 
   :: Load theorem en definition labels
@@ -80,11 +80,11 @@ environ
     ::XTUPLE_0,
     MCART_1, FUNCT_5, :: RECDEF_1,
     FUNCT_1,
-    TREES_4, TREES_3, TREES_2, TREES_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
     XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
     CARD_1, CARD_2, CARD_3, CARD_4;
 
-  schemes RECDEF_1, TREES_2;
+  schemes RECDEF_1, TREES_2, TREES_4;
 
   requirements BOOLE, SUBSET, NUMERALS, ARITHM, REAL;
 
@@ -92,11 +92,16 @@ begin
 
 ::: ## Syntax and behaviour
 
+definition
+  mode Variable is Element of NAT;
+end;
+
 reserve T,T1,T2 for Tree,
-        D for DecoratedTree,
-        p,q,q2,r for FinSequence of NAT,
+        D,D2 for DecoratedTree,
+        p,q,q0,q1,q2,r for FinSequence of NAT,
         x,y,X,Y for set,
-        i,j,k,l,m,n for Element of NAT;
+        i,j,k,l,m,n for Element of NAT,
+        u,v,w for Variable;
 
 ::: ### Lambda terms
 
@@ -141,7 +146,9 @@ end;
 :::  later on, when defining application and abstraction.
 
 registration
-  cluster { {} } --> 0 -> LambdaTerm-like;
+  let v;
+
+  cluster { {} } --> v -> LambdaTerm-like;
 end;
 
 registration
@@ -149,7 +156,9 @@ registration
 end;
 
 registration
-  cluster { <*> NAT } --> 0 -> LambdaTerm-like;
+  let v;
+
+  cluster { <*> NAT } --> v -> LambdaTerm-like;
 end;
 
 registration
@@ -157,7 +166,9 @@ registration
 end;
 
 registration
-  cluster { {}, <*0*> } --> 0 -> LambdaTerm-like;
+  let v;
+
+  cluster { {}, <*0*> } --> v -> LambdaTerm-like;
 end;
 
 registration
@@ -179,9 +190,11 @@ definition
 end;
 
 definition
-  func PreAbstractionTerm -> LambdaTerm equals
+  let v;
+
+  func PreAbstractionTerm v -> LambdaTerm equals
 :: LAMBDA:def 2
-    { {}, <*0*> } --> 0;
+    { {}, <*0*> } --> v;
 end;
 
 definition
@@ -227,8 +240,7 @@ registration
   cluster P with-replacement (p,Q) -> NAT-valued;
 end;
 
-reserve R for DecoratedTree,
-        p for Element of dom P;
+reserve p for Element of dom P;
 
 theorem :: LAMBDA:2
   P with-replacement (p,Q) is LambdaTerm-like;
@@ -276,40 +288,50 @@ definition
 end;
 
 definition
-  let M,r,n;
+  let M,r,v;
 
-  pred M,r holds_variable n means
+  pred M,r holds_variable v means
 :: LAMBDA:def 7
 
     r is_variable_in M &
     M.r = n;
 
-  pred M,r abstracts n means
+  pred M,r abstracts v means
 :: LAMBDA:def 8
 
     r is_abstraction_in M &
     M.r = n;
 end;
 
-::::definition
-::::  let M be LambdaTerm,
-::::      r be Node of M;
-::::
-::::  pred r is_active_variable_in M means
-::::    r is_variable_in M &
-::::    M.r = abstr-depth (r,M);
-::::end;
+definition
+  let M,v;
+
+  pred M contains_variable v means
+:: LAMBDA:def 9
+
+    ex r st M,r holds_variable v;
+end;
 
 ::: #### Abstraction and application
 
+definition
+  let v;
+
+  func Var(v) -> LambdaTerm equals
+:: LAMBDA:def 10
+
+    { <*> NAT } --> v;
+end;
+
 ::: Then we can define abstraction and application
 definition
-  let n,M;
+  let v,M;
 
-  func Abs(n,M) -> LambdaTerm means
-:: LAMBDA:def 9
-    it,(<*> NAT) abstracts n &
-    it|<*0*> = M & not <*1*> in dom it;
+  func Abs(v,M) -> LambdaTerm means
+:: LAMBDA:def 11
+    it,(<*> NAT) abstracts v &
+    it|<*0*> = M &
+    not <*1*> in dom it;
 ::>        *4
 end;
 
@@ -317,20 +339,27 @@ definition
   let M,N;
 
   func App(M,N) -> LambdaTerm means
-:: LAMBDA:def 10
+:: LAMBDA:def 12
     it|<*0*> = M & it|<*1*> = N;
 ::>        *4
 end;
 
+::: ### Substitution
+
 definition
-  let N,n,M;
+  let N,M,v;
 
-  :: TODO better definition with decorated tree replacements!
-
-  func N with-substitution (n,M) -> LambdaTerm means
-:: LAMBDA:def 11
-    it = N;
+  redefine func (N,v) <- M -> LambdaTerm;
 end;
+
+::: #### Substitution lemma
+::: (If I have time...)
+
+theorem :: LAMBDA:3
+  not P contains_variable v implies
+    ::M[v := N][w := P] =
+    (((M,v) <- N),w) <- P =
+    (((M,w) <- P),v) <- ((N,w) <- P);
 
 ::: ### Reduction and conversion
 
@@ -341,13 +370,13 @@ definition
 
   :: P === (\x.N)M --> N[x:=M] === Q
   pred P beta->shallow Q means
-:: LAMBDA:def 12
+:: LAMBDA:def 13
     ex N,n,M st
       :: P === (\x.N)M
       P = App(Abs(n,N),M) &
 
       :: Q === N[x:=M]
-      Q = N with-substitution (n,M);
+      Q = (N,n) <- M;
 end;
 
 ::: Then we close under subterm reduction to get actual one-step beta reduction.
@@ -360,10 +389,10 @@ end;
 definition
   let M,N;
 
-  :: TODO better definition with tree operations
+  :: TODO better definition with tree operations ?
 
   pred M beta-> N means
-:: LAMBDA:def 13
+:: LAMBDA:def 14
     ex
       p being Element of dom M,
       q being Element of dom N st
@@ -379,7 +408,7 @@ definition
   let M,N;
 
   pred M beta->* N means
-:: LAMBDA:def 14
+:: LAMBDA:def 15
     M = N or
     ex P st M beta-> P & P beta-> N;
 end;
@@ -389,11 +418,53 @@ definition
   let M,N;
 
   pred M beta= N means
-:: LAMBDA:def 15
+:: LAMBDA:def 16
     M beta->* N or N beta->* M;
+end;
+
+::: As a note of victory, let's just define some terms! :)
+definition
+  func cI -> LambdaTerm equals
+:: LAMBDA:def 17
+
+    Abs(0,Var(0));
+
+  func cOne -> LambdaTerm equals
+:: LAMBDA:def 18
+
+    Abs(0,Abs(1,App(Var(0),Var(1))));
+
+  func cK -> LambdaTerm equals
+:: LAMBDA:def 19
+
+    Abs(0,Abs(1,Var(0)));
+
+  func cK* -> LambdaTerm equals
+:: LAMBDA:def 20
+
+    Abs(0,Abs(1,Var(1)));
+
+  func cDelta -> LambdaTerm equals
+:: LAMBDA:def 21
+
+    Abs(0,App(Var(0),Var(0)));
+
+  func cY -> LambdaTerm equals
+:: LAMBDA:def 22
+
+    Abs(1,App(
+      Abs(0,App(Var(1),App(Var(0),Var(0)))),
+      Abs(0,App(Var(1),App(Var(0),Var(0))))
+    ));
+end;
+
+definition
+  func cOmega -> LambdaTerm equals
+:: LAMBDA:def 23
+
+    App(cDelta,cDelta);
 end;
 
 ::>
 ::> 4: This inference is not accepted
 ::> 51: Invalid conclusion
-::> 60: Something remains to be proved in this case
