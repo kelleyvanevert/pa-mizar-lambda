@@ -1163,75 +1163,6 @@ definition
     (PreAbstractionTerm v) with-replacement (e0, M) is LambdaTerm;
     hence (PreAbstractionTerm v) with-replacement (<*0*>, M) is LambdaTerm;
   end;
-
-::  func Abs(v,M) -> LambdaTerm means
-::    it,(<*> NAT) abstracts v &
-::    it|<*0*> = M &
-::    not <*1*> in dom it;
-::  existence
-::  proof
-::    set e = <*> NAT;
-::    set e0 = <*0*>;
-::    set e1 = <*1*>;
-::  A3: not e0,e1 are_c=-comparable
-::    proof
-::      assume e0,e1 are_c=-comparable;
-::      then 0 = 1 by TREES_1:5;
-::      hence contradiction;
-::    end;
-::
-::  A6: dom (PreAbstractionTerm v) = { {}, <*0*> } by FUNCOP_1:13;
-::    then <*0*> in dom (PreAbstractionTerm v) by TARSKI:def 2;
-::    then reconsider e0 as Element of dom (PreAbstractionTerm v);
-::    set D = (PreAbstractionTerm v) with-replacement (e0, M);
-::
-::    take D;
-::    thus D,e abstracts v
-::    proof
-::      thus thesis;
-::::>             *4
-::    end;
-::
-::    thus D|<*0*> = M by Th3;
-::    thus not <*1*> in dom D
-::    proof
-::      assume e1 in dom D;
-::      then e1 in (dom (PreAbstractionTerm v)) with-replacement (e0, dom M)
-::        by TREES_2:def 11;
-::      then
-::    A4: (e1 in (dom (PreAbstractionTerm v)) & not e0 is_a_proper_prefix_of e1)
-::     or (ex r st r in dom M & e1 = e0^r)
-::        by TREES_1:def 9;
-::      (e1 in (dom (PreAbstractionTerm v)) & not e0 is_a_proper_prefix_of e1)
-::      proof
-::        assume not thesis;
-::        then (ex r st r in dom M & e1 = e0^r) by A4;
-::        then consider r such that r in dom M and
-::      A2: e1 = e0^r;
-::        e0 is_a_prefix_of e1 by A2, TREES_1:1;
-::        then e0,e1 are_c=-comparable by XBOOLE_0:def 9;
-::        hence contradiction by A3;
-::      end;
-::      then
-::    A5: e1 in (dom (PreAbstractionTerm v));
-::      then
-::    A7: e1 = {} or e1 = <*0*> by A6, TARSKI:def 2;
-::      per cases;
-::      suppose e1 = {};
-::        then e1 is empty;
-::        hence contradiction;
-::      end;
-::      suppose not e1 = {};
-::        then e1 = <*0*> by A7;
-::        then
-::      A8: e1.1 = 0 by FINSEQ_1:40;
-::        e1.1 = 1 by FINSEQ_1:40;
-::        hence contradiction by A8;
-::      end;
-::    end;
-::  end;
-::  uniqueness;
-::::>        *4
 end;
 
 definition
@@ -1272,62 +1203,6 @@ definition
     hence (PreApplicationTerm with-replacement (<*0*>, M))
       with-replacement (<*1*>, N) is LambdaTerm;
   end;
-
-::  func App(M,N) -> LambdaTerm means
-::    it|<*0*> = M & it|<*1*> = N;
-::  existence
-::  proof
-::    set e0 = <*0*>;
-::    set e1 = <*1*>;
-::  A3: not e0,e1 are_c=-comparable
-::    proof
-::      assume e0,e1 are_c=-comparable;
-::      then 0 = 1 by TREES_1:5;
-::      hence contradiction;
-::    end;
-::  A4: not e0 is_a_proper_prefix_of e1 by A3, Th6;
-::
-::    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
-::    then
-::  A7: <*0*> in dom PreApplicationTerm by ENUMSET1:def 1;
-::    then reconsider e0 as Element of dom PreApplicationTerm;
-::    set preD = PreApplicationTerm with-replacement (e0, M);
-::    preD is LambdaTerm;
-::
-::  A1: dom preD = (dom PreApplicationTerm) with-replacement (e0, dom M)
-::      by TREES_2:def 11;
-::    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
-::    then
-::  A2: <*1*> in dom PreApplicationTerm by ENUMSET1:def 1;
-::    <*1*> in dom preD by A1, A2, A4, TREES_1:def 9;
-::    then reconsider e1 as Element of dom preD;
-::    set D = preD with-replacement (e1, N);
-::    D is LambdaTerm;
-::
-::  A6: e0 in dom preD
-::    proof
-::    A8: e0 in dom PreApplicationTerm by A7;
-::      not e0 is_a_proper_prefix_of e0;
-::      then e0 in (dom PreApplicationTerm) with-replacement (e0, dom M)
-::        by A8, TREES_1:def 9;
-::      hence thesis by A1, TREES_2:def 11;
-::    end;
-::  A5: e0 in dom D
-::    proof
-::    A9: e0 in dom preD by A6;
-::      not e1 is_a_proper_prefix_of e0 by A3, Th6;
-::      then e0 in (dom preD) with-replacement (e1, dom N)
-::        by A9, TREES_1:def 9;
-::      hence thesis by A1, TREES_2:def 11;
-::    end;
-::
-::    take D;
-::    thus D|<*0*> = preD|<*0*> by A3, A5, A6, Th5
-::                .= M by Th3;
-::    thus D|<*1*> = N by Th3;
-::  end;
-::  uniqueness;
-::::>        *4
 end;
 
 ::: ### Substitution
