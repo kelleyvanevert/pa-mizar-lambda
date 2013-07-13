@@ -24,6 +24,7 @@ OVar
 
 ::: ## Attributes
 ::: `perl -ne "s/^ *attr [a-zA-Z] is (?:(?:[a-zA-Z],)*[a-zA-Z](?=-))?([a-zA-Z-]+) .*$/V$1/ && print" text/lambda.miz | sort -u`
+V-existingPath
 VLambdaTerm-like
 
 ::: ## Modes

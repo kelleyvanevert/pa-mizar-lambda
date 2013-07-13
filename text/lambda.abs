@@ -97,9 +97,9 @@ definition
 end;
 
 reserve T,T1,T2 for Tree,
-        D,D2 for DecoratedTree,
-        p,q,q0,q1,q2,r for FinSequence of NAT,
-        x,y,X,Y for set,
+        D,D2,E for DecoratedTree,
+        p,q,q0,q1,q2,r,r2 for FinSequence of NAT,
+        x,y,z,X,Y,Z for set,
         i,j,k,l,m,n for Element of NAT,
         u,v,w for Variable;
 
@@ -205,6 +205,15 @@ end;
 
 reserve M,N,P,Q for LambdaTerm;
 
+definition
+  let M,r;
+
+  attr r is M-existingPath means
+:: LAMBDA:def 4
+
+    r is Element of dom M;
+end;
+
 ::: #### Preservation under operations
 
 ::: `LambdaTerm`s are preserved under taking subterms, and composing
@@ -269,19 +278,19 @@ definition
       r; :: be Node of M;
 
   pred r is_variable_in M means
-:: LAMBDA:def 4
+:: LAMBDA:def 5
 
     r in dom M &
     not r^<*0*> in dom M;
 
   pred r is_abstraction_in M means
-:: LAMBDA:def 5
+:: LAMBDA:def 6
 
     r in dom M &
     r^<*0*> in dom M & not r^<*1*> in dom M;
 
   pred r is_application_in M means
-:: LAMBDA:def 6
+:: LAMBDA:def 7
 
     r in dom M &
     r^<*0*> in dom M & r^<*1*> in dom M;
@@ -291,13 +300,13 @@ definition
   let M,r,v;
 
   pred M,r holds_variable v means
-:: LAMBDA:def 7
+:: LAMBDA:def 8
 
     r is_variable_in M &
     M.r = n;
 
   pred M,r abstracts v means
-:: LAMBDA:def 8
+:: LAMBDA:def 9
 
     r is_abstraction_in M &
     M.r = n;
@@ -307,41 +316,230 @@ definition
   let M,v;
 
   pred M contains_variable v means
-:: LAMBDA:def 9
+:: LAMBDA:def 10
 
     ex r st M,r holds_variable v;
 end;
 
 ::: #### Abstraction and application
 
+reserve p for FinSequence of NAT;
+
+theorem :: LAMBDA:3
+    not q,r are_c=-comparable
+  implies
+    not q is_a_prefix_of r
+  & not r is_a_prefix_of q
+  & not q is_a_proper_prefix_of r
+  & not r is_a_proper_prefix_of q;
+
+::: Why the hell would TARSKI:def 3 not include transitivity?!
+theorem :: LAMBDA:4
+  X c= Y & Y c= Z implies X c= Z;
+
+theorem :: LAMBDA:5
+    not p,q are_c=-comparable
+  implies
+    not p,q^r are_c=-comparable;
+
+::: The `DecoratedTree` analog of `TREES_1:33`
+theorem :: LAMBDA:6
+    r in dom D
+  implies
+    D2 = D with-replacement (r,D2)|r;
+
+reserve q,r for Element of T;
+
+theorem :: LAMBDA:7
+    not q,r are_c=-comparable
+  implies
+    T|r = (T with-replacement (q,T2))|r;
+
+reserve q,r for Element of dom D;
+
+theorem :: LAMBDA:8
+    not q,r are_c=-comparable
+  implies
+    D|r = (D with-replacement (q,D2))|r;
+
+reserve q,r for FinSequence of NAT;
+
 definition
   let v;
 
   func Var(v) -> LambdaTerm equals
-:: LAMBDA:def 10
+:: LAMBDA:def 11
 
     { <*> NAT } --> v;
 end;
 
 ::: Then we can define abstraction and application
+::definition
+::  func AbsLoc -> FinSequence of NAT equals <*0*>;
+::  coherence;
+::end;
+::
+::definition
+::  let v,r;
+::
+::  attr r is v-existingVarPath means
+::    :Def19:
+::    r is (PreAbstractionTerm v)-existingPath;
+::end;
+::
+::registration
+::  let v;
+::
+::  cluster AbsLoc -> v-existingVarPath;
+::::>                                 *100
+::  coherence;
+::::>       *4
+::end;
+
 definition
   let v,M;
 
-  func Abs(v,M) -> LambdaTerm means
-:: LAMBDA:def 11
-    it,(<*> NAT) abstracts v &
-    it|<*0*> = M &
-    not <*1*> in dom it;
-::>        *4
+  func Abs(v,M) -> LambdaTerm equals
+:: LAMBDA:def 12
+
+    (PreAbstractionTerm v) with-replacement (<*0*>, M);
+
+::  func Abs(v,M) -> LambdaTerm means
+::    it,(<*> NAT) abstracts v &
+::    it|<*0*> = M &
+::    not <*1*> in dom it;
+::  existence
+::  proof
+::    set e = <*> NAT;
+::    set e0 = <*0*>;
+::    set e1 = <*1*>;
+::  A3: not e0,e1 are_c=-comparable
+::    proof
+::      assume e0,e1 are_c=-comparable;
+::      then 0 = 1 by TREES_1:5;
+::      hence contradiction;
+::    end;
+::
+::  A6: dom (PreAbstractionTerm v) = { {}, <*0*> } by FUNCOP_1:13;
+::    then <*0*> in dom (PreAbstractionTerm v) by TARSKI:def 2;
+::    then reconsider e0 as Element of dom (PreAbstractionTerm v);
+::    set D = (PreAbstractionTerm v) with-replacement (e0, M);
+::
+::    take D;
+::    thus D,e abstracts v
+::    proof
+::      thus thesis;
+::::>             *4
+::    end;
+::
+::    thus D|<*0*> = M by Th3;
+::    thus not <*1*> in dom D
+::    proof
+::      assume e1 in dom D;
+::      then e1 in (dom (PreAbstractionTerm v)) with-replacement (e0, dom M)
+::        by TREES_2:def 11;
+::      then
+::    A4: (e1 in (dom (PreAbstractionTerm v)) & not e0 is_a_proper_prefix_of e1)
+::     or (ex r st r in dom M & e1 = e0^r)
+::        by TREES_1:def 9;
+::      (e1 in (dom (PreAbstractionTerm v)) & not e0 is_a_proper_prefix_of e1)
+::      proof
+::        assume not thesis;
+::        then (ex r st r in dom M & e1 = e0^r) by A4;
+::        then consider r such that r in dom M and
+::      A2: e1 = e0^r;
+::        e0 is_a_prefix_of e1 by A2, TREES_1:1;
+::        then e0,e1 are_c=-comparable by XBOOLE_0:def 9;
+::        hence contradiction by A3;
+::      end;
+::      then
+::    A5: e1 in (dom (PreAbstractionTerm v));
+::      then
+::    A7: e1 = {} or e1 = <*0*> by A6, TARSKI:def 2;
+::      per cases;
+::      suppose e1 = {};
+::        then e1 is empty;
+::        hence contradiction;
+::      end;
+::      suppose not e1 = {};
+::        then e1 = <*0*> by A7;
+::        then
+::      A8: e1.1 = 0 by FINSEQ_1:40;
+::        e1.1 = 1 by FINSEQ_1:40;
+::        hence contradiction by A8;
+::      end;
+::    end;
+::  end;
+::  uniqueness;
+::::>        *4
 end;
 
 definition
   let M,N;
 
-  func App(M,N) -> LambdaTerm means
-:: LAMBDA:def 12
-    it|<*0*> = M & it|<*1*> = N;
-::>        *4
+  func App(M,N) -> LambdaTerm equals
+:: LAMBDA:def 13
+
+    (PreApplicationTerm
+      with-replacement (<*0*>, M)
+    )
+      with-replacement (<*1*>, N);
+
+::  func App(M,N) -> LambdaTerm means
+::    it|<*0*> = M & it|<*1*> = N;
+::  existence
+::  proof
+::    set e0 = <*0*>;
+::    set e1 = <*1*>;
+::  A3: not e0,e1 are_c=-comparable
+::    proof
+::      assume e0,e1 are_c=-comparable;
+::      then 0 = 1 by TREES_1:5;
+::      hence contradiction;
+::    end;
+::  A4: not e0 is_a_proper_prefix_of e1 by A3, Th6;
+::
+::    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
+::    then
+::  A7: <*0*> in dom PreApplicationTerm by ENUMSET1:def 1;
+::    then reconsider e0 as Element of dom PreApplicationTerm;
+::    set preD = PreApplicationTerm with-replacement (e0, M);
+::    preD is LambdaTerm;
+::
+::  A1: dom preD = (dom PreApplicationTerm) with-replacement (e0, dom M)
+::      by TREES_2:def 11;
+::    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
+::    then
+::  A2: <*1*> in dom PreApplicationTerm by ENUMSET1:def 1;
+::    <*1*> in dom preD by A1, A2, A4, TREES_1:def 9;
+::    then reconsider e1 as Element of dom preD;
+::    set D = preD with-replacement (e1, N);
+::    D is LambdaTerm;
+::
+::  A6: e0 in dom preD
+::    proof
+::    A8: e0 in dom PreApplicationTerm by A7;
+::      not e0 is_a_proper_prefix_of e0;
+::      then e0 in (dom PreApplicationTerm) with-replacement (e0, dom M)
+::        by A8, TREES_1:def 9;
+::      hence thesis by A1, TREES_2:def 11;
+::    end;
+::  A5: e0 in dom D
+::    proof
+::    A9: e0 in dom preD by A6;
+::      not e1 is_a_proper_prefix_of e0 by A3, Th6;
+::      then e0 in (dom preD) with-replacement (e1, dom N)
+::        by A9, TREES_1:def 9;
+::      hence thesis by A1, TREES_2:def 11;
+::    end;
+::
+::    take D;
+::    thus D|<*0*> = preD|<*0*> by A3, A5, A6, Th5
+::                .= M by Th3;
+::    thus D|<*1*> = N by Th3;
+::  end;
+::  uniqueness;
+::::>        *4
 end;
 
 ::: ### Substitution
@@ -355,7 +553,7 @@ end;
 ::: #### Substitution lemma
 ::: (If I have time...)
 
-theorem :: LAMBDA:3
+theorem :: LAMBDA:9
   not P contains_variable v implies
     ::M[v := N][w := P] =
     (((M,v) <- N),w) <- P =
@@ -370,7 +568,7 @@ definition
 
   :: P === (\x.N)M --> N[x:=M] === Q
   pred P beta->shallow Q means
-:: LAMBDA:def 13
+:: LAMBDA:def 14
     ex N,n,M st
       :: P === (\x.N)M
       P = App(Abs(n,N),M) &
@@ -392,7 +590,7 @@ definition
   :: TODO better definition with tree operations ?
 
   pred M beta-> N means
-:: LAMBDA:def 14
+:: LAMBDA:def 15
     ex
       p being Element of dom M,
       q being Element of dom N st
@@ -408,7 +606,7 @@ definition
   let M,N;
 
   pred M beta->* N means
-:: LAMBDA:def 15
+:: LAMBDA:def 16
     M = N or
     ex P st M beta-> P & P beta-> N;
 end;
@@ -418,39 +616,39 @@ definition
   let M,N;
 
   pred M beta= N means
-:: LAMBDA:def 16
+:: LAMBDA:def 17
     M beta->* N or N beta->* M;
 end;
 
 ::: As a note of victory, let's just define some terms! :)
 definition
   func cI -> LambdaTerm equals
-:: LAMBDA:def 17
+:: LAMBDA:def 18
 
     Abs(0,Var(0));
 
   func cOne -> LambdaTerm equals
-:: LAMBDA:def 18
+:: LAMBDA:def 19
 
     Abs(0,Abs(1,App(Var(0),Var(1))));
 
   func cK -> LambdaTerm equals
-:: LAMBDA:def 19
+:: LAMBDA:def 20
 
     Abs(0,Abs(1,Var(0)));
 
   func cK* -> LambdaTerm equals
-:: LAMBDA:def 20
+:: LAMBDA:def 21
 
     Abs(0,Abs(1,Var(1)));
 
   func cDelta -> LambdaTerm equals
-:: LAMBDA:def 21
+:: LAMBDA:def 22
 
     Abs(0,App(Var(0),Var(0)));
 
   func cY -> LambdaTerm equals
-:: LAMBDA:def 22
+:: LAMBDA:def 23
 
     Abs(1,App(
       Abs(0,App(Var(1),App(Var(0),Var(0)))),
@@ -460,11 +658,11 @@ end;
 
 definition
   func cOmega -> LambdaTerm equals
-:: LAMBDA:def 23
+:: LAMBDA:def 24
 
     App(cDelta,cDelta);
 end;
 
 ::>
 ::> 4: This inference is not accepted
-::> 51: Invalid conclusion
+::> 60: Something remains to be proved in this case

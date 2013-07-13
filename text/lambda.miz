@@ -97,9 +97,9 @@ definition
 end;
 
 reserve T,T1,T2 for Tree,
-        D,D2 for DecoratedTree,
-        p,q,q0,q1,q2,r for FinSequence of NAT,
-        x,y,X,Y for set,
+        D,D2,E for DecoratedTree,
+        p,q,q0,q1,q2,r,r2 for FinSequence of NAT,
+        x,y,z,X,Y,Z for set,
         i,j,k,l,m,n for Element of NAT,
         u,v,w for Variable;
 
@@ -169,12 +169,8 @@ registration
     proof
       assume not thesis;
       r1 = {} by A2, TARSKI:def 1;
-      then
-    A3: r1 is empty;
-    A4: r1 = <*1*> by A5, FINSEQ_1:34;
-      then r1 is non empty;
-      then not r1 is empty;
-      hence contradiction by A3;
+      then r1 is empty;
+      hence contradiction;
     end;
   end;
 end;
@@ -417,6 +413,14 @@ definition
 end;
 
 reserve M,N,P,Q for LambdaTerm;
+
+definition
+  let M,r;
+
+  attr r is M-existingPath means
+    :Def18:
+    r is Element of dom M;
+end;
 
 ::: #### Preservation under operations
 
@@ -854,6 +858,285 @@ end;
 
 ::: #### Abstraction and application
 
+reserve p for FinSequence of NAT;
+
+theorem Th6:
+    not q,r are_c=-comparable
+  implies
+    not q is_a_prefix_of r
+  & not r is_a_prefix_of q
+  & not q is_a_proper_prefix_of r
+  & not r is_a_proper_prefix_of q
+proof
+  assume
+A1: not q,r are_c=-comparable;
+  
+  thus not q is_a_prefix_of r
+  proof
+    assume q c= r;
+    then q,r are_c=-comparable by XBOOLE_0:def 9;
+    hence contradiction by A1;
+  end;
+  
+  thus not r is_a_prefix_of q
+  proof
+    assume r c= q;
+    then r,q are_c=-comparable by XBOOLE_0:def 9;
+    hence contradiction by A1;
+  end;
+
+  thus not q is_a_proper_prefix_of r
+  proof
+    assume q c< r;
+    then q c= r by XBOOLE_0:def 8;
+    then q,r are_c=-comparable by XBOOLE_0:def 9;
+    hence contradiction by A1;
+  end;
+
+  thus not r is_a_proper_prefix_of q
+  proof
+    assume r c< q;
+    then r c= q by XBOOLE_0:def 8;
+    then r,q are_c=-comparable by XBOOLE_0:def 9;
+    hence contradiction by A1;
+  end;
+end;
+
+::: Why the hell would TARSKI:def 3 not include transitivity?!
+theorem Th8:
+  X c= Y & Y c= Z implies X c= Z
+proof
+  assume
+A1: X c= Y & Y c= Z;
+  x in X implies x in Z
+  proof
+    assume x in X;
+    then x in Y by A1, TARSKI:def 3;
+    hence x in Z by A1, TARSKI:def 3;
+  end;
+  hence X c= Z by TARSKI:def 3;
+end;
+
+theorem Th7:
+    not p,q are_c=-comparable
+  implies
+    not p,q^r are_c=-comparable
+proof
+  assume
+A1: not p,q are_c=-comparable;
+  assume
+A2: p,q^r are_c=-comparable;
+  then
+A3: p c= q^r or q^r c= p by XBOOLE_0:def 9;
+  per cases;
+  suppose
+::>     *60
+A5: p c= q^r;
+    q c= q^r by TREES_1:1;
+  end;
+  suppose not p c= q^r;
+    then
+  A4: q^r c= p by A3;
+    q c= q^r by TREES_1:1;
+    then q c= p by A4, Th8;
+    then q,p are_c=-comparable by XBOOLE_0:def 9;
+    hence contradiction by A1;
+  end;
+end;
+
+::: The `DecoratedTree` analog of `TREES_1:33`
+theorem Th3:
+    r in dom D
+  implies
+    D2 = D with-replacement (r,D2)|r
+proof
+  assume
+A1: r in dom D;
+
+A2: dom D2 = ((dom D) with-replacement (r,dom D2))|r by A1, TREES_1:33
+          .= (dom (D with-replacement (r,D2)))|r by A1, TREES_2:def 11
+          .= dom ((D with-replacement (r,D2))|r) by TREES_2:def 10;
+  
+  set E = D with-replacement (r,D2);
+A3: for q being Node of E|r holds (E|r).q = D2.q
+  proof
+    let q be Node of E|r;
+    q in dom (E|r);
+    then
+  A11: q in (dom E)|r by TREES_2:def 10;
+    then
+  A10: (E|r).q = E.(r^q) by TREES_2:def 10;
+    set rq = r^q;
+  A5: r^q in (dom D) with-replacement (r,dom D2)
+    proof
+      ex r2 st r2 in dom D2 & r = r^r2
+      proof
+        take <*> NAT;
+        thus <*> NAT in dom D2 by TREES_1:22;
+        r = r^{} by FINSEQ_1:34;
+        hence r = r^(<*> NAT) by FINSEQ_1:def 6;
+      end;
+      then r in (dom D) with-replacement (r,dom D2) by A1, TREES_1:def 9;
+      then
+    A12: r in dom E by A1, TREES_2:def 11;
+      then r^q in dom E by A1, A11, A12, TREES_1:def 6;
+      hence thesis by A1, TREES_2:def 11;
+    end;
+    then
+  A6: (not r is_a_prefix_of rq & E.rq = D.rq) or
+      (ex q2 st q2 in dom D2 & rq = r^q2 & E.rq = D2.q2)
+        by A1, TREES_2:def 11;
+    ex q2 st q2 in dom D2 & rq = r^q2 & E.rq = D2.q2
+    proof
+      assume not (ex q2 st q2 in dom D2 & rq = r^q2 & E.rq = D2.q2);
+      then not r is_a_prefix_of rq by A6;
+      hence contradiction by TREES_1:1;
+    end;
+    then consider q2 such that
+  A7: q2 in dom D2 and
+  A8: rq = r^q2 and
+  A9: E.rq = D2.q2;
+    q2 = q by A8, FINSEQ_1:33;
+    hence (E|r).q = D2.q by A9, A10;
+  end;
+  thus thesis by A2, A3, TREES_4:def 1;
+end;
+
+reserve q,r for Element of T;
+
+theorem Th4:
+    not q,r are_c=-comparable
+  implies
+    T|r = (T with-replacement (q,T2))|r
+proof
+A5: q in T;
+A3: r in T;
+
+  assume
+A6: not q,r are_c=-comparable;
+  then
+A13: not q,r^p are_c=-comparable by Th7;
+
+A4: r in T with-replacement (q,T2)
+  proof
+    not q is_a_proper_prefix_of r by A6, Th6;
+    hence thesis by A3, A5, TREES_1:def 9;
+  end;
+
+A1: p in T|r implies p in (T with-replacement (q,T2))|r
+  proof
+    assume p in T|r;
+    then
+  A7: r^p in T by A3, TREES_1:def 6;
+    r^p in T with-replacement (q,T2)
+    proof
+      not q,r^p are_c=-comparable by A13;
+      then not q is_a_proper_prefix_of r^p by A6, Th6;
+      hence thesis by A7, A5, TREES_1:def 9;
+    end;
+    hence p in (T with-replacement (q,T2))|r by A4, TREES_1:def 6;
+  end;
+A2: p in (T with-replacement (q,T2))|r implies p in T|r
+  proof
+    assume p in (T with-replacement (q,T2))|r;
+    then
+  A8: r^p in T with-replacement (q,T2) by A4, TREES_1:def 6;
+    r^p in T
+    proof
+      set rp = r^p;
+    A9: (rp in T & not q is_a_proper_prefix_of rp) or
+        (ex r2 st r2 in T2 & rp = q^r2)
+          by A5, A8, TREES_1:def 9;
+      rp in T & not q is_a_proper_prefix_of rp
+      proof
+        assume not thesis;
+        then ex r2 st r2 in T2 & rp = q^r2 by A9;
+        then consider r2 such that
+      A10: r2 in T2 and
+      A11: rp = q^r2;
+        q is_a_prefix_of rp by A11, TREES_1:1;
+        then q,r^p are_c=-comparable by XBOOLE_0:def 9;
+        hence contradiction by A13;
+      end;
+      hence r^p in T;
+    end;
+    hence p in T|r by A3, TREES_1:def 6;
+  end;
+  thus thesis by A1, A2, TREES_2:def 1;
+end;
+
+reserve q,r for Element of dom D;
+
+theorem Th5:
+    not q,r are_c=-comparable
+  implies
+    D|r = (D with-replacement (q,D2))|r
+proof
+  set E = D with-replacement (q,D2);
+
+A2: q in dom D;
+A3: r in dom D;
+
+  assume
+A1: not q,r are_c=-comparable;
+  then
+A11: not q,r^p are_c=-comparable by Th7;
+
+A4: dom (D|r) = (dom D)|r by TREES_2:def 10
+             .= ((dom D) with-replacement (q,dom D2))|r by A1, A2, A3, Th4
+             .= (dom (D with-replacement (q,D2)))|r by A2, TREES_2:def 11
+             .= dom ((D with-replacement (q,D2))|r) by TREES_2:def 10
+             .= dom (E|r);
+
+A5: for p being Node of D|r holds (D|r).p = (E|r).p
+  proof
+    let p be Node of D|r;
+    set rp = r^p;
+  A6: p in dom (D|r);
+    then
+  A15: p in (dom D)|r by TREES_2:def 10;
+    then
+  A12: (D|r).p = D.rp by TREES_2:def 10;
+
+    p in dom (E|r) by A4, A6;
+    then p in (dom E)|r by TREES_2:def 10;
+    then
+  A13: (E|r).p = E.rp by TREES_2:def 10;
+
+    rp in (dom D) with-replacement (q,dom D2)
+    proof
+      not q,rp are_c=-comparable by A11;
+      then
+    A14: not q is_a_proper_prefix_of rp by Th6;
+      p in (dom D)|r by A15;
+      then rp in dom D by TREES_1:def 6;
+      hence thesis by A2, A14, TREES_1:def 9;
+    end;
+    then
+  A7: (not q is_a_prefix_of rp & E.rp = D.rp) or
+      (ex r2 st r2 in dom D2 & rp = q^r2 & E.rp = D2.r2)
+        by A2, TREES_2:def 11;
+    not q is_a_prefix_of rp & E.rp = D.rp
+    proof
+      assume not thesis;
+      then ex r2 st r2 in dom D2 & rp = q^r2 & E.rp = D2.r2 by A7;
+      then consider r2 such that
+    A8: r2 in dom D2 and
+    A9: rp = q^r2 and
+    A10: E.rp = D2.r2;
+      q is_a_prefix_of rp by A9, TREES_1:1;
+      then q,r^p are_c=-comparable by XBOOLE_0:def 9;
+      hence contradiction by A11;
+    end;
+    then E.rp = D.rp;
+    hence (D|r).p = (E|r).p by A12, A13;
+  end;
+
+  thus thesis by A4, A5, TREES_4:def 1;
+end;
+
+reserve q,r for FinSequence of NAT;
+
 definition
   let v;
 
@@ -864,92 +1147,187 @@ definition
 end;
 
 ::: Then we can define abstraction and application
+
 definition
   let v,M;
-  
-  func Abs(v,M) -> LambdaTerm means
-    it,(<*> NAT) abstracts v &
-    it|<*0*> = M &
-    not <*1*> in dom it;
-  existence
+
+  func Abs(v,M) -> LambdaTerm equals
+    :Def20:
+    (PreAbstractionTerm v) with-replacement (<*0*>, M);
+  coherence
   proof
     set e0 = <*0*>;
     dom (PreAbstractionTerm v) = { {}, <*0*> } by FUNCOP_1:13;
-    then <*0*> in dom (PreAbstractionTerm v) by TARSKI:def 2;
+    then e0 in dom (PreAbstractionTerm v) by TARSKI:def 2;
     then reconsider e0 as Element of dom (PreAbstractionTerm v);
-    set D = (PreAbstractionTerm v) with-replacement (e0, M);
-
-    set e = <*> NAT;
-  A1: e = {} by FINSEQ_1:def 6;
-
-    take D;
-    thus D,e abstracts v
-    proof
-      thus e is_abstraction_in D;
-::>        *51                 *4
-      thus D.e = v;
-::>              *4
-    end;
-::    proof
-::      thus e is_abstraction_in D;
-::::>        *51
-::      proof
-::        thus e in dom D by A1, TREES_1:22;
-::        thus e^<*0*> in dom D;
-::::>                         *4
-::        thus not e^<*1*> in dom D;
-::::>                             *4
-::      end;
-::    A3: D.(<*> NAT) = v;
-::::>                   *4
-::      thus thesis by A2, A3, Def9;
-::::>                   *144
-::    end;
-
-    thus D|<*0*> = M;
-::>                *4
-    thus not <*1*> in dom D;
-::>                       *4
+    (PreAbstractionTerm v) with-replacement (e0, M) is LambdaTerm;
+    hence (PreAbstractionTerm v) with-replacement (<*0*>, M) is LambdaTerm;
   end;
-  uniqueness;
-::>        *4
+
+::  func Abs(v,M) -> LambdaTerm means
+::    it,(<*> NAT) abstracts v &
+::    it|<*0*> = M &
+::    not <*1*> in dom it;
+::  existence
+::  proof
+::    set e = <*> NAT;
+::    set e0 = <*0*>;
+::    set e1 = <*1*>;
+::  A3: not e0,e1 are_c=-comparable
+::    proof
+::      assume e0,e1 are_c=-comparable;
+::      then 0 = 1 by TREES_1:5;
+::      hence contradiction;
+::    end;
+::
+::  A6: dom (PreAbstractionTerm v) = { {}, <*0*> } by FUNCOP_1:13;
+::    then <*0*> in dom (PreAbstractionTerm v) by TARSKI:def 2;
+::    then reconsider e0 as Element of dom (PreAbstractionTerm v);
+::    set D = (PreAbstractionTerm v) with-replacement (e0, M);
+::
+::    take D;
+::    thus D,e abstracts v
+::    proof
+::      thus thesis;
+::::>             *4
+::    end;
+::
+::    thus D|<*0*> = M by Th3;
+::    thus not <*1*> in dom D
+::    proof
+::      assume e1 in dom D;
+::      then e1 in (dom (PreAbstractionTerm v)) with-replacement (e0, dom M)
+::        by TREES_2:def 11;
+::      then
+::    A4: (e1 in (dom (PreAbstractionTerm v)) & not e0 is_a_proper_prefix_of e1)
+::     or (ex r st r in dom M & e1 = e0^r)
+::        by TREES_1:def 9;
+::      (e1 in (dom (PreAbstractionTerm v)) & not e0 is_a_proper_prefix_of e1)
+::      proof
+::        assume not thesis;
+::        then (ex r st r in dom M & e1 = e0^r) by A4;
+::        then consider r such that r in dom M and
+::      A2: e1 = e0^r;
+::        e0 is_a_prefix_of e1 by A2, TREES_1:1;
+::        then e0,e1 are_c=-comparable by XBOOLE_0:def 9;
+::        hence contradiction by A3;
+::      end;
+::      then
+::    A5: e1 in (dom (PreAbstractionTerm v));
+::      then
+::    A7: e1 = {} or e1 = <*0*> by A6, TARSKI:def 2;
+::      per cases;
+::      suppose e1 = {};
+::        then e1 is empty;
+::        hence contradiction;
+::      end;
+::      suppose not e1 = {};
+::        then e1 = <*0*> by A7;
+::        then
+::      A8: e1.1 = 0 by FINSEQ_1:40;
+::        e1.1 = 1 by FINSEQ_1:40;
+::        hence contradiction by A8;
+::      end;
+::    end;
+::  end;
+::  uniqueness;
+::::>        *4
 end;
 
 definition
   let M,N;
 
-  func App(M,N) -> LambdaTerm means
-    it|<*0*> = M & it|<*1*> = N;
-  existence
+  func App(M,N) -> LambdaTerm equals
+    :Def21:
+    (PreApplicationTerm
+      with-replacement (<*0*>, M)
+    )
+      with-replacement (<*1*>, N);
+  coherence
   proof
     set e0 = <*0*>;
-    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
-    then <*0*> in dom PreApplicationTerm by ENUMSET1:def 1;
-    then reconsider e0 as Element of dom PreApplicationTerm;
-    set preD = PreApplicationTerm with-replacement (e0, M);
-    preD is LambdaTerm;
-
     set e1 = <*1*>;
-  A1: dom preD = (dom PreApplicationTerm) with-replacement (e0, dom M)
+  A5: not e0,e1 are_c=-comparable
+    proof
+      assume e0,e1 are_c=-comparable;
+      then 0 = 1 by TREES_1:5;
+      hence contradiction;
+    end;
+  A4: not e0 is_a_proper_prefix_of e1 by A5, Th6;
+
+  A2: dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
+    then e0 in dom PreApplicationTerm by ENUMSET1:def 1;
+    then reconsider e0 as Element of dom PreApplicationTerm;
+    set Pre2 = PreApplicationTerm with-replacement (e0, M);
+    Pre2 is LambdaTerm;
+
+  A1: dom Pre2 = (dom PreApplicationTerm) with-replacement (e0, dom M)
       by TREES_2:def 11;
-    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
-    then
-  A2: <*1*> in dom PreApplicationTerm by ENUMSET1:def 1;
-    not e0 is_a_proper_prefix_of e1;
-::>                               *4
-    then <*1*> in dom preD by A1, A2, TREES_1:def 9;
-    then reconsider e1 as Element of dom preD;
-    set D = preD with-replacement (e1, N);
-    D is LambdaTerm;
-    
-    take D;
-    thus D|<*0*> = M;
-::>                *4
-    thus D|<*1*> = N;
-::>                *4
+  A3: e1 in dom PreApplicationTerm by A2, ENUMSET1:def 1;
+    e1 in dom Pre2 by A1, A3, A4, TREES_1:def 9;
+    then reconsider e1 as Element of dom Pre2;
+    set Final = Pre2 with-replacement (e1, N);
+    Final is LambdaTerm;
+
+    hence (PreApplicationTerm with-replacement (<*0*>, M))
+      with-replacement (<*1*>, N) is LambdaTerm;
   end;
-  uniqueness;
-::>        *4
+
+::  func App(M,N) -> LambdaTerm means
+::    it|<*0*> = M & it|<*1*> = N;
+::  existence
+::  proof
+::    set e0 = <*0*>;
+::    set e1 = <*1*>;
+::  A3: not e0,e1 are_c=-comparable
+::    proof
+::      assume e0,e1 are_c=-comparable;
+::      then 0 = 1 by TREES_1:5;
+::      hence contradiction;
+::    end;
+::  A4: not e0 is_a_proper_prefix_of e1 by A3, Th6;
+::
+::    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
+::    then
+::  A7: <*0*> in dom PreApplicationTerm by ENUMSET1:def 1;
+::    then reconsider e0 as Element of dom PreApplicationTerm;
+::    set preD = PreApplicationTerm with-replacement (e0, M);
+::    preD is LambdaTerm;
+::
+::  A1: dom preD = (dom PreApplicationTerm) with-replacement (e0, dom M)
+::      by TREES_2:def 11;
+::    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
+::    then
+::  A2: <*1*> in dom PreApplicationTerm by ENUMSET1:def 1;
+::    <*1*> in dom preD by A1, A2, A4, TREES_1:def 9;
+::    then reconsider e1 as Element of dom preD;
+::    set D = preD with-replacement (e1, N);
+::    D is LambdaTerm;
+::
+::  A6: e0 in dom preD
+::    proof
+::    A8: e0 in dom PreApplicationTerm by A7;
+::      not e0 is_a_proper_prefix_of e0;
+::      then e0 in (dom PreApplicationTerm) with-replacement (e0, dom M)
+::        by A8, TREES_1:def 9;
+::      hence thesis by A1, TREES_2:def 11;
+::    end;
+::  A5: e0 in dom D
+::    proof
+::    A9: e0 in dom preD by A6;
+::      not e1 is_a_proper_prefix_of e0 by A3, Th6;
+::      then e0 in (dom preD) with-replacement (e1, dom N)
+::        by A9, TREES_1:def 9;
+::      hence thesis by A1, TREES_2:def 11;
+::    end;
+::
+::    take D;
+::    thus D|<*0*> = preD|<*0*> by A3, A5, A6, Th5
+::                .= M by Th3;
+::    thus D|<*1*> = N by Th3;
+::  end;
+::  uniqueness;
+::::>        *4
 end;
 
 ::: ### Substitution
@@ -965,7 +1343,8 @@ definition
     then reconsider P as DecoratedTree of NAT;
     P is LambdaTerm-like
     proof
-      :: use FINSET_1:sch 2 or FINSET_1:7 ?
+      :: ? use FINSET_1:sch 2 or FINSET_1:7
+      :: ? take a look at TREES_1 reg: T with-replacement (t,T1) -> finite
       thus dom P is finite;
 ::>                      *4
       let r;
@@ -1120,4 +1499,4 @@ end;
 
 ::>
 ::> 4: This inference is not accepted
-::> 51: Invalid conclusion
+::> 60: Something remains to be proved in this case
