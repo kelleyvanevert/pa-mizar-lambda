@@ -1,0 +1,46 @@
+::: # Lambda calculus
+::: (This file was automatically created.)
+
+::: ## Functors
+::: `perl -ne "s/^ *func \(?(?:[a-zA-Z](?:, ?[a-zA-Z])*\)? )?([^\( ]{2,}).*$/O$1/ && print" text/lambda.miz | sort -u`
+OAbs
+OApp
+OcDelta
+OcI
+OcK
+OcK*
+OcOmega
+OcOne
+OcY
+OPreAbstractionTerm
+OPreApplicationTerm
+OVar
+
+::: ## Selectors
+::: `perl -ne "s/^ *([a-zA-Z]+) ->.*$/U$1/ && print" text/lambda.miz | sort -u`
+
+::: ## Structures
+::: `perl -ne "s/^ *struct ([a-zA-Z-]+).*$/G$1/ && print" text/lambda.miz | sort -u`
+
+::: ## Attributes
+::: `perl -ne "s/^ *attr [a-zA-Z] is (?:(?:[a-zA-Z],)*[a-zA-Z](?=-))?([a-zA-Z-]+) .*$/V$1/ && print" text/lambda.miz | sort -u`
+VLambdaTerm-like
+
+::: ## Modes
+::: `perl -ne "s/^ *mode ([a-zA-Z-]+).*$/M$1/ && print" text/lambda.miz | sort -u`
+MLambdaTerm
+MVariable
+
+::: ## Predicates
+::: `perl -ne "s/^ *pred (?:[a-zA-Z](?:, ?[a-zA-Z])* )?([^ ]{2,}) .*$/R$1/ && print" text/lambda.miz | sort -u`
+Rabstracts
+Ralpha
+Rbeta=
+Rbeta->
+Rbeta->*
+Rbeta->shallow
+Rcontains_variable
+Rholds_variable
+Ris_abstraction_in
+Ris_application_in
+Ris_variable_in

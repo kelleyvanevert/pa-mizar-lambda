@@ -1,0 +1,558 @@
+::: # $\lambda$-calculus in Mizar
+
+::: Original files:
+:::  [.abs](text/lambda.abs),
+:::  [.miz](text/lambda.miz),
+:::  [.voc](dict/lambda.voc)
+
+::: @TOC
+
+:: Environ originally taken from `FINSEQ_2`. Later, I added trees and orders.
+environ
+
+  :: Vocabularies are basically for Mizar's lexer.
+  vocabularies LAMBDA,
+    FINSET_1,
+    NUMBERS,
+    NAT_1, XBOOLE_0, SUBSET_1, FINSEQ_1, XXREAL_0, CARD_1,
+    ARYTM_1, ARYTM_3, TARSKI, ORDINAL4, FUNCOP_1,
+    RELAT_2, RELAT_1,
+    FUNCT_1, FUNCT_2,
+    ZFMISC_1, PARTFUN1,
+    ORDERS_2, ORDERS_1,
+    FINSEQ_2, FINSEQ_4, PBOOLE, CARD_3, VALUED_1,
+    TREES_1, TREES_2, TREES_3, TREES_4;
+
+  :: Radix type specifications
+  :: But it also helped [175 unknown attribute format] error with [finite set]
+  notations FINSET_1,
+    TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
+    NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
+    RELAT_2, RELSET_1,
+    FUNCT_1, FUNCT_2,
+    FUNCT_3, FINSEQ_1, FINSEQ_2, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+    TREES_1, TREES_2, TREES_3, TREES_4,
+    ORDERS_1, ORDERS_2,
+    XXREAL_0, VALUED_1,
+    RECDEF_1;
+
+  :: For modes? (unknown mode format resolved)
+  constructors RELAT_2, RELAT_1,
+    PARTFUN1, BINOP_1, DOMAIN_1,
+    FUNCT_1, FUNCT_2, FUNCT_3,
+    FUNCOP_1,
+    RELSET_1,
+    SQUARE_1, NAT_1, FINSEQ_1, FINSEQ_2, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
+    ORDERS_1, ORDERS_2,
+    RECDEF_1,
+    FINSET_1,
+    ENUMSET1,
+    WELLORD2;
+
+  :: Definition are for automatically unfolding predicates
+  ::  in the thesis you are proving
+  definitions TARSKI,
+    FUNCT_1, FUNCT_2,
+    FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
+    ORDERS_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
+    ::XTUPLE_0;
+    MCART_1; ::, FUNCT_5, RECDEF_1;
+
+  :: Registrations are for clusters (showing that a type exists (is non-empty),
+  ::  and automatically adding adjectives)
+  registrations XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
+    ::RELAT_2,
+    RELAT_1,
+    FUNCT_1, FUNCT_2,
+    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, FINSEQ_2, CARD_1, RELSET_1,
+    PBOOLE, CARD_3,
+    ORDERS_2,
+    TREES_1, TREES_2, TREES_3, TREES_4,
+    FINSET_1;
+
+  :: Load theorem en definition labels
+  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, FINSEQ_2,
+    ::XTUPLE_0,
+    MCART_1, FUNCT_5, :: RECDEF_1,
+    FUNCT_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
+    XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
+    CARD_1, CARD_2, CARD_3, CARD_4;
+
+  schemes RECDEF_1, TREES_2, TREES_4;
+
+  requirements BOOLE, SUBSET, NUMERALS, ARITHM, REAL;
+
+begin
+
+::: ## Lambda terms
+
+::: ### Formal representation
+
+::: We identify a _lambda term_ with its AST (abstract
+:::  syntax tree). More precisely, we encode a lambda term
+:::  as a finite decorated tree.
+
+::: The nodes of the tree denote either an application, an abstraction
+:::  or a variable. As the three types of nodes have a different
+:::  count of direct children, no extra information is needed to
+:::  distinguish them.
+
+::: We decorate each node of the tree with a natural number. Variables
+:::  are naturally decorated with a number denoting their name, and
+:::  abstractions with a number denoting the variable they abstract.
+:::  We require application nodes to be `0`, so as to canonicalize
+:::  the representation of a lambda term.
+
+::: We use named variables, as it seemed more
+:::  appropriate for the way in which Mizar works. Mizar doesn't
+:::  by nature work with inductive types, recursive definitions etc,
+:::  and I think that most operations that must be included in a
+:::  formalization of the $\lambda$-calculus using De Bruijn indices,
+:::  like lifting and subsitution, would then be unwieldy.
+
+::: (Actually, I initially planned to work with De Bruijn indices, and
+:::  did define lifting $M\!\uparrow^n_k$, but this required so much effort
+:::  that I switched back to named variables.)
+
+definition
+  mode Variable is Element of NAT;
+end;
+
+reserve T,T1,T2 for Tree,
+        D,D1,D2,E for DecoratedTree,
+        p,q,q0,q1,q2,r,r2 for FinSequence of NAT,
+        x,y,z,X,Y,Z for set,
+        i,j,k,l,m,n for Element of NAT,
+        u,v,w for Variable;
+
+definition
+  let D;
+
+  attr D is LambdaTerm-like means
+:: LAMBDA:def 1
+
+    dom D is finite &
+    for r st r in dom D holds
+      r is FinSequence of {0,1} &
+      ((r^<*0*> in dom D & r^<*1*> in dom D)
+          implies D.r = 0);
+end;
+
+::: The way Mizar works (or is often used) is that we start out
+:::  defining an attribute conveying what we want a $\lambda$-term to be.
+:::  Then, we provide some examples, do some type registrations and conclude
+:::  with a `mode LambdaTerm`.
+
+registration
+  let v;
+
+  cluster { {} } --> v -> LambdaTerm-like;
+end;
+
+registration
+  cluster { <*> NAT } -> Tree-like;
+end;
+
+registration
+  let v;
+
+  cluster { <*> NAT } --> v -> LambdaTerm-like;
+end;
+
+registration
+  cluster { {}, <*0*> } -> Tree-like;
+end;
+
+registration
+  let v;
+
+  cluster { {}, <*0*> } --> v -> LambdaTerm-like;
+end;
+
+registration
+  cluster { {}, <*0*>, <*1*> } -> Tree-like;
+end;
+
+registration
+  cluster { {}, <*0*>, <*1*> } --> 0 -> LambdaTerm-like;
+end;
+
+::: Now we can easily define a `LambdaTerm-like` cluster,
+:::  and make a `mode LambdaTerm` out of it.
+
+registration
+  cluster LambdaTerm-like for DecoratedTree of NAT;
+end;
+
+definition
+  mode LambdaTerm is LambdaTerm-like DecoratedTree of NAT;
+end;
+
+reserve M,N,P,Q for LambdaTerm;
+
+::: We also create two specific terms that we'll be using later
+:::  to easily define operations to create bigger terms.
+
+definition
+  let v;
+
+  func PreAbstractionTerm v -> LambdaTerm equals
+:: LAMBDA:def 2
+    { {}, <*0*> } --> v;
+end;
+
+definition
+  func PreApplicationTerm -> LambdaTerm equals
+:: LAMBDA:def 3
+    { {}, <*0*>, <*1*> } --> 0;
+end;
+
+::: ### Operations
+
+::: On `Tree`s, respectively `DecoratedTree`s, various useful
+:::  operations already exist. We take a particular interest in
+:::  the restriction operation `|` and the replacement, or "single
+:::  substitution", operation `with-replacement`.
+
+::: To use these to our advantage, we prove that $\lambda$-terms
+:::  are closed under these operations, and tell Mizar's type system
+:::  so by some cluster registrations.
+
+registration
+  let M be LambdaTerm,
+      r be Element of dom M;
+
+  cluster M|r -> LambdaTerm-like;
+end;
+
+theorem :: LAMBDA:1
+  p in dom D1 &
+  D1 is X-valued & D2 is Y-valued implies
+    D1 with-replacement (p,D2) is (X \/ Y)-valued;
+
+registration
+  let P,Q be LambdaTerm,
+      p be Element of dom P;
+
+  cluster P with-replacement (p,Q) -> NAT-valued;
+end;
+
+theorem :: LAMBDA:2
+  p in dom P implies
+  P with-replacement (p,Q) is LambdaTerm-like;
+
+registration
+  let P,Q be LambdaTerm,
+      p be Element of dom P;
+
+  cluster P with-replacement (p,Q) -> LambdaTerm-like;
+end;
+
+definition
+  let P be LambdaTerm,
+      p be Element of dom P,
+      Q be LambdaTerm;
+
+  redefine func P with-replacement (p,Q) -> LambdaTerm;
+end;
+
+::: ### Helper definitions
+
+::: Some helper definitions for working with lambda terms.
+
+definition
+  let M be LambdaTerm,
+      r; :: be Node of M;
+
+  pred r is_variable_in M means
+:: LAMBDA:def 4
+
+    r in dom M &
+    not r^<*0*> in dom M;
+
+  pred r is_abstraction_in M means
+:: LAMBDA:def 5
+
+    r in dom M &
+    r^<*0*> in dom M & not r^<*1*> in dom M;
+
+  pred r is_application_in M means
+:: LAMBDA:def 6
+
+    r in dom M &
+    r^<*0*> in dom M & r^<*1*> in dom M;
+end;
+
+definition
+  let M,r,v;
+
+  pred M,r holds_variable v means
+:: LAMBDA:def 7
+
+    r is_variable_in M &
+    M.r = n;
+
+  pred M,r abstracts v means
+:: LAMBDA:def 8
+
+    r is_abstraction_in M &
+    M.r = n;
+end;
+
+definition
+  let M,v;
+
+  pred M contains_variable v means
+:: LAMBDA:def 9
+
+    ex r st M,r holds_variable v;
+end;
+
+::: We also include the following lemma in this section,
+:::  which would preferrably already have been stated in one of
+:::  the `TREES_` articles.
+
+theorem :: LAMBDA:3
+    not q,r are_c=-comparable
+  implies
+    not q is_a_prefix_of r
+  & not r is_a_prefix_of q
+  & not q is_a_proper_prefix_of r
+  & not r is_a_proper_prefix_of q;
+
+::: ## Constructing terms
+
+::: Now we have enough tools at hand to easily construct
+:::  bigger terms from previous ones.
+
+::: Somewhat stupidly, I had earlier not yet thought of simply
+:::  defining `Abs` and `App` by means of an `equals`, seen
+:::  as we already have enough registrations for Mizar's type
+:::  system to allow it. I put a lot of work into `means` clauses
+:::  for these two functors :(
+
+::: ### Variables
+
+definition
+  let v;
+
+  func Var(v) -> LambdaTerm equals
+:: LAMBDA:def 10
+
+    { <*> NAT } --> v;
+end;
+
+::: ### Abstractions
+
+definition
+  let v,M;
+
+  func Abs(v,M) -> LambdaTerm equals
+:: LAMBDA:def 11
+
+    (PreAbstractionTerm v) with-replacement (<*0*>, M);
+end;
+
+::: ### Applications
+
+definition
+  let M,N;
+
+  func App(M,N) -> LambdaTerm equals
+:: LAMBDA:def 12
+
+    (PreApplicationTerm
+      with-replacement (<*0*>, M)
+    )
+      with-replacement (<*1*>, N);
+end;
+
+::: ### Some common terms
+
+::: As a note of victory, let's go ahead and define some common terms! :)
+
+definition
+  func cI -> LambdaTerm equals
+:: LAMBDA:def 13
+
+    Abs(0,Var(0));
+
+  func cOne -> LambdaTerm equals
+:: LAMBDA:def 14
+
+    Abs(0,Abs(1,App(Var(0),Var(1))));
+
+  func cK -> LambdaTerm equals
+:: LAMBDA:def 15
+
+    Abs(0,Abs(1,Var(0)));
+
+  func cK* -> LambdaTerm equals
+:: LAMBDA:def 16
+
+    Abs(0,Abs(1,Var(1)));
+
+  func cDelta -> LambdaTerm equals
+:: LAMBDA:def 17
+
+    Abs(0,App(Var(0),Var(0)));
+
+  func cY -> LambdaTerm equals
+:: LAMBDA:def 18
+
+    Abs(1,App(
+      Abs(0,App(Var(1),App(Var(0),Var(0)))),
+      Abs(0,App(Var(1),App(Var(0),Var(0))))
+    ));
+end;
+
+definition
+  func cOmega -> LambdaTerm equals
+:: LAMBDA:def 19
+
+    App(cDelta,cDelta);
+end;
+
+::: ### Substitution
+
+::: Another tree operation which we prove is closed under $\lambda$-terms,
+:::  which we did not mention previously, is the `<-` operation which
+:::  in our case is just the substitution operation we need! :)
+
+definition
+  let N,M,v;
+
+  redefine func (N,v) <- M -> LambdaTerm;
+end;
+
+::: #### Substitution lemma
+
+::: This is not trivial, I don't have time for it anymore...
+
+theorem :: LAMBDA:4
+  not P contains_variable v implies
+    ::M[v := N][w := P] =
+    (((M,v) <- N),w) <- P =
+    (((M,w) <- P),v) <- ((N,w) <- P);
+
+::: ## Conversion and reduction
+
+::: ### $\alpha$ conversion
+
+definition
+  let P,Q;
+
+  pred P alpha Q means
+:: LAMBDA:def 20
+    dom P = dom Q &
+    ex renaming being Function of NAT,NAT st
+      for r st r in dom P holds
+        r is_application_in P & Q.r = P.r or
+        not r is_application_in P & Q.r = renaming.(P.r);
+end;
+
+::: ### $\beta$ reduction and conversion
+
+::: First we define one-step toplevel (_shallow_) reduction.
+
+definition
+  let P,Q;
+
+  :: P === (\x.N)M --> N[x:=M] =alpha= Q
+  pred P beta->shallow Q means
+:: LAMBDA:def 21
+    ex N,n,M st
+      :: P === (\x.N)M
+      P = App(Abs(n,N),M) &
+
+      :: Q =alpha= N[x:=M]
+      Q alpha (N,n) <- M;
+end;
+
+::: Then we close under subterm reduction to get actual one-step beta reduction.
+
+definition
+  let M,N;
+
+  pred M beta-> N means
+:: LAMBDA:def 22
+    ex p being Element of dom M, P st
+      M|p beta->shallow P &
+      N = M with-replacement (p, P);
+end;
+
+::: We close under transitivity and reflexivity
+:::  to get full beta reduction.
+definition
+  let M,N;
+
+  pred M beta->* N means
+:: LAMBDA:def 23
+    M = N or
+    ex reduction being FinSequence st
+      reduction.1 = M & reduction.(len reduction) = N &
+      for i st 1 <= i & i + 1 <= len reduction holds
+        ex P,Q st P = reduction.i & Q = reduction.(i + 1)
+          & P beta->shallow Q;
+  ::transitivity;
+  reflexivity;
+end;
+
+::: And then close under symmetry to get beta conversion.
+definition
+  let M,N;
+
+  pred M beta= N means
+:: LAMBDA:def 24
+    M beta->* N or N beta->* M;
+  ::transitivity;
+  reflexivity;
+  symmetry;
+end;
+
+::: ### OLD STUFF
+
+::: I used to think I needed this stuff,
+:::  until I realized that I didn't have to define `Abs` and `App`
+:::  by a `means` clause, so that a lot of work in proving these
+:::  clauses suddenly became useless! :(
+
+::: However, these theorems ARE perfectly useful, and I think should
+:::  actually be included in the appropriate `TREES_` articles.
+::: [And in `TARSKI`, as for the transitivity of `c=`, I mean, what the hell?]
+
+theorem :: LAMBDA:5
+  X c= Y & Y c= Z implies X c= Z;
+
+theorem :: LAMBDA:6
+    not p,q are_c=-comparable
+  implies
+    not p,q^r are_c=-comparable;
+
+::: The `DecoratedTree` analog of `TREES_1:33`
+theorem :: LAMBDA:7
+    r in dom D
+  implies
+    D2 = D with-replacement (r,D2)|r;
+
+reserve q,r for Element of T;
+
+theorem :: LAMBDA:8
+    not q,r are_c=-comparable
+  implies
+    T|r = (T with-replacement (q,T2))|r;
+
+reserve q,r for Element of dom D;
+
+theorem :: LAMBDA:9
+    not q,r are_c=-comparable
+  implies
+    D|r = (D with-replacement (q,D2))|r;
+
+
+::>
+::> 4: This inference is not accepted
+::> 60: Something remains to be proved in this case

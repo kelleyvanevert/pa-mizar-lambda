@@ -1,0 +1,1433 @@
+::: # $\lambda$-calculus in Mizar
+
+::: Original files:
+:::  [.abs](text/lambda.abs),
+:::  [.miz](text/lambda.miz),
+:::  [.voc](dict/lambda.voc)
+
+::: TODO treat variable captures
+
+::: @TOC
+
+:: Environ originally taken from `FINSEQ_2`. Later, I added trees and orders.
+environ
+
+  :: Vocabularies are basically for Mizar's lexer.
+  vocabularies LAMBDA,
+    FINSET_1,
+    NUMBERS,
+    NAT_1, XBOOLE_0, SUBSET_1, FINSEQ_1, XXREAL_0, CARD_1,
+    ARYTM_1, ARYTM_3, TARSKI, ORDINAL4, FUNCOP_1,
+    RELAT_2, RELAT_1,
+    FUNCT_1, FUNCT_2,
+    ZFMISC_1, PARTFUN1,
+    ORDERS_2, ORDERS_1,
+    FINSEQ_2, FINSEQ_4, PBOOLE, CARD_3, VALUED_1,
+    TREES_1, TREES_2, TREES_3, TREES_4;
+  
+  :: Radix type specifications
+  :: But it also helped [175 unknown attribute format] error with [finite set]
+  notations FINSET_1,
+    TARSKI, XBOOLE_0, ENUMSET1, ZFMISC_1, SUBSET_1, ORDINAL1, CARD_1,
+    NUMBERS, XCMPLX_0, DOMAIN_1, NAT_1, RELAT_1, PARTFUN1,
+    RELAT_2, RELSET_1,
+    FUNCT_1, FUNCT_2,
+    FUNCT_3, FINSEQ_1, FINSEQ_2, BINOP_1, PBOOLE, FUNCOP_1, CARD_3,
+    TREES_1, TREES_2, TREES_3, TREES_4,
+    ORDERS_1, ORDERS_2,
+    XXREAL_0, VALUED_1,
+    RECDEF_1;
+
+  :: For modes? (unknown mode format resolved)
+  constructors RELAT_2, RELAT_1,
+    PARTFUN1, BINOP_1, DOMAIN_1,
+    FUNCT_1, FUNCT_2, FUNCT_3,
+    FUNCOP_1,
+    RELSET_1,
+    SQUARE_1, NAT_1, FINSEQ_1, FINSEQ_2, PBOOLE, CARD_3, VALUED_1, SETFAM_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
+    ORDERS_1, ORDERS_2,
+    RECDEF_1,
+    FINSET_1,
+    ENUMSET1,
+    WELLORD2;
+
+  :: Definition are for automatically unfolding predicates
+  ::  in the thesis you are proving
+  definitions TARSKI,
+    FUNCT_1, FUNCT_2,
+    FINSEQ_1, CARD_1, PBOOLE, FUNCOP_1,
+    ORDERS_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
+    ::XTUPLE_0;
+    MCART_1; ::, FUNCT_5, RECDEF_1;
+
+  :: Registrations are for clusters (showing that a type exists (is non-empty),
+  ::  and automatically adding adjectives)
+  registrations XBOOLE_0, SUBSET_1, ORDINAL1, PARTFUN1,
+    ::RELAT_2,
+    RELAT_1,
+    FUNCT_1, FUNCT_2,
+    FUNCOP_1, XXREAL_0, XREAL_0, NAT_1, FINSEQ_1, FINSEQ_2, CARD_1, RELSET_1,
+    PBOOLE, CARD_3,
+    ORDERS_2,
+    TREES_1, TREES_2, TREES_3, TREES_4,
+    FINSET_1;
+
+  :: Load theorem en definition labels
+  theorems FUNCOP_1, RELAT_1, TARSKI, FINSEQ_1, FINSEQ_2,
+    ::XTUPLE_0,
+    MCART_1, FUNCT_5, :: RECDEF_1,
+    FUNCT_1,
+    TREES_1, TREES_2, TREES_3, TREES_4,
+    XBOOLE_0, SUBSET_1, RELAT_2, ENUMSET1,
+    CARD_1, CARD_2, CARD_3, CARD_4;
+  
+  schemes RECDEF_1, TREES_2, TREES_4;
+
+  requirements BOOLE, SUBSET, NUMERALS, ARITHM, REAL;
+
+begin
+
+::: ## Lambda terms
+
+::: ### Formal representation
+
+::: We identify a _lambda term_ with its AST (abstract
+:::  syntax tree). More precisely, we encode a lambda term
+:::  as a finite decorated tree.
+
+::: The nodes of the tree denote either an application, an abstraction
+:::  or a variable. As the three types of nodes have a different
+:::  count of direct children, no extra information is needed to
+:::  distinguish them.
+
+::: We decorate each node of the tree with a natural number. Variables
+:::  are naturally decorated with a number denoting their name, and
+:::  abstractions with a number denoting the variable they abstract.
+:::  We require application nodes to be `0`, so as to canonicalize
+:::  the representation of a lambda term.
+
+::: We use named variables, as it seemed more
+:::  appropriate for the way in which Mizar works. Mizar doesn't
+:::  by nature work with inductive types, recursive definitions etc,
+:::  and I think that most operations that must be included in a
+:::  formalization of the $\lambda$-calculus using De Bruijn indices,
+:::  like lifting and substitution, would then be unwieldy.
+
+::: (Actually, I initially planned to work with De Bruijn indices, and
+:::  did define lifting, but this required so much effort
+:::  that I switched back to named variables.)
+
+definition
+  mode Variable is Element of NAT;
+end;
+
+reserve T,T1,T2 for Tree,
+        D,D1,D2,E for DecoratedTree,
+        p,q,q0,q1,q2,r,r2 for FinSequence of NAT,
+        x,y,z,X,Y,Z for set,
+        i,j,k,l,m,n for Element of NAT,
+        u,v,w for Variable;
+
+definition
+  let D;
+  
+  attr D is LambdaTerm-like means
+    :Def1:
+    dom D is finite &
+    for r st r in dom D holds
+      r is FinSequence of {0,1} &
+      ((r^<*0*> in dom D & r^<*1*> in dom D)
+          implies D.r = 0);
+end;
+
+::: The way Mizar works (or is often used) is that we start out
+:::  defining an attribute conveying what we want a $\lambda$-term to be.
+:::  Then, we provide some examples, do some type registrations and conclude
+:::  with a `mode LambdaTerm`.
+
+registration
+  let v;
+  
+  cluster { {} } --> v -> LambdaTerm-like;
+  coherence
+  proof
+    set D = { {} } --> v;
+    dom D = { {} } by FUNCOP_1:13;
+    hence dom D is finite;
+    let r be FinSequence of NAT;
+    assume
+  A1: r in dom D;
+    dom D = { {} } by FUNCOP_1:13;
+    then
+  A5: r = {} by A1, TARSKI:def 1;
+    then r = <*> {0,1} by FINSEQ_1:def 6;
+    hence r is FinSequence of {0,1};
+    assume r^<*0*> in dom D;
+    set r1 = r^<*1*>;
+    assume
+  A2: r1 in dom D;
+    thus D.r = 0
+    proof
+      assume not thesis;
+      r1 = {} by A2, TARSKI:def 1;
+      then r1 is empty;
+      hence contradiction;
+    end;
+  end;
+end;
+
+registration
+  cluster { <*> NAT } -> Tree-like;
+  coherence
+  proof
+    { <*> NAT } = { {} } by FINSEQ_1:def 6;
+    thus { <*> NAT } is Tree-like;
+  end;
+end;
+
+registration
+  let v;
+  
+  cluster { <*> NAT } --> v -> LambdaTerm-like;
+  coherence
+  proof
+    { <*> NAT } = { {} } by FINSEQ_1:def 6;
+    thus { <*> NAT } --> v is LambdaTerm-like;
+  end;
+end;
+
+registration
+  cluster { {}, <*0*> } -> Tree-like;
+  coherence
+  proof
+    set T = { {}, <*0*> };
+    T = elementary_tree 1 by TREES_1:51;
+    then reconsider T as Tree;
+    T is Tree-like;
+    hence { {}, <*0*> } is Tree-like;
+  end;
+end;
+
+registration
+  let v;
+
+  cluster { {}, <*0*> } --> v -> LambdaTerm-like;
+  coherence
+  proof
+    set T = { {}, <*0*> };
+  A6: T is finite;
+    set D = T --> v;
+  A2: dom D = T by FUNCOP_1:13;
+    hence dom D is finite by A6;
+    reconsider T as Tree;
+    let r be FinSequence of NAT;
+    assume
+  A1: r in dom D;
+    then
+  A3: r = {} or r = <*0*> by A1, A2, TARSKI:def 2;
+    per cases;
+    suppose
+    A7: r = {};
+      then r = <*> {0,1} by FINSEQ_1:def 6;
+      hence r is FinSequence of {0,1};
+      assume r^<*0*> in dom D;
+      set r1 = r^<*1*>;
+      assume
+    A9: r1 in dom D;
+      thus D.r = 0
+      proof
+        assume not thesis;
+      A8: r1 = <*1*> by A7, FINSEQ_1:34;
+        then r1 is non empty;
+        then
+      A11: not r1 is empty;
+      A10: r1 = {} or r1 = <*0*> by A1, A2, A9, TARSKI:def 2;
+        not r1 = {}
+        proof
+          assume r1 = {};
+          then r1 is empty;
+          hence contradiction by A11;
+        end;
+        then r1 = <*0*> by A10;
+        then
+      A12: r1.1 = 0 by FINSEQ_1:40;
+        r1.1 = 1 by A8, FINSEQ_1:40;
+        hence contradiction by A12;
+      end;
+    end;
+    suppose
+    A5: not r = {};
+      set ZeroOne = {0,1};
+      reconsider ZeroOne as non empty set;
+      set Zero = 0;
+      Zero in {0,1} by TARSKI:def 2;
+      then reconsider Zero as Element of ZeroOne;
+    A4: <*Zero*> is FinSequence of ZeroOne;
+    A18: r = <*0*> by A3, A5
+       .= <*Zero*>;
+      hence r is FinSequence of {0,1} by A4;
+      assume r^<*0*> in dom D;
+      set r1 = r^<*1*>;
+      assume
+    A13: r1 in dom D;
+      thus D.r = 0
+      proof
+        assume not thesis;
+      A14: r1 = <*0,1*> by A18, A4, FINSEQ_1:def 9;
+        then r1 is non empty;
+        then
+      A15: not r1 is empty;
+      A16: r1 = {} or r1 = <*0*> by A1, A2, A13, TARSKI:def 2;
+        not r1 = {}
+        proof
+          assume r1 = {};
+          then r1 is empty;
+          hence contradiction by A15;
+        end;
+        then r1 = <*0*> by A16;
+        then
+      A17: len r1 = 1 by FINSEQ_1:40;
+        len r1 = 2 by A14, FINSEQ_1:44;
+        hence contradiction by A17;
+      end;
+    end;
+  end;
+end;
+
+registration
+  cluster { {}, <*0*>, <*1*> } -> Tree-like;
+  coherence
+  proof
+    set T = { {}, <*0*>, <*1*> };
+    T = elementary_tree 2 by TREES_1:53;
+    then reconsider T as Tree;
+    T is Tree-like;
+    hence { {}, <*0*>, <*1*> } is Tree-like;
+  end;
+end;
+
+registration
+  cluster { {}, <*0*>, <*1*> } --> 0 -> LambdaTerm-like;
+  coherence
+  proof
+    set T = { {}, <*0*>, <*1*> };
+  A6: T is finite;
+    set D = T --> 0;
+  A2: dom D = T by FUNCOP_1:13;
+    hence dom D is finite by A6;
+    reconsider T as Tree;
+    let r be FinSequence of NAT;
+    assume
+  A1: r in dom D;
+    then
+  A3: r = {} or r = <*0*> or r = <*1*> by A1, A2, ENUMSET1:def 1;
+    per cases;
+    suppose r = {};
+      then r = <*> {0,1} by FINSEQ_1:def 6;
+      hence r is FinSequence of {0,1};
+      assume r^<*0*> in dom D;
+      assume r^<*1*> in dom D;
+      thus D.r = 0 by A1, FUNCOP_1:7;
+    end;
+    suppose
+    A5: r = <*0*>;
+      set ZeroOne = {0,1};
+      reconsider ZeroOne as non empty set;
+      set Zero = 0;
+      Zero in {0,1} by TARSKI:def 2;
+      then reconsider Zero as Element of ZeroOne;
+    A4: <*Zero*> is FinSequence of ZeroOne;
+      r = <*0*> by A5
+       .= <*Zero*>;
+      hence r is FinSequence of {0,1} by A4;
+      assume r^<*0*> in dom D;
+      assume r^<*1*> in dom D;
+      thus D.r = 0 by A1, FUNCOP_1:7;
+    end;
+    suppose not (r = {} or r = <*0*>);
+      then
+    A7: r = <*1*> by A3;
+      set ZeroOne = {0,1};
+      reconsider ZeroOne as non empty set;
+      set One = 1;
+      One in {0,1} by TARSKI:def 2;
+      then reconsider One as Element of ZeroOne;
+    A4: <*One*> is FinSequence of ZeroOne;
+      r = <*1*> by A7
+       .= <*One*>;
+      hence r is FinSequence of {0,1};
+      assume r^<*0*> in dom D;
+      assume r^<*1*> in dom D;
+      thus D.r = 0 by A1, FUNCOP_1:7;
+    end;
+  end;
+end;
+
+::: Now we can easily define a `LambdaTerm-like` cluster,
+:::  and make a `mode LambdaTerm` out of it.
+
+registration
+  cluster LambdaTerm-like for DecoratedTree of NAT;
+  existence
+  proof
+    set D = { {} } --> 0;
+    take D;
+    thus D is LambdaTerm-like;
+  end;
+end;
+
+definition
+  mode LambdaTerm is LambdaTerm-like DecoratedTree of NAT;
+end;
+
+reserve M,N,P,Q for LambdaTerm;
+
+::: We also create two specific terms that we'll be using later
+:::  to easily define operations to create bigger terms.
+
+definition
+  let v;
+
+  func PreAbstractionTerm v -> LambdaTerm equals
+    { {}, <*0*> } --> v;
+  coherence
+  proof
+    set T = { {}, <*0*> };
+    reconsider T as Tree;
+    set D = T --> v;
+    reconsider D as DecoratedTree of NAT;
+    D is LambdaTerm-like;
+    then reconsider D as LambdaTerm;
+    D is LambdaTerm;
+    hence { {}, <*0*> } --> v is LambdaTerm;
+  end;
+end;
+
+definition
+  func PreApplicationTerm -> LambdaTerm equals
+    { {}, <*0*>, <*1*> } --> 0;
+  coherence
+  proof
+    set T = { {}, <*0*>, <*1*> };
+    reconsider T as Tree;
+    set D = T --> 0;
+    reconsider D as DecoratedTree of NAT;
+    D is LambdaTerm-like;
+    then reconsider D as LambdaTerm;
+    D is LambdaTerm;
+    hence { {}, <*0*>, <*1*> } --> 0 is LambdaTerm;
+  end;
+end;
+
+::: ### Operations
+
+::: On `Tree`s, respectively `DecoratedTree`s, various useful
+:::  operations already exist. We take a particular interest in
+:::  the restriction operation `|` and the replacement, or "single
+:::  substitution", operation `with-replacement`.
+
+::: To use these to our advantage, we prove that $\lambda$-terms
+:::  are closed under these operations, and tell Mizar's type system
+:::  so by some cluster registrations.
+
+registration
+  let M be LambdaTerm,
+      r be Element of dom M;
+
+  cluster M|r -> LambdaTerm-like;
+  coherence
+  proof
+    thus dom (M|r) is finite proof
+      dom M is finite by Def1;
+      then (dom M)|r is finite;
+      hence thesis by TREES_2:def 10;
+    end;
+
+    let p be FinSequence of NAT;
+    assume
+  A3: p in dom (M|r);
+    thus p is FinSequence of {0,1} proof
+      dom (M|r) = (dom M)|r by TREES_2:def 10;
+      then p in (dom M)|r by A3;
+      then r^p in dom M by TREES_1:def 6;
+      then r^p is FinSequence of {0,1} by Def1;
+      hence thesis by FINSEQ_1:36;
+    end;
+
+    :: r^p^<*0*>
+    set p0 = p^<*0*>;
+    set p1 = p^<*1*>;
+    set rp = r^p;
+    assume
+  A4: p0 in dom (M|r);
+    assume
+  A9: p1 in dom (M|r);
+    thus (M|r).p = 0 proof
+    A6: rp^<*0*> in dom M
+      proof
+        dom (M|r) is Tree-like;
+        then p0 in dom (M|r) by A4, TREES_1:21;
+        then reconsider p0 as Element of dom (M|r);
+        reconsider p0 as Element of (dom M)|r by TREES_2:def 10;
+        p0 in (dom M)|r;
+        then r^p0 in dom M by TREES_1:def 6;
+        hence thesis by FINSEQ_1:32;
+      end;
+    A7: rp^<*1*> in dom M
+      proof
+        dom (M|r) is Tree-like;
+        then p1 in dom (M|r) by A9, TREES_1:21;
+        then reconsider p1 as Element of dom (M|r);
+        reconsider p1 as Element of (dom M)|r by TREES_2:def 10;
+        p1 in (dom M)|r;
+        then r^p1 in dom M by TREES_1:def 6;
+        then rp^<*1*> in dom M by FINSEQ_1:32;
+        hence thesis by FINSEQ_1:32;
+      end;
+      rp in dom M by TREES_1:21, A6, A7;
+      then M.rp = 0 by A6, A7, Def1;
+      then
+    A8: M.(r^p) = 0;
+      p in (dom M)|r by A3, TREES_2:def 10;
+      then (M|r).p = M.(r^p) by TREES_2:def 10;
+      hence (M|r).p = 0 by A8, TREES_2:def 10;
+    end;
+  end;
+end;
+
+theorem Th1:
+  p in dom D1 &
+  D1 is X-valued & D2 is Y-valued implies
+    D1 with-replacement (p,D2) is (X \/ Y)-valued
+proof
+  assume p in dom D1;
+  then reconsider p as Element of dom D1;
+  
+  assume
+A4: D1 is X-valued;
+  assume
+A5: D2 is Y-valued;
+  set D = D1 with-replacement (p,D2);
+  set T = dom D;
+  rng D c= X \/ Y
+  proof
+    let x be set;
+    assume x in rng D;
+    then ex q being set st [q,x] in D by RELAT_1:def 5;
+    then consider q being set such that
+  A1: [q,x] in D;
+  A2: q in T by A1, RELAT_1:def 4;
+    T is Tree by TREES_2:def 8;
+    then reconsider q as FinSequence of NAT by A2, TREES_1:19;
+  A13: T = dom D1 with-replacement (p, dom D2) by TREES_2:def 11;
+    then
+  A3: ((not p is_a_prefix_of q & D.q = D1.q) or
+      (ex r st r in dom D2 & q = p^r & D.q = D2.r)) by A2, TREES_2:def 11;
+    per cases;
+    suppose
+    A6: (not p is_a_prefix_of q & D.q = D1.q);
+      [q,x] in D by A1;
+      then D.q = x by A2, FUNCT_1:def 2;
+      then
+    A7: D1.q = x by A6;
+    A12: q in dom D1
+      proof
+      A14: (q in dom D1 & not p is_a_proper_prefix_of q or
+          ex r st r in dom D2 & q = p^r) by A2, A13, TREES_1:def 9;
+        per cases;
+        suppose q in dom D1 & not p is_a_proper_prefix_of q;
+          hence q in dom D1;
+        end;
+        suppose not (q in dom D1 & not p is_a_proper_prefix_of q);
+          then ex r st r in dom D2 & q = p^r by A14;
+          then
+        A15: p is_a_prefix_of q by TREES_1:1;
+          assume not q in dom D1;
+          thus contradiction by A6, A15;
+        end;
+      end;
+      [q,x] in D1 by A7, A12, FUNCT_1:def 2;
+      then
+    A8: x in rng D1 by RELAT_1:def 5;
+      rng D1 c= X by A4, RELAT_1:def 19;
+      then x in X by A8;
+      hence x in (X \/ Y) by XBOOLE_0:def 3;
+    end;
+    suppose not (not p is_a_prefix_of q & D.q = D1.q);
+      then (ex r st r in dom D2 & q = p^r & D.q = D2.r) by A3;
+      then consider r such that
+    A9: r in dom D2 & q = p^r & D.q = D2.r;
+      [q,x] in D by A1;
+      then D.q = x by A2, FUNCT_1:def 2;
+      then D2.r = x by A9;
+      then [r,x] in D2 by A9, FUNCT_1:def 2;
+      then
+    A11: x in rng D2 by RELAT_1:def 5;
+      rng D2 c= Y by A5, RELAT_1:def 19;
+      then x in Y by A11;
+      hence x in (X \/ Y) by XBOOLE_0:def 3;
+    end;
+  end;
+  hence thesis by RELAT_1:def 19;
+end;
+
+registration
+  let P,Q be LambdaTerm,
+      p be Element of dom P;
+
+  cluster P with-replacement (p,Q) -> NAT-valued;
+  coherence
+  proof
+  A1: P is NAT-valued by Def1;
+  A2: Q is NAT-valued by Def1;
+    P with-replacement (p,Q) is (NAT \/ NAT)-valued by A1, A2, Th1;
+    hence P with-replacement (p,Q) is NAT-valued by XBOOLE_0:def 3;
+  end;
+end;
+
+theorem Th2:
+  p in dom P implies
+  P with-replacement (p,Q) is LambdaTerm-like
+proof
+  set R = P with-replacement (p,Q);
+
+  assume p in dom P;
+  then reconsider p as Element of dom P;
+  thus R is LambdaTerm-like
+  proof
+
+    thus dom R is finite
+    proof
+    A1: dom P is finite by Def1;
+    A2: dom Q is finite by Def1;
+      dom R = (dom P) with-replacement (p,dom Q) by TREES_2:def 11;
+      hence thesis by A1, A2;
+    end;
+
+    let r;
+    assume
+  A3: r in dom R;
+    thus r is FinSequence of {0,1}
+    proof
+      dom R = (dom P) with-replacement (p,dom Q) by TREES_2:def 11;
+      then
+    A4: ((r in dom P & not p is_a_proper_prefix_of r) or
+        (ex q st q in dom Q & r = p^q)) by A3, TREES_1:def 9;
+      per cases;
+      suppose (r in dom P & not p is_a_proper_prefix_of r);
+        hence r is FinSequence of {0,1} by Def1;
+      end;
+      suppose not (r in dom P & not p is_a_proper_prefix_of r);
+        then (ex q st q in dom Q & r = p^q) by A4;
+        then consider q such that
+      A5: q in dom Q & r = p^q;
+        q is FinSequence of {0,1} by A5, Def1;
+        then reconsider q as FinSequence of {0,1};
+        p is FinSequence of {0,1} by Def1;
+        then reconsider p as FinSequence of {0,1};
+        p^q is FinSequence of {0,1};
+        hence thesis by A5;
+      end;
+    end;
+    set r0 = r^<*0*>;
+    set r1 = r^<*1*>;
+    assume
+  A6: r0 in dom R;
+    assume
+  A7: r1 in dom R;
+    
+    r in (dom P) with-replacement (p,dom Q) by A3, TREES_2:def 11;
+    then
+  A8: (not p is_a_prefix_of r & R.r = P.r) or
+      (ex q st q in dom Q & r = p^q & R.r = Q.q)
+        by A3, TREES_2:def 11;
+    per cases;
+    suppose
+    A22: (not p is_a_prefix_of r & R.r = P.r);
+
+    A23: r in dom P
+      proof
+        assume
+      A24: not r in dom P;
+        r in (dom P) with-replacement (p,dom Q) by A3, TREES_2:def 11;
+        then (r in dom P & not p is_a_proper_prefix_of r) or
+             (ex q st q in dom Q & r = p^q)
+               by TREES_1:def 9;
+        then (ex q st q in dom Q & r = p^q) by A24;
+        then consider q such that
+      A25: q in dom Q & r = p^q;
+        p is_a_prefix_of r by A25, TREES_1:1;
+        hence contradiction by A22;
+      end;
+
+    A20: r0 in dom P
+      proof
+        per cases;
+        suppose
+        A31: r0 = p;
+          p in dom P;
+          hence r0 in dom P by A31;
+        end;
+        suppose
+        A30: r0 <> p;
+          assume
+        A26: not r0 in dom P;
+        A29: not p is_a_prefix_of r0
+          proof
+            assume p is_a_prefix_of r0;
+            then p is_a_proper_prefix_of r0 by A30, XBOOLE_0:def 8;
+            then p is_a_prefix_of r by TREES_1:9;
+            hence contradiction by A22;
+          end;
+          r0 in (dom P) with-replacement (p,dom Q) by A6, TREES_2:def 11;
+          then (r0 in dom P & not p is_a_proper_prefix_of r0) or
+               (ex q st q in dom Q & r0 = p^q)
+                 by TREES_1:def 9;
+          then (ex q st q in dom Q & r0 = p^q) by A26;
+          then consider q such that
+        A27: q in dom Q & r0 = p^q;
+        A28: p is_a_prefix_of r0 by A27, TREES_1:1;
+          hence contradiction by A28, A29;
+        end;
+      end;
+
+    A21: r1 in dom P :: (exactly the same as for r0)
+      proof
+        per cases;
+        suppose
+        A32: r1 = p;
+          p in dom P;
+          hence r1 in dom P by A32;
+        end;
+        suppose
+        A33: r1 <> p;
+          assume
+        A34: not r1 in dom P;
+        A35: not p is_a_prefix_of r1
+          proof
+            assume p is_a_prefix_of r1;
+            then p is_a_proper_prefix_of r1 by A33, XBOOLE_0:def 8;
+            then p is_a_prefix_of r by TREES_1:9;
+            hence contradiction by A22;
+          end;
+          r1 in (dom P) with-replacement (p,dom Q) by A7, TREES_2:def 11;
+          then (r1 in dom P & not p is_a_proper_prefix_of r1) or
+               (ex q st q in dom Q & r1 = p^q)
+                 by TREES_1:def 9;
+          then (ex q st q in dom Q & r1 = p^q) by A34;
+          then consider q such that
+        A36: q in dom Q & r1 = p^q;
+        A37: p is_a_prefix_of r1 by A36, TREES_1:1;
+          hence contradiction by A37, A35;
+        end;
+      end;
+
+      P.r = 0 by Def1, A20, A21, A23;
+      hence R.r = 0 by A22;
+    end;
+    suppose not (not p is_a_prefix_of r & R.r = P.r);
+      then (ex q st q in dom Q & r = p^q & R.r = Q.q) by A8;
+      then consider q such that
+    A9: q in dom Q and
+    A10: r = p^q & R.r = Q.q;
+
+    A11: q^<*0*> in dom Q
+      proof
+        r0 in (dom P) with-replacement (p,dom Q) by A6, TREES_2:def 11;
+        then
+      A12: (r0 in dom P & not p is_a_proper_prefix_of r0) or
+           (ex q0 st q0 in dom Q & r0 = p^q0)
+             by TREES_1:def 9;
+        (ex q0 st q0 in dom Q & r0 = p^q0)
+        proof
+          assume not (ex q0 st q0 in dom Q & r0 = p^q0);
+          then
+        A15: (r0 in dom P & not p is_a_proper_prefix_of r0) by A12;
+          p is_a_prefix_of r by A10, TREES_1:1;
+          then p is_a_proper_prefix_of r0 by TREES_1:8;
+          hence contradiction by A15;
+        end;
+        then consider q0 such that
+      A13: q0 in dom Q and
+      A14: r0 = p^q0;
+        p^q0 = r0 by A14
+            .= r^<*0*>
+            .= (p^q)^<*0*> by A10
+            .= p^(q^<*0*>) by FINSEQ_1:32;
+        then q0 = q^<*0*> by FINSEQ_1:33;
+        hence q^<*0*> in dom Q by A13;
+      end;
+
+    A16: q^<*1*> in dom Q :: (exactly the same as for q^<*0*>)
+      proof
+        r1 in (dom P) with-replacement (p,dom Q) by A7, TREES_2:def 11;
+        then
+      A17: (r1 in dom P & not p is_a_proper_prefix_of r1) or
+           (ex q1 st q1 in dom Q & r1 = p^q1)
+             by TREES_1:def 9;
+        (ex q1 st q1 in dom Q & r1 = p^q1)
+        proof
+          assume not (ex q1 st q1 in dom Q & r1 = p^q1);
+          then
+        A15: (r1 in dom P & not p is_a_proper_prefix_of r1) by A17;
+          p is_a_prefix_of r by A10, TREES_1:1;
+          then p is_a_proper_prefix_of r1 by TREES_1:8;
+          hence contradiction by A15;
+        end;
+        then consider q1 such that
+      A18: q1 in dom Q and
+      A19: r1 = p^q1;
+        p^q1 = r1 by A19
+            .= r^<*1*>
+            .= (p^q)^<*1*> by A10
+            .= p^(q^<*1*>) by FINSEQ_1:32;
+        then q1 = q^<*1*> by FINSEQ_1:33;
+        hence q^<*1*> in dom Q by A18;
+      end;
+
+      Q.q = 0 by Def1, A9, A11, A16;
+      hence R.r = 0 by A10;
+    end;
+  end;
+end;
+
+registration
+  let P,Q be LambdaTerm,
+      p be Element of dom P;
+
+  cluster P with-replacement (p,Q) -> LambdaTerm-like;
+  coherence
+  proof
+    thus thesis by Th2;
+  end;
+end;
+
+definition
+  let P be LambdaTerm,
+      p be Element of dom P,
+      Q be LambdaTerm;
+
+  redefine func P with-replacement (p,Q) -> LambdaTerm;
+  coherence;
+end;
+
+::: ### Helper definitions
+
+::: Some helper definitions for working with lambda terms.
+
+definition
+  let M be LambdaTerm,
+      r; :: be Node of M;
+  
+  pred r is_variable_in M means
+    :Def5:
+    r in dom M &
+    not r^<*0*> in dom M;
+
+  pred r is_abstraction_in M means
+    :Def6:
+    r in dom M &
+    r^<*0*> in dom M & not r^<*1*> in dom M;
+
+  pred r is_application_in M means
+    :Def7:
+    r in dom M &
+    r^<*0*> in dom M & r^<*1*> in dom M;
+end;
+
+definition
+  let M,r,v;
+
+  pred M,r holds_variable v means
+    :Def8:
+    r is_variable_in M &
+    M.r = n;
+
+  pred M,r abstracts v means
+    :Def9:
+    r is_abstraction_in M &
+    M.r = n;
+end;
+
+definition
+  let M,v;
+
+  pred M contains_variable v means
+    :Def10:
+    ex r st M,r holds_variable v;
+end;
+
+::: We also include the following lemma in this section,
+:::  which would preferrably already have been stated in one of
+:::  the `TREES_` articles.
+
+theorem Th6:
+    not q,r are_c=-comparable
+  implies
+    not q is_a_prefix_of r
+  & not r is_a_prefix_of q
+  & not q is_a_proper_prefix_of r
+  & not r is_a_proper_prefix_of q
+proof
+  assume
+A1: not q,r are_c=-comparable;
+  
+  thus not q is_a_prefix_of r
+  proof
+    assume q c= r;
+    then q,r are_c=-comparable by XBOOLE_0:def 9;
+    hence contradiction by A1;
+  end;
+  
+  thus not r is_a_prefix_of q
+  proof
+    assume r c= q;
+    then r,q are_c=-comparable by XBOOLE_0:def 9;
+    hence contradiction by A1;
+  end;
+
+  thus not q is_a_proper_prefix_of r
+  proof
+    assume q c< r;
+    then q c= r by XBOOLE_0:def 8;
+    then q,r are_c=-comparable by XBOOLE_0:def 9;
+    hence contradiction by A1;
+  end;
+
+  thus not r is_a_proper_prefix_of q
+  proof
+    assume r c< q;
+    then r c= q by XBOOLE_0:def 8;
+    then r,q are_c=-comparable by XBOOLE_0:def 9;
+    hence contradiction by A1;
+  end;
+end;
+
+::: ## Constructing terms
+
+::: Now we have enough tools at hand to easily construct
+:::  bigger terms from previous ones.
+
+::: Somewhat stupidly, I had earlier not yet thought of simply
+:::  defining `Abs` and `App` by means of an `equals`, seen
+:::  as we already have enough registrations for Mizar's type
+:::  system to allow it. I put a lot of work into `means` clauses
+:::  for these two functors :(
+
+::: ### Variables
+
+definition
+  let v;
+
+  func Var(v) -> LambdaTerm equals
+    :Def12:
+    { <*> NAT } --> v;
+  coherence;
+end;
+
+::: ### Abstractions
+
+definition
+  let v,M;
+
+  func Abs(v,M) -> LambdaTerm equals
+    :Def20:
+    (PreAbstractionTerm v) with-replacement (<*0*>, M);
+  coherence
+  proof
+    set e0 = <*0*>;
+    dom (PreAbstractionTerm v) = { {}, <*0*> } by FUNCOP_1:13;
+    then e0 in dom (PreAbstractionTerm v) by TARSKI:def 2;
+    then reconsider e0 as Element of dom (PreAbstractionTerm v);
+    (PreAbstractionTerm v) with-replacement (e0, M) is LambdaTerm;
+    hence (PreAbstractionTerm v) with-replacement (<*0*>, M) is LambdaTerm;
+  end;
+end;
+
+::: ### Applications
+
+definition
+  let M,N;
+
+  func App(M,N) -> LambdaTerm equals
+    :Def21:
+    (PreApplicationTerm
+      with-replacement (<*0*>, M)
+    )
+      with-replacement (<*1*>, N);
+  coherence
+  proof
+    set e0 = <*0*>;
+    set e1 = <*1*>;
+  A5: not e0,e1 are_c=-comparable
+    proof
+      assume e0,e1 are_c=-comparable;
+      then 0 = 1 by TREES_1:5;
+      hence contradiction;
+    end;
+  A4: not e0 is_a_proper_prefix_of e1 by A5, Th6;
+
+  A2: dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
+    then e0 in dom PreApplicationTerm by ENUMSET1:def 1;
+    then reconsider e0 as Element of dom PreApplicationTerm;
+    set Pre2 = PreApplicationTerm with-replacement (e0, M);
+    Pre2 is LambdaTerm;
+
+  A1: dom Pre2 = (dom PreApplicationTerm) with-replacement (e0, dom M)
+      by TREES_2:def 11;
+  A3: e1 in dom PreApplicationTerm by A2, ENUMSET1:def 1;
+    e1 in dom Pre2 by A1, A3, A4, TREES_1:def 9;
+    then reconsider e1 as Element of dom Pre2;
+    set Final = Pre2 with-replacement (e1, N);
+    Final is LambdaTerm;
+
+    hence (PreApplicationTerm with-replacement (<*0*>, M))
+      with-replacement (<*1*>, N) is LambdaTerm;
+  end;
+end;
+
+::: ### Some common terms
+
+::: As a note of victory, let's go ahead and define some common terms! :)
+
+definition
+  func cI -> LambdaTerm equals
+    :Def11:
+    Abs(0,Var(0));
+  coherence;
+
+  func cOne -> LambdaTerm equals
+    :Def11:
+    Abs(0,Abs(1,App(Var(0),Var(1))));
+  coherence;
+
+  func cK -> LambdaTerm equals
+    :Def13:
+    Abs(0,Abs(1,Var(0)));
+  coherence;
+
+  func cK* -> LambdaTerm equals
+    :Def14:
+    Abs(0,Abs(1,Var(1)));
+  coherence;
+
+  func cDelta -> LambdaTerm equals
+    :Def15:
+    Abs(0,App(Var(0),Var(0)));
+  coherence;
+
+  func cY -> LambdaTerm equals
+    :Def17:
+    Abs(1,App(
+      Abs(0,App(Var(1),App(Var(0),Var(0)))),
+      Abs(0,App(Var(1),App(Var(0),Var(0))))
+    ));
+  coherence;
+end;
+
+definition
+  func cOmega -> LambdaTerm equals
+    :Def16:
+    App(cDelta,cDelta);
+  coherence;
+end;
+
+::: ### Substitution
+
+::: Another tree operation which we prove is closed under $\lambda$-terms,
+:::  which we did not mention previously, is the `<-` operation which
+:::  in our case is just the substitution operation we need! :)
+
+definition
+  let N,M,v;
+
+  redefine func (N,v) <- M -> LambdaTerm;
+  coherence
+  proof
+    set P = (N,v) <- M;
+    P is NAT-valued;
+    then reconsider P as DecoratedTree of NAT;
+    P is LambdaTerm-like
+    proof
+      :: ? use FINSET_1:sch 2 or FINSET_1:7
+      :: ? take a look at TREES_1 reg.: T with-replacement (t,T1) -> finite
+      thus dom P is finite;
+::>                      *4
+      let r;
+      assume r in dom P;
+      then
+    A1: (r in dom N)
+        or (ex q being Node of N, r2 being Node of M st
+            q in Leaves dom N & N.q = v & r = q^r2)
+        by TREES_4:def 7;
+      thus r is FinSequence of {0,1}
+      proof
+        per cases;
+        suppose r in dom N;
+          hence r is FinSequence of {0,1} by Def1;
+        end;
+        suppose not r in dom N;
+          then (ex q being Node of N, r2 being Node of M st
+            q in Leaves dom N & N.q = v & r = q^r2) by A1;
+          then consider q being Node of N,
+            r2 being Node of M such that
+        A2: q in Leaves dom N and
+        A3: N.q = v and
+        A4: r = q^r2;
+        A5: q is FinSequence of {0,1} by Def1;
+        A6: r2 is FinSequence of {0,1} by Def1;
+          thus r is FinSequence of {0,1} by A4, A5, A6, FINSEQ_1:75;
+        end;
+      end;
+
+      assume r^<*0*> in dom P;
+      assume r^<*1*> in dom P;
+      thus P.r = 0;
+::>              *4
+    end;
+    hence (N,v) <- M is LambdaTerm;
+  end;
+end;
+
+::: #### Substitution lemma
+
+::: If $v \not\in P$, then
+::: $$ M\big[v := N\big]\big[w := P\big]
+:::  = M\big[w := P\big]\big[v := N[w := P]\big] $$
+
+::: This is not trivial, I don't have time for it anymore...
+
+theorem
+  not P contains_variable v implies
+    ::M[v := N][w := P] =
+    (((M,v) <- N),w) <- P =
+    (((M,w) <- P),v) <- ((N,w) <- P)
+    ::M[w := P][v := N[w := P]]
+proof
+  thus thesis;
+::>         *4
+end;
+
+::: ## Conversion and reduction
+
+::: ### $\alpha$ conversion
+
+definition
+  let P,Q;
+
+  pred P alpha Q means
+    dom P = dom Q &
+    ex renaming being Function of NAT,NAT st
+      for r st r in dom P holds
+        r is_application_in P & Q.r = P.r or
+        not r is_application_in P & Q.r = renaming.(P.r);
+end;
+
+::: ### $\beta$ reduction and conversion
+
+::: As a technical definition, we first define one-step toplevel
+:::  "_shallow_" reduction, also including alpha conversion along
+:::  the way.
+
+definition
+  let P,Q;
+  
+  :: P === (\x.N)M --> N[x:=M] =alpha= Q
+  pred P beta->shallow Q means
+    ex N,n,M st
+      :: P === (\x.N)M
+      P = App(Abs(n,N),M) &
+
+      :: Q =alpha= N[x:=M]
+      Q alpha (N,n) <- M;
+end;
+
+::: Then we close under subterm reduction to get actual one-step beta reduction.
+
+definition
+  let M,N;
+
+  pred M beta-> N means
+    ex p being Element of dom M, P st
+      M|p beta->shallow P &
+      N = M with-replacement (p, P);
+end;
+
+::: We close under transitivity and reflexivity
+:::  to get full beta reduction.
+definition
+  let M,N;
+  
+  pred M beta->* N means
+    M = N or
+    ex reduction being FinSequence st
+      reduction.1 = M & reduction.(len reduction) = N &
+      for i st 1 <= i & i + 1 <= len reduction holds
+        ex P,Q st P = reduction.i & Q = reduction.(i + 1)
+          & P beta->shallow Q;
+  ::transitivity;
+  reflexivity;
+end;
+
+::: And then close under symmetry to get beta conversion.
+definition
+  let M,N;
+  
+  pred M beta= N means
+    M beta->* N or N beta->* M;
+  ::transitivity;
+  reflexivity;
+  symmetry;
+end;
+
+::: ## Redundant old stuff
+
+::: I used to think I needed this stuff,
+:::  until I realized that I didn't have to define `Abs` and `App`
+:::  by a `means` clause, so that a lot of work in proving these
+:::  clauses suddenly became useless! :(
+
+::: However, these theorems ARE perfectly useful, and I think should
+:::  actually be included in the appropriate `TREES_` articles.
+::: [And in `TARSKI`, as for the transitivity of `c=`, I mean, what the hell?]
+
+theorem Th8:
+  X c= Y & Y c= Z implies X c= Z
+proof
+  assume
+A1: X c= Y & Y c= Z;
+  x in X implies x in Z
+  proof
+    assume x in X;
+    then x in Y by A1, TARSKI:def 3;
+    hence x in Z by A1, TARSKI:def 3;
+  end;
+  hence X c= Z by TARSKI:def 3;
+end;
+
+theorem Th7:
+    not p,q are_c=-comparable
+  implies
+    not p,q^r are_c=-comparable
+proof
+  assume
+A1: not p,q are_c=-comparable;
+  assume
+A2: p,q^r are_c=-comparable;
+  then
+A3: p c= q^r or q^r c= p by XBOOLE_0:def 9;
+  per cases;
+  suppose
+::>     *60
+A5: p c= q^r;
+    q c= q^r by TREES_1:1;
+    :: I apparently can't get this one to work,
+    ::  although it's conceptually so simple!
+  end;
+  suppose not p c= q^r;
+    then
+  A4: q^r c= p by A3;
+    q c= q^r by TREES_1:1;
+    then q c= p by A4, Th8;
+    then q,p are_c=-comparable by XBOOLE_0:def 9;
+    hence contradiction by A1;
+  end;
+end;
+
+:: The `DecoratedTree` analog of `TREES_1:33`
+theorem Th3:
+    r in dom D
+  implies
+    D2 = D with-replacement (r,D2)|r
+proof
+  assume
+A1: r in dom D;
+
+A2: dom D2 = ((dom D) with-replacement (r,dom D2))|r by A1, TREES_1:33
+          .= (dom (D with-replacement (r,D2)))|r by A1, TREES_2:def 11
+          .= dom ((D with-replacement (r,D2))|r) by TREES_2:def 10;
+  
+  set E = D with-replacement (r,D2);
+A3: for q being Node of E|r holds (E|r).q = D2.q
+  proof
+    let q be Node of E|r;
+    q in dom (E|r);
+    then
+  A11: q in (dom E)|r by TREES_2:def 10;
+    then
+  A10: (E|r).q = E.(r^q) by TREES_2:def 10;
+    set rq = r^q;
+  A5: r^q in (dom D) with-replacement (r,dom D2)
+    proof
+      ex r2 st r2 in dom D2 & r = r^r2
+      proof
+        take <*> NAT;
+        thus <*> NAT in dom D2 by TREES_1:22;
+        r = r^{} by FINSEQ_1:34;
+        hence r = r^(<*> NAT) by FINSEQ_1:def 6;
+      end;
+      then r in (dom D) with-replacement (r,dom D2) by A1, TREES_1:def 9;
+      then
+    A12: r in dom E by A1, TREES_2:def 11;
+      then r^q in dom E by A1, A11, A12, TREES_1:def 6;
+      hence thesis by A1, TREES_2:def 11;
+    end;
+    then
+  A6: (not r is_a_prefix_of rq & E.rq = D.rq) or
+      (ex q2 st q2 in dom D2 & rq = r^q2 & E.rq = D2.q2)
+        by A1, TREES_2:def 11;
+    ex q2 st q2 in dom D2 & rq = r^q2 & E.rq = D2.q2
+    proof
+      assume not (ex q2 st q2 in dom D2 & rq = r^q2 & E.rq = D2.q2);
+      then not r is_a_prefix_of rq by A6;
+      hence contradiction by TREES_1:1;
+    end;
+    then consider q2 such that
+  A7: q2 in dom D2 and
+  A8: rq = r^q2 and
+  A9: E.rq = D2.q2;
+    q2 = q by A8, FINSEQ_1:33;
+    hence (E|r).q = D2.q by A9, A10;
+  end;
+  thus thesis by A2, A3, TREES_4:def 1;
+end;
+
+reserve q,r for Element of T;
+
+theorem Th4:
+    not q,r are_c=-comparable
+  implies
+    T|r = (T with-replacement (q,T2))|r
+proof
+A5: q in T;
+A3: r in T;
+
+  assume
+A6: not q,r are_c=-comparable;
+  then
+A13: not q,r^p are_c=-comparable by Th7;
+
+A4: r in T with-replacement (q,T2)
+  proof
+    not q is_a_proper_prefix_of r by A6, Th6;
+    hence thesis by A3, A5, TREES_1:def 9;
+  end;
+
+A1: p in T|r implies p in (T with-replacement (q,T2))|r
+  proof
+    assume p in T|r;
+    then
+  A7: r^p in T by A3, TREES_1:def 6;
+    r^p in T with-replacement (q,T2)
+    proof
+      not q,r^p are_c=-comparable by A13;
+      then not q is_a_proper_prefix_of r^p by A6, Th6;
+      hence thesis by A7, A5, TREES_1:def 9;
+    end;
+    hence p in (T with-replacement (q,T2))|r by A4, TREES_1:def 6;
+  end;
+A2: p in (T with-replacement (q,T2))|r implies p in T|r
+  proof
+    assume p in (T with-replacement (q,T2))|r;
+    then
+  A8: r^p in T with-replacement (q,T2) by A4, TREES_1:def 6;
+    r^p in T
+    proof
+      set rp = r^p;
+    A9: (rp in T & not q is_a_proper_prefix_of rp) or
+        (ex r2 st r2 in T2 & rp = q^r2)
+          by A5, A8, TREES_1:def 9;
+      rp in T & not q is_a_proper_prefix_of rp
+      proof
+        assume not thesis;
+        then ex r2 st r2 in T2 & rp = q^r2 by A9;
+        then consider r2 such that
+      A10: r2 in T2 and
+      A11: rp = q^r2;
+        q is_a_prefix_of rp by A11, TREES_1:1;
+        then q,r^p are_c=-comparable by XBOOLE_0:def 9;
+        hence contradiction by A13;
+      end;
+      hence r^p in T;
+    end;
+    hence p in T|r by A3, TREES_1:def 6;
+  end;
+  thus thesis by A1, A2, TREES_2:def 1;
+end;
+
+reserve q,r for Element of dom D;
+
+theorem Th5:
+    not q,r are_c=-comparable
+  implies
+    D|r = (D with-replacement (q,D2))|r
+proof
+  set E = D with-replacement (q,D2);
+
+A2: q in dom D;
+A3: r in dom D;
+
+  assume
+A1: not q,r are_c=-comparable;
+  then
+A11: not q,r^p are_c=-comparable by Th7;
+
+A4: dom (D|r) = (dom D)|r by TREES_2:def 10
+             .= ((dom D) with-replacement (q,dom D2))|r by A1, A2, A3, Th4
+             .= (dom (D with-replacement (q,D2)))|r by A2, TREES_2:def 11
+             .= dom ((D with-replacement (q,D2))|r) by TREES_2:def 10
+             .= dom (E|r);
+
+A5: for p being Node of D|r holds (D|r).p = (E|r).p
+  proof
+    let p be Node of D|r;
+    set rp = r^p;
+  A6: p in dom (D|r);
+    then
+  A15: p in (dom D)|r by TREES_2:def 10;
+    then
+  A12: (D|r).p = D.rp by TREES_2:def 10;
+
+    p in dom (E|r) by A4, A6;
+    then p in (dom E)|r by TREES_2:def 10;
+    then
+  A13: (E|r).p = E.rp by TREES_2:def 10;
+
+    rp in (dom D) with-replacement (q,dom D2)
+    proof
+      not q,rp are_c=-comparable by A11;
+      then
+    A14: not q is_a_proper_prefix_of rp by Th6;
+      p in (dom D)|r by A15;
+      then rp in dom D by TREES_1:def 6;
+      hence thesis by A2, A14, TREES_1:def 9;
+    end;
+    then
+  A7: (not q is_a_prefix_of rp & E.rp = D.rp) or
+      (ex r2 st r2 in dom D2 & rp = q^r2 & E.rp = D2.r2)
+        by A2, TREES_2:def 11;
+    not q is_a_prefix_of rp & E.rp = D.rp
+    proof
+      assume not thesis;
+      then ex r2 st r2 in dom D2 & rp = q^r2 & E.rp = D2.r2 by A7;
+      then consider r2 such that
+    A8: r2 in dom D2 and
+    A9: rp = q^r2 and
+    A10: E.rp = D2.r2;
+      q is_a_prefix_of rp by A9, TREES_1:1;
+      then q,r^p are_c=-comparable by XBOOLE_0:def 9;
+      hence contradiction by A11;
+    end;
+    then E.rp = D.rp;
+    hence (D|r).p = (E|r).p by A12, A13;
+  end;
+
+  thus thesis by A4, A5, TREES_4:def 1;
+end;
+
+
+::>
+::> 4: This inference is not accepted
+::> 60: Something remains to be proved in this case
