@@ -1,1 +1,58 @@
-lambda.html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>pa-mizar-lambda by kelleyvanevert</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>pa-mizar-lambda</h1>
+        <p>A basic Mizar formalization of the lambda calculus</p>
+
+        <p class="view"><a href="https://github.com/kelleyvanevert/pa-mizar-lambda">View the Project on GitHub <small>kelleyvanevert/pa-mizar-lambda</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/kelleyvanevert/pa-mizar-lambda/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/kelleyvanevert/pa-mizar-lambda/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/kelleyvanevert/pa-mizar-lambda">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>
+<a name="a-mizar-formalization-of-lambda-terms-beta-reduction-and-conversion" class="anchor" href="#a-mizar-formalization-of-lambda-terms-beta-reduction-and-conversion"><span class="octicon octicon-link"></span></a>A Mizar formalization of lambda terms, beta reduction and conversion</h2>
+
+<p>This is a small formalization project for Freek's <a href="cs.ru.nl/%7Efreek/courses/pa-2013/">course</a> on proof assistants. For the exercise description, refer to <a href="exercise-mizar.pdf?raw=true">exercise-mizar.pdf</a>.</p>
+
+<ul>
+<li>Mizar version: 7.12.01</li>
+<li>MML version: 4.166.1132</li>
+</ul><h3>
+<a name="tldr-contents-of-the-formalization" class="anchor" href="#tldr-contents-of-the-formalization"><span class="octicon octicon-link"></span></a><code>TL;DR</code> Contents of the formalization</h3>
+
+<ul>
+<li>
+<strong>Lambda terms</strong> are encoded as their abstract syntax trees, with named (natural number) variables, as a mode <code>LambdaTerm</code> = <code>LambdaTerm-like DecoratedTree of NAT</code>.</li>
+<li>A lot of helper results, definitions and functions for (1) constructing new terms from old ones using tools for <code>DecoratedTree</code>s; (2) proving that these are still <code>LambdaTerm</code>s; and (3) extracting information from terms (AST inspection stuff).</li>
+<li>
+<strong>Beta reduction</strong> and <strong>~ conversion</strong> formalized as binary predicates <code>beta-&gt;</code>, <code>beta-&gt;*</code>, and <code>beta=</code> on <code>LambdaTerm</code>s.</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/kelleyvanevert">kelleyvanevert</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
