@@ -7,72 +7,72 @@
   <meta charset="utf8">
 </head>
 <body>
-<!--
-  <ul class="tools">
-    <li><a href="#top">▴</a></li>
-    <li><a href="#toc">□</a></li>
-  </ul>
--->
-  <%
-    var printTOC = function () {
-      return '<div class="toc" id="toc">' +
-        '<h2>Contents</h2>' +
-        printTOCChildren(fragments.structure) +
-        '<div style="clear: both;"></div>' +
-        '</div>';
-    };
-    var printTOCChildren = function (hd) {
-      return '<ul>' +
-        hd.children.map(function (child) {
-          var dc = 'depth-' + child.depth;
-          return '<li class="' + dc + '">' +
-            '<span class="headnumber ' + dc + '">' + child.headNumber() + '</span>' +
-            '<span class="contain ' + dc + '">' +
-              '<a href="#hd-' + child.headNumber() + '" class="' + dc + '">' + child.title + '</a>' +
-              (child.children.length > 0 ? printTOCChildren(child) : '') +
-            '</span>' +
-            '</li>';
-        }).join("\n") +
-        '</ul>';
-    };
-  %>
-  <div id="container">
-    <div id="background"></div>
-    <div id="linenos"></div>
-    <ul class="fragments" id="top">
-        <% for (var i=0, l=fragments.length; i<l; i++) { %>
-        <% var fragment = fragments[i]; %>
-        <li>
-            <div class="annotation annotation-<%= i %>">
-              <% if (fragment.type == "heading") { %>
-                <h<%= fragment.heading.depth %> id="hd-<%= (fragment.heading.headNumber() || 'top') %>">
-                  <% if (fragment.heading.headNumber()) { %>
-                  <a href="#hd-<%= fragment.heading.headNumber() %>" class="headnumber">
-                    <%= fragment.heading.headNumber() %>
-                  </a>
-                  <% } %>
-                  <%= fragment.heading.title %>
-                </h<%= fragment.heading.depth %>>
-              <% } else { %>
-                <%= fragment.docsHtml.replace("@TOC", printTOC) %>
-              <% } %>
 
-              <% if (fragment.type == "heading" && fragment.vocabulary.length > 0) { %>
-                <ul class="vocabulary">
-                <% for (var j = 0; j < fragment.vocabulary.length; j++) { %>
-                <% var voc = fragment.vocabulary[j]; %>
-                <li class="type-<%= voc.type %>"><a href="#line-<%= voc.line %>"><code><%- voc.name %></code></a></li>
+<%
+  var printTOC = function () {
+    return '<div class="toc" id="toc">' +
+      '<h2>Contents</h2>' +
+      printTOCChildren(fragments.structure) +
+      '<div style="clear: both;"></div>' +
+      '</div>';
+  };
+  var printTOCChildren = function (hd) {
+    return '<ul>' +
+      hd.children.map(function (child) {
+        var dc = 'depth-' + child.depth;
+        return '<li class="' + dc + '">' +
+          '<span class="headnumber ' + dc + '">' + child.headNumber() + '</span>' +
+          '<span class="contain ' + dc + '">' +
+            '<a href="#hd-' + child.headNumber() + '" class="' + dc + '">' + child.title + '</a>' +
+            (child.children.length > 0 ? printTOCChildren(child) : '') +
+          '</span>' +
+          '</li>';
+      }).join("\n") +
+      '</ul>';
+  };
+%>
+<div id="container">
+  <div id="background"></div>
+  <div id="linenos"></div>
+  <ul class="fragments" id="top">
+      <% for (var i=0, l=fragments.length; i<l; i++) { %>
+      <% var fragment = fragments[i]; %>
+      <li>
+          <div class="annotation annotation-<%= i %>">
+            <% if (fragment.type == "heading") { %>
+              <h<%= fragment.heading.depth %> id="hd-<%= (fragment.heading.headNumber() || 'top') %>">
+                <% if (fragment.heading.headNumber()) { %>
+                <a href="#hd-<%= fragment.heading.headNumber() %>" class="headnumber">
+                  <%= fragment.heading.headNumber() %>
+                </a>
                 <% } %>
-                </ul>
-              <% } %>
-            </div>
-            <% if (fragment.code.join("\n").replace(/\s/gm, '') != '') { %>
-            <div class="content"><%= fragment.codeHtml %></div>
+                <%= fragment.heading.title %>
+              </h<%= fragment.heading.depth %>>
+            <% } else { %>
+              <%= fragment.docsHtml.replace("@TOC", printTOC) %>
             <% } %>
-        </li>
-        <% } %>
-    </ul>
-  </div>
+
+            <% if (fragment.type == "heading" && fragment.vocabulary.length > 0) { %>
+              <ul class="vocabulary">
+              <% for (var j = 0; j < fragment.vocabulary.length; j++) { %>
+              <% var voc = fragment.vocabulary[j]; %>
+              <li class="type-<%= voc.type %>"><a href="#line-<%= voc.line %>"><code><%- voc.name %></code></a></li>
+              <% } %>
+              </ul>
+            <% } %>
+          </div>
+          <% if (fragment.code.join("\n").replace(/\s/gm, '') != '') { %>
+          <div class="content"><%= fragment.codeHtml %></div>
+          <% } %>
+      </li>
+      <% } %>
+  </ul>
+</div>
+<ul id="scrollheader">
+  <li class="title"><a href="#top">$\lambda$-calculus in Mizar</a></li>
+  <li><a href="#toc">Table of Contents</a></li>
+  <li><a href="#" class="toggle-proofs">Toggle all proofs</a></li>
+</ul>
 
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -99,6 +99,24 @@ $(function () {
   $(".collapsible").hide();
   $("a.toggle-collapsible").click(function () {
     $(this).next().toggle();
+    return false;
+  });
+
+  $("a.toggle-proofs").click(function () {
+    var scrollTop = $(window).scrollTop(),
+        lineNo = $(".lineno").filter(function () {
+          return $(this).position().top > scrollTop;
+        }),
+        diff = scrollTop - lineNo.position().top;
+
+    if ($("a.toggle-collapsible").next().filter(":visible").length > 0) {
+      $("a.toggle-collapsible").next().hide();
+    } else {
+      $("a.toggle-collapsible").next().show();
+    }
+
+    $(window).scrollTop(lineNo.position().top + diff);
+
     return false;
   });
 

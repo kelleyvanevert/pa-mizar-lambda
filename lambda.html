@@ -7,38 +7,33 @@
   <meta charset="utf8">
 </head>
 <body>
-<!--
-  <ul class="tools">
-    <li><a href="#top">▴</a></li>
-    <li><a href="#toc">□</a></li>
-  </ul>
--->
-  
-  <div id="container">
-    <div id="background"></div>
-    <div id="linenos"></div>
-    <ul class="fragments" id="top">
-        
-        
-        <li>
-            <div class="annotation annotation-0">
-              
-                <h1 id="hd-top">
-                  
-                  $\lambda$-calculus in Mizar
-                </h1>
-              
 
-              
-            </div>
+
+<div id="container">
+  <div id="background"></div>
+  <div id="linenos"></div>
+  <ul class="fragments" id="top">
+      
+      
+      <li>
+          <div class="annotation annotation-0">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-1">
-              
-                <p>Original files:
+              <h1 id="hd-top">
+                
+                $\lambda$-calculus in Mizar
+              </h1>
+            
+
+            
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-1">
+            
+              <p>Original files:
  <a href="text/lambda.abs">.abs</a>,
  <a href="text/lambda.miz">.miz</a>,
  <a href="dict/lambda.voc">.voc</a></p>
@@ -55,12 +50,12 @@
 <li class="depth-3"><span class="headnumber depth-3">3.2</span><span class="contain depth-3"><a href="#hd-3.2" class="depth-3">$\beta$ reduction and conversion</a></span></li></ul></span></li>
 <li class="depth-2"><span class="headnumber depth-2">4</span><span class="contain depth-2"><a href="#hd-4" class="depth-2">Redundant old stuff</a></span></li></ul><div style="clear: both;"></div></div></p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-12' id='line-12'>12</a> <span class="comment">:: Environ originally taken from `FINSEQ_2`. Later, I added trees and orders.</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-12' id='line-12'>12</a> <span class="comment">:: Environ originally taken from `FINSEQ_2`. Later, I added trees and orders.</span>
 <a class='lineno' href='#line-13' id='line-13'>13</a> <span class="keyword">environ</span>
 <a class='lineno' href='#line-14' id='line-14'>14</a> 
 <a class='lineno' href='#line-15' id='line-15'>15</a>   <span class="comment">:: Vocabularies are basically for Mizar's lexer.</span>
@@ -139,83 +134,83 @@
 <a class='lineno' href='#line-88' id='line-88'>88</a>   <span class="keyword">requirements</span> <span class="reference">BOOLE</span>, <span class="reference">SUBSET</span>, <span class="reference">NUMERALS</span>, <span class="reference">ARITHM</span>, <span class="reference">REAL</span>;
 <a class='lineno' href='#line-89' id='line-89'>89</a> 
 <a class='lineno' href='#line-90' id='line-90'>90</a> <span class="keyword">begin</span></pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-2">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-2">
-              
-                <h2 id="hd-1">
-                  
-                  <a href="#hd-1" class="headnumber">
-                    1
-                  </a>
-                  
-                  Lambda terms
-                </h2>
-              
+              <h2 id="hd-1">
+                
+                <a href="#hd-1" class="headnumber">
+                  1
+                </a>
+                
+                Lambda terms
+              </h2>
+            
 
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-3">
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-3">
+            
               
-                
-              
+            
 
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-4">
-              
-                <h3 id="hd-1.1">
-                  
-                  <a href="#hd-1.1" class="headnumber">
-                    1.1
-                  </a>
-                  
-                  Formal representation
-                </h3>
-              
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-4">
+            
+              <h3 id="hd-1.1">
+                
+                <a href="#hd-1.1" class="headnumber">
+                  1.1
+                </a>
+                
+                Formal representation
+              </h3>
+            
 
-              
-                <ul class="vocabulary">
-                
-                
-                <li class="type-mode"><a href="#line-123"><code>Variable</code></a></li>
-                
-                
-                <li class="type-attr"><a href="#line-136"><code>LambdaTerm-like</code></a></li>
-                
-                
-                <li class="type-mode"><a href="#line-382"><code>LambdaTerm</code></a></li>
-                
-                
-                <li class="type-func"><a href="#line-393"><code>PreAbstractionTerm</code></a></li>
-                
-                
-                <li class="type-func"><a href="#line-409"><code>PreApplicationTerm</code></a></li>
-                
-                </ul>
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-5">
+              <ul class="vocabulary">
               
-                <p>We identify a <em>lambda term</em> with its AST (abstract
+              
+              <li class="type-mode"><a href="#line-123"><code>Variable</code></a></li>
+              
+              
+              <li class="type-attr"><a href="#line-136"><code>LambdaTerm-like</code></a></li>
+              
+              
+              <li class="type-mode"><a href="#line-382"><code>LambdaTerm</code></a></li>
+              
+              
+              <li class="type-func"><a href="#line-393"><code>PreAbstractionTerm</code></a></li>
+              
+              
+              <li class="type-func"><a href="#line-409"><code>PreApplicationTerm</code></a></li>
+              
+              </ul>
+            
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-5">
+            
+              <p>We identify a <em>lambda term</em> with its AST (abstract
  syntax tree). More precisely, we encode a lambda term
  as a finite decorated tree.</p>
 <p>The nodes of the tree denote either an application, an abstraction
@@ -237,12 +232,12 @@
  did define lifting, but this required so much effort
  that I switched back to named variables.)</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-122' id='line-122'>122</a> <span class="keyword">definition</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-122' id='line-122'>122</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-123' id='line-123'>123</a>   <span class="keyword">mode</span> Variable <span class="keyword">is</span> Element <span class="keyword">of</span> NAT;
 <a class='lineno' href='#line-124' id='line-124'>124</a> <span class="keyword">end</span>;
 <a class='lineno' href='#line-125' id='line-125'>125</a> 
@@ -264,24 +259,24 @@
 <a class='lineno' href='#line-141' id='line-141'>141</a>       ((r^&lt;*0*&gt; <span class="keyword">in</span> dom D &amp; r^&lt;*1*&gt; <span class="keyword">in</span> dom D)
 <a class='lineno' href='#line-142' id='line-142'>142</a>           <span class="keyword">implies</span> D.r = 0);
 <a class='lineno' href='#line-143' id='line-143'>143</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-6">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-6">
-              
-                <p>The way Mizar works (or is often used) is that we start out
+              <p>The way Mizar works (or is often used) is that we start out
  defining an attribute conveying what we want a $\lambda$-term to be.
  Then, we provide some examples, do some type registrations and conclude
  with a <code>mode LambdaTerm</code>.</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-150' id='line-150'>150</a> <span class="keyword">registration</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-150' id='line-150'>150</a> <span class="keyword">registration</span>
 <a class='lineno' href='#line-151' id='line-151'>151</a>   <span class="keyword">let</span> v;
 <a class='lineno' href='#line-152' id='line-152'>152</a>   
 <a class='lineno' href='#line-153' id='line-153'>153</a>   <span class="keyword">cluster</span> { {} } --&gt; v -&gt; LambdaTerm-like;
@@ -498,22 +493,22 @@
 <a class='lineno' href='#line-364' id='line-364'>364</a>     <span class="keyword">end</span>;
 <a class='lineno' href='#line-365' id='line-365'>365</a>   <span class="keyword">end</span></span>;
 <a class='lineno' href='#line-366' id='line-366'>366</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-7">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-7">
-              
-                <p>Now we can easily define a <code>LambdaTerm-like</code> cluster,
+              <p>Now we can easily define a <code>LambdaTerm-like</code> cluster,
  and make a <code>mode LambdaTerm</code> out of it.</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-371' id='line-371'>371</a> <span class="keyword">registration</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-371' id='line-371'>371</a> <span class="keyword">registration</span>
 <a class='lineno' href='#line-372' id='line-372'>372</a>   <span class="keyword">cluster</span> LambdaTerm-like <span class="keyword">for</span> DecoratedTree <span class="keyword">of</span> NAT;
 <a class='lineno' href='#line-373' id='line-373'>373</a>   <span class="keyword">existence</span>
 <a class='lineno' href='#line-374' id='line-374'>374</a>   <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
@@ -528,22 +523,22 @@
 <a class='lineno' href='#line-383' id='line-383'>383</a> <span class="keyword">end</span>;
 <a class='lineno' href='#line-384' id='line-384'>384</a> 
 <a class='lineno' href='#line-385' id='line-385'>385</a> <span class="keyword">reserve</span> M,N,P,Q <span class="keyword">for</span> LambdaTerm;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-8">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-8">
-              
-                <p>We also create two specific terms that we&#39;ll be using later
+              <p>We also create two specific terms that we&#39;ll be using later
  to easily define operations to create bigger terms.</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-390' id='line-390'>390</a> <span class="keyword">definition</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-390' id='line-390'>390</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-391' id='line-391'>391</a>   <span class="keyword">let</span> v;
 <a class='lineno' href='#line-392' id='line-392'>392</a> 
 <a class='lineno' href='#line-393' id='line-393'>393</a>   <span class="keyword">func</span> PreAbstractionTerm v -&gt; LambdaTerm <span class="keyword">equals</span>
@@ -576,33 +571,33 @@
 <a class='lineno' href='#line-420' id='line-420'>420</a>     <span class="keyword">hence</span> { {}, &lt;*0*&gt;, &lt;*1*&gt; } --&gt; 0 <span class="keyword">is</span> LambdaTerm;
 <a class='lineno' href='#line-421' id='line-421'>421</a>   <span class="keyword">end</span></span>;
 <a class='lineno' href='#line-422' id='line-422'>422</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-9">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-9">
-              
-                <h3 id="hd-1.2">
-                  
-                  <a href="#hd-1.2" class="headnumber">
-                    1.2
-                  </a>
-                  
-                  Operations
-                </h3>
-              
+              <h3 id="hd-1.2">
+                
+                <a href="#hd-1.2" class="headnumber">
+                  1.2
+                </a>
+                
+                Operations
+              </h3>
+            
 
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-10">
-              
-                <p>On <code>Tree</code>s, respectively <code>DecoratedTree</code>s, various useful
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-10">
+            
+              <p>On <code>Tree</code>s, respectively <code>DecoratedTree</code>s, various useful
  operations already exist. We take a particular interest in
  the restriction operation <code>|</code> and the replacement, or &quot;single
  substitution&quot;, operation <code>with-replacement</code>.</p>
@@ -610,12 +605,12 @@
  are closed under these operations, and tell Mizar&#39;s type system
  so by some cluster registrations.</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-435' id='line-435'>435</a> <span class="keyword">registration</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-435' id='line-435'>435</a> <span class="keyword">registration</span>
 <a class='lineno' href='#line-436' id='line-436'>436</a>   <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
 <a class='lineno' href='#line-437' id='line-437'>437</a>       r <span class="keyword">be</span> Element <span class="keyword">of</span> dom M;
 <a class='lineno' href='#line-438' id='line-438'>438</a> 
@@ -995,62 +990,62 @@
 <a class='lineno' href='#line-812' id='line-812'>812</a>   <span class="keyword">redefine</span> <span class="keyword">func</span> P with-replacement (p,Q) -&gt; LambdaTerm;
 <a class='lineno' href='#line-813' id='line-813'>813</a>   <span class="keyword">coherence</span>;
 <a class='lineno' href='#line-814' id='line-814'>814</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-11">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-11">
-              
-                <h3 id="hd-1.3">
-                  
-                  <a href="#hd-1.3" class="headnumber">
-                    1.3
-                  </a>
-                  
-                  Helper definitions
-                </h3>
-              
-
-              
-                <ul class="vocabulary">
+              <h3 id="hd-1.3">
                 
+                <a href="#hd-1.3" class="headnumber">
+                  1.3
+                </a>
                 
-                <li class="type-pred"><a href="#line-824"><code>is_variable_in</code></a></li>
-                
-                
-                <li class="type-pred"><a href="#line-829"><code>is_abstraction_in</code></a></li>
-                
-                
-                <li class="type-pred"><a href="#line-834"><code>is_application_in</code></a></li>
-                
-                
-                <li class="type-pred"><a href="#line-843"><code>holds_variable</code></a></li>
-                
-                
-                <li class="type-pred"><a href="#line-848"><code>abstracts</code></a></li>
-                
-                
-                <li class="type-pred"><a href="#line-857"><code>contains_variable</code></a></li>
-                
-                </ul>
-              
-            </div>
+                Helper definitions
+              </h3>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-12">
-              
-                <p>Some helper definitions for working with lambda terms.</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-820' id='line-820'>820</a> <span class="keyword">definition</span>
+              <ul class="vocabulary">
+              
+              
+              <li class="type-pred"><a href="#line-824"><code>is_variable_in</code></a></li>
+              
+              
+              <li class="type-pred"><a href="#line-829"><code>is_abstraction_in</code></a></li>
+              
+              
+              <li class="type-pred"><a href="#line-834"><code>is_application_in</code></a></li>
+              
+              
+              <li class="type-pred"><a href="#line-843"><code>holds_variable</code></a></li>
+              
+              
+              <li class="type-pred"><a href="#line-848"><code>abstracts</code></a></li>
+              
+              
+              <li class="type-pred"><a href="#line-857"><code>contains_variable</code></a></li>
+              
+              </ul>
+            
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-12">
+            
+              <p>Some helper definitions for working with lambda terms.</p>
+
+            
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-820' id='line-820'>820</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-821' id='line-821'>821</a>   <span class="keyword">let</span> M <span class="keyword">be</span> LambdaTerm,
 <a class='lineno' href='#line-822' id='line-822'>822</a>       r; <span class="comment">:: be Node of M;</span>
 <a class='lineno' href='#line-823' id='line-823'>823</a>   
@@ -1091,23 +1086,23 @@
 <a class='lineno' href='#line-858' id='line-858'>858</a>     :<span class="reference">Def10</span>:
 <a class='lineno' href='#line-859' id='line-859'>859</a>     <span class="keyword">ex</span> r <span class="keyword">st</span> M,r holds_variable v;
 <a class='lineno' href='#line-860' id='line-860'>860</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-13">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-13">
-              
-                <p>We also include the following lemma in this section,
+              <p>We also include the following lemma in this section,
  which would preferrably already have been stated in one of
  the <code>TREES_</code> articles.</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-866' id='line-866'>866</a> <span class="keyword">theorem</span> Th6:
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-866' id='line-866'>866</a> <span class="keyword">theorem</span> Th6:
 <a class='lineno' href='#line-867' id='line-867'>867</a>     <span class="keyword">not</span> q,r are_c=-comparable
 <a class='lineno' href='#line-868' id='line-868'>868</a>   <span class="keyword">implies</span>
 <a class='lineno' href='#line-869' id='line-869'>869</a>     <span class="keyword">not</span> q is_a_prefix_of r
@@ -1148,33 +1143,33 @@
 <a class='lineno' href='#line-904' id='line-904'>904</a>     <span class="keyword">hence</span> <span class="keyword">contradiction</span> <span class="keyword">by</span> A1;
 <a class='lineno' href='#line-905' id='line-905'>905</a>   <span class="keyword">end</span>;
 <a class='lineno' href='#line-906' id='line-906'>906</a> <span class="keyword">end</span></span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-14">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-14">
-              
-                <h2 id="hd-2">
-                  
-                  <a href="#hd-2" class="headnumber">
-                    2
-                  </a>
-                  
-                  Constructing terms
-                </h2>
-              
+              <h2 id="hd-2">
+                
+                <a href="#hd-2" class="headnumber">
+                  2
+                </a>
+                
+                Constructing terms
+              </h2>
+            
 
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-15">
-              
-                <p>Now we have enough tools at hand to easily construct
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-15">
+            
+              <p>Now we have enough tools at hand to easily construct
  bigger terms from previous ones.</p>
 <p>Somewhat stupidly, I had earlier not yet thought of simply
  defining <code>Abs</code> and <code>App</code> by means of an <code>equals</code>, seen
@@ -1182,50 +1177,50 @@
  system to allow it. I put a lot of work into <code>means</code> clauses
  for these two functors :(</p>
 
-              
-
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-16">
-              
-                <h3 id="hd-2.1">
-                  
-                  <a href="#hd-2.1" class="headnumber">
-                    2.1
-                  </a>
-                  
-                  Variables
-                </h3>
-              
 
-              
-                <ul class="vocabulary">
-                
-                
-                <li class="type-func"><a href="#line-924"><code>Var</code></a></li>
-                
-                </ul>
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-17">
-              
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-16">
+            
+              <h3 id="hd-2.1">
                 
-              
+                <a href="#hd-2.1" class="headnumber">
+                  2.1
+                </a>
+                
+                Variables
+              </h3>
+            
 
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-921' id='line-921'>921</a> <span class="keyword">definition</span>
+              <ul class="vocabulary">
+              
+              
+              <li class="type-func"><a href="#line-924"><code>Var</code></a></li>
+              
+              </ul>
+            
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-17">
+            
+              
+            
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-921' id='line-921'>921</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-922' id='line-922'>922</a>   <span class="keyword">let</span> v;
 <a class='lineno' href='#line-923' id='line-923'>923</a> 
 <a class='lineno' href='#line-924' id='line-924'>924</a>   <span class="keyword">func</span> Var(v) -&gt; LambdaTerm <span class="keyword">equals</span>
@@ -1233,46 +1228,46 @@
 <a class='lineno' href='#line-926' id='line-926'>926</a>     { &lt;*&gt; NAT } --&gt; v;
 <a class='lineno' href='#line-927' id='line-927'>927</a>   <span class="keyword">coherence</span>;
 <a class='lineno' href='#line-928' id='line-928'>928</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-18">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-18">
-              
-                <h3 id="hd-2.2">
-                  
-                  <a href="#hd-2.2" class="headnumber">
-                    2.2
-                  </a>
-                  
-                  Abstractions
-                </h3>
-              
+              <h3 id="hd-2.2">
+                
+                <a href="#hd-2.2" class="headnumber">
+                  2.2
+                </a>
+                
+                Abstractions
+              </h3>
+            
 
-              
-                <ul class="vocabulary">
-                
-                
-                <li class="type-func"><a href="#line-935"><code>Abs</code></a></li>
-                
-                </ul>
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-19">
+              <ul class="vocabulary">
               
-                
               
+              <li class="type-func"><a href="#line-935"><code>Abs</code></a></li>
+              
+              </ul>
+            
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-19">
+            
+              
+            
 
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-932' id='line-932'>932</a> <span class="keyword">definition</span>
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-932' id='line-932'>932</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-933' id='line-933'>933</a>   <span class="keyword">let</span> v,M;
 <a class='lineno' href='#line-934' id='line-934'>934</a> 
 <a class='lineno' href='#line-935' id='line-935'>935</a>   <span class="keyword">func</span> Abs(v,M) -&gt; LambdaTerm <span class="keyword">equals</span>
@@ -1288,46 +1283,46 @@
 <a class='lineno' href='#line-945' id='line-945'>945</a>     <span class="keyword">hence</span> (PreAbstractionTerm v) with-replacement (&lt;*0*&gt;, M) <span class="keyword">is</span> LambdaTerm;
 <a class='lineno' href='#line-946' id='line-946'>946</a>   <span class="keyword">end</span></span>;
 <a class='lineno' href='#line-947' id='line-947'>947</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-20">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-20">
-              
-                <h3 id="hd-2.3">
-                  
-                  <a href="#hd-2.3" class="headnumber">
-                    2.3
-                  </a>
-                  
-                  Applications
-                </h3>
-              
+              <h3 id="hd-2.3">
+                
+                <a href="#hd-2.3" class="headnumber">
+                  2.3
+                </a>
+                
+                Applications
+              </h3>
+            
 
-              
-                <ul class="vocabulary">
-                
-                
-                <li class="type-func"><a href="#line-954"><code>App</code></a></li>
-                
-                </ul>
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-21">
+              <ul class="vocabulary">
               
-                
               
+              <li class="type-func"><a href="#line-954"><code>App</code></a></li>
+              
+              </ul>
+            
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-21">
+            
+              
+            
 
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-951' id='line-951'>951</a> <span class="keyword">definition</span>
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-951' id='line-951'>951</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-952' id='line-952'>952</a>   <span class="keyword">let</span> M,N;
 <a class='lineno' href='#line-953' id='line-953'>953</a> 
 <a class='lineno' href='#line-954' id='line-954'>954</a>   <span class="keyword">func</span> App(M,N) -&gt; LambdaTerm <span class="keyword">equals</span>
@@ -1366,65 +1361,65 @@
 <a class='lineno' href='#line-987' id='line-987'>987</a>       with-replacement (&lt;*1*&gt;, N) <span class="keyword">is</span> LambdaTerm;
 <a class='lineno' href='#line-988' id='line-988'>988</a>   <span class="keyword">end</span></span>;
 <a class='lineno' href='#line-989' id='line-989'>989</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-22">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-22">
-              
-                <h3 id="hd-2.4">
-                  
-                  <a href="#hd-2.4" class="headnumber">
-                    2.4
-                  </a>
-                  
-                  Some common terms
-                </h3>
-              
-
-              
-                <ul class="vocabulary">
+              <h3 id="hd-2.4">
                 
+                <a href="#hd-2.4" class="headnumber">
+                  2.4
+                </a>
                 
-                <li class="type-func"><a href="#line-996"><code>cI</code></a></li>
-                
-                
-                <li class="type-func"><a href="#line-1001"><code>cOne</code></a></li>
-                
-                
-                <li class="type-func"><a href="#line-1006"><code>cK</code></a></li>
-                
-                
-                <li class="type-func"><a href="#line-1011"><code>cK*</code></a></li>
-                
-                
-                <li class="type-func"><a href="#line-1016"><code>cDelta</code></a></li>
-                
-                
-                <li class="type-func"><a href="#line-1021"><code>cY</code></a></li>
-                
-                
-                <li class="type-func"><a href="#line-1031"><code>cOmega</code></a></li>
-                
-                </ul>
-              
-            </div>
+                Some common terms
+              </h3>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-23">
-              
-                <p>As a note of victory, let&#39;s go ahead and define some common terms! :)</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-995' id='line-995'>995</a> <span class="keyword">definition</span>
+              <ul class="vocabulary">
+              
+              
+              <li class="type-func"><a href="#line-996"><code>cI</code></a></li>
+              
+              
+              <li class="type-func"><a href="#line-1001"><code>cOne</code></a></li>
+              
+              
+              <li class="type-func"><a href="#line-1006"><code>cK</code></a></li>
+              
+              
+              <li class="type-func"><a href="#line-1011"><code>cK*</code></a></li>
+              
+              
+              <li class="type-func"><a href="#line-1016"><code>cDelta</code></a></li>
+              
+              
+              <li class="type-func"><a href="#line-1021"><code>cY</code></a></li>
+              
+              
+              <li class="type-func"><a href="#line-1031"><code>cOmega</code></a></li>
+              
+              </ul>
+            
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-23">
+            
+              <p>As a note of victory, let&#39;s go ahead and define some common terms! :)</p>
+
+            
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-995' id='line-995'>995</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-996' id='line-996'>996</a>   <span class="keyword">func</span> cI -&gt; LambdaTerm <span class="keyword">equals</span>
 <a class='lineno' href='#line-997' id='line-997'>997</a>     :<span class="reference">Def11</span>:
 <a class='lineno' href='#line-998' id='line-998'>998</a>     Abs(0,Var(0));
@@ -1465,42 +1460,42 @@
 <a class='lineno' href='#line-1033' id='line-1033'>1033</a>     App(cDelta,cDelta);
 <a class='lineno' href='#line-1034' id='line-1034'>1034</a>   <span class="keyword">coherence</span>;
 <a class='lineno' href='#line-1035' id='line-1035'>1035</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-24">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-24">
-              
-                <h3 id="hd-2.5">
-                  
-                  <a href="#hd-2.5" class="headnumber">
-                    2.5
-                  </a>
-                  
-                  Substitution
-                </h3>
-              
+              <h3 id="hd-2.5">
+                
+                <a href="#hd-2.5" class="headnumber">
+                  2.5
+                </a>
+                
+                Substitution
+              </h3>
+            
 
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-25">
-              
-                <p>Another tree operation which we prove is closed under $\lambda$-terms,
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-25">
+            
+              <p>Another tree operation which we prove is closed under $\lambda$-terms,
  which we did not mention previously, is the <code>&lt;-</code> operation which
  in our case is just the substitution operation we need! :)</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1043' id='line-1043'>1043</a> <span class="keyword">definition</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1043' id='line-1043'>1043</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-1044' id='line-1044'>1044</a>   <span class="keyword">let</span> N,M,v;
 <a class='lineno' href='#line-1045' id='line-1045'>1045</a> 
 <a class='lineno' href='#line-1046' id='line-1046'>1046</a>   <span class="keyword">redefine</span> <span class="keyword">func</span> (N,v) &lt;- M -&gt; LambdaTerm;
@@ -1550,43 +1545,43 @@
 <a class='lineno' href='#line-1090' id='line-1090'>1090</a>     <span class="keyword">hence</span> (N,v) &lt;- M <span class="keyword">is</span> LambdaTerm;
 <a class='lineno' href='#line-1091' id='line-1091'>1091</a>   <span class="keyword">end</span></span>;
 <a class='lineno' href='#line-1092' id='line-1092'>1092</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-26">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-26">
-              
-                <h4 id="hd-2.5.1">
-                  
-                  <a href="#hd-2.5.1" class="headnumber">
-                    2.5.1
-                  </a>
-                  
-                  Substitution lemma
-                </h4>
-              
+              <h4 id="hd-2.5.1">
+                
+                <a href="#hd-2.5.1" class="headnumber">
+                  2.5.1
+                </a>
+                
+                Substitution lemma
+              </h4>
+            
 
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-27">
-              
-                <p>If $v \not\in P$, then
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-27">
+            
+              <p>If $v \not\in P$, then
 $$ M\big[v := N\big]\big[w := P\big]
  = M\big[w := P\big]\big[v := N[w := P]\big] $$</p>
 <p>This is not trivial, I don&#39;t have time for it anymore...</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1102' id='line-1102'>1102</a> <span class="keyword">theorem</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1102' id='line-1102'>1102</a> <span class="keyword">theorem</span>
 <a class='lineno' href='#line-1103' id='line-1103'>1103</a>   <span class="keyword">not</span> P contains_variable v <span class="keyword">implies</span>
 <a class='lineno' href='#line-1104' id='line-1104'>1104</a>     <span class="comment">::M[v := N][w := P] =</span>
 <a class='lineno' href='#line-1105' id='line-1105'>1105</a>     (((M,v) &lt;- N),w) &lt;- P =
@@ -1596,77 +1591,77 @@ $$ M\big[v := N\big]\big[w := P\big]
 <a class='lineno' href='#line-1109' id='line-1109'>1109</a>   <span class="keyword">thus</span> <span class="keyword">thesis</span>;
 <a class='lineno' href='#line-1110' id='line-1110'>1110</a> <span class="error">::&gt;         *4</span>
 <a class='lineno' href='#line-1111' id='line-1111'>1111</a> <span class="keyword">end</span></span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-28">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-28">
-              
-                <h2 id="hd-3">
-                  
-                  <a href="#hd-3" class="headnumber">
-                    3
-                  </a>
-                  
-                  Conversion and reduction
-                </h2>
-              
+              <h2 id="hd-3">
+                
+                <a href="#hd-3" class="headnumber">
+                  3
+                </a>
+                
+                Conversion and reduction
+              </h2>
+            
 
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-29">
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-29">
+            
               
-                
-              
+            
 
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-30">
-              
-                <h3 id="hd-3.1">
-                  
-                  <a href="#hd-3.1" class="headnumber">
-                    3.1
-                  </a>
-                  
-                  $\alpha$ conversion
-                </h3>
-              
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-30">
+            
+              <h3 id="hd-3.1">
+                
+                <a href="#hd-3.1" class="headnumber">
+                  3.1
+                </a>
+                
+                $\alpha$ conversion
+              </h3>
+            
 
-              
-                <ul class="vocabulary">
-                
-                
-                <li class="type-pred"><a href="#line-1120"><code>alpha</code></a></li>
-                
-                </ul>
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-31">
+              <ul class="vocabulary">
               
-                
               
+              <li class="type-pred"><a href="#line-1120"><code>alpha</code></a></li>
+              
+              </ul>
+            
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-31">
+            
+              
+            
 
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1117' id='line-1117'>1117</a> <span class="keyword">definition</span>
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1117' id='line-1117'>1117</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-1118' id='line-1118'>1118</a>   <span class="keyword">let</span> P,Q;
 <a class='lineno' href='#line-1119' id='line-1119'>1119</a> 
 <a class='lineno' href='#line-1120' id='line-1120'>1120</a>   <span class="keyword">pred</span> P alpha Q <span class="keyword">means</span>
@@ -1676,58 +1671,58 @@ $$ M\big[v := N\big]\big[w := P\big]
 <a class='lineno' href='#line-1124' id='line-1124'>1124</a>         r is_application_in P &amp; Q.r = P.r <span class="keyword">or</span>
 <a class='lineno' href='#line-1125' id='line-1125'>1125</a>         <span class="keyword">not</span> r is_application_in P &amp; Q.r = renaming.(P.r);
 <a class='lineno' href='#line-1126' id='line-1126'>1126</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-32">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-32">
-              
-                <h3 id="hd-3.2">
-                  
-                  <a href="#hd-3.2" class="headnumber">
-                    3.2
-                  </a>
-                  
-                  $\beta$ reduction and conversion
-                </h3>
-              
+              <h3 id="hd-3.2">
+                
+                <a href="#hd-3.2" class="headnumber">
+                  3.2
+                </a>
+                
+                $\beta$ reduction and conversion
+              </h3>
+            
 
-              
-                <ul class="vocabulary">
-                
-                
-                <li class="type-pred"><a href="#line-1138"><code>beta-&gt;shallow</code></a></li>
-                
-                
-                <li class="type-pred"><a href="#line-1152"><code>beta-&gt;</code></a></li>
-                
-                
-                <li class="type-pred"><a href="#line-1163"><code>beta-&gt;*</code></a></li>
-                
-                
-                <li class="type-pred"><a href="#line-1178"><code>beta=</code></a></li>
-                
-                </ul>
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-33">
+              <ul class="vocabulary">
               
-                <p>As a technical definition, we first define one-step toplevel
+              
+              <li class="type-pred"><a href="#line-1138"><code>beta-&gt;shallow</code></a></li>
+              
+              
+              <li class="type-pred"><a href="#line-1152"><code>beta-&gt;</code></a></li>
+              
+              
+              <li class="type-pred"><a href="#line-1163"><code>beta-&gt;*</code></a></li>
+              
+              
+              <li class="type-pred"><a href="#line-1178"><code>beta=</code></a></li>
+              
+              </ul>
+            
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-33">
+            
+              <p>As a technical definition, we first define one-step toplevel
  &quot;<em>shallow</em>&quot; reduction, also including alpha conversion along
  the way.</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1134' id='line-1134'>1134</a> <span class="keyword">definition</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1134' id='line-1134'>1134</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-1135' id='line-1135'>1135</a>   <span class="keyword">let</span> P,Q;
 <a class='lineno' href='#line-1136' id='line-1136'>1136</a>   
 <a class='lineno' href='#line-1137' id='line-1137'>1137</a>   <span class="comment">:: P === (\x.N)M --&gt; N[x:=M] =alpha= Q</span>
@@ -1739,21 +1734,21 @@ $$ M\big[v := N\big]\big[w := P\big]
 <a class='lineno' href='#line-1143' id='line-1143'>1143</a>       <span class="comment">:: Q =alpha= N[x:=M]</span>
 <a class='lineno' href='#line-1144' id='line-1144'>1144</a>       Q alpha (N,n) &lt;- M;
 <a class='lineno' href='#line-1145' id='line-1145'>1145</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-34">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-34">
-              
-                <p>Then we close under subterm reduction to get actual one-step beta reduction.</p>
+              <p>Then we close under subterm reduction to get actual one-step beta reduction.</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1149' id='line-1149'>1149</a> <span class="keyword">definition</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1149' id='line-1149'>1149</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-1150' id='line-1150'>1150</a>   <span class="keyword">let</span> M,N;
 <a class='lineno' href='#line-1151' id='line-1151'>1151</a> 
 <a class='lineno' href='#line-1152' id='line-1152'>1152</a>   <span class="keyword">pred</span> M beta-&gt; N <span class="keyword">means</span>
@@ -1761,22 +1756,22 @@ $$ M\big[v := N\big]\big[w := P\big]
 <a class='lineno' href='#line-1154' id='line-1154'>1154</a>       M|p beta-&gt;shallow P &amp;
 <a class='lineno' href='#line-1155' id='line-1155'>1155</a>       N = M with-replacement (p, P);
 <a class='lineno' href='#line-1156' id='line-1156'>1156</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-35">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-35">
-              
-                <p>We close under transitivity and reflexivity
+              <p>We close under transitivity and reflexivity
  to get full beta reduction.</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1160' id='line-1160'>1160</a> <span class="keyword">definition</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1160' id='line-1160'>1160</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-1161' id='line-1161'>1161</a>   <span class="keyword">let</span> M,N;
 <a class='lineno' href='#line-1162' id='line-1162'>1162</a>   
 <a class='lineno' href='#line-1163' id='line-1163'>1163</a>   <span class="keyword">pred</span> M beta-&gt;* N <span class="keyword">means</span>
@@ -1789,21 +1784,21 @@ $$ M\big[v := N\big]\big[w := P\big]
 <a class='lineno' href='#line-1170' id='line-1170'>1170</a>   <span class="comment">::transitivity;</span>
 <a class='lineno' href='#line-1171' id='line-1171'>1171</a>   <span class="keyword">reflexivity</span>;
 <a class='lineno' href='#line-1172' id='line-1172'>1172</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-36">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-36">
-              
-                <p>And then close under symmetry to get beta conversion.</p>
+              <p>And then close under symmetry to get beta conversion.</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1175' id='line-1175'>1175</a> <span class="keyword">definition</span>
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1175' id='line-1175'>1175</a> <span class="keyword">definition</span>
 <a class='lineno' href='#line-1176' id='line-1176'>1176</a>   <span class="keyword">let</span> M,N;
 <a class='lineno' href='#line-1177' id='line-1177'>1177</a>   
 <a class='lineno' href='#line-1178' id='line-1178'>1178</a>   <span class="keyword">pred</span> M beta= N <span class="keyword">means</span>
@@ -1812,33 +1807,33 @@ $$ M\big[v := N\big]\big[w := P\big]
 <a class='lineno' href='#line-1181' id='line-1181'>1181</a>   <span class="keyword">reflexivity</span>;
 <a class='lineno' href='#line-1182' id='line-1182'>1182</a>   <span class="keyword">symmetry</span>;
 <a class='lineno' href='#line-1183' id='line-1183'>1183</a> <span class="keyword">end</span>;</pre></div></div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-37">
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-37">
-              
-                <h2 id="hd-4">
-                  
-                  <a href="#hd-4" class="headnumber">
-                    4
-                  </a>
-                  
-                  Redundant old stuff
-                </h2>
-              
+              <h2 id="hd-4">
+                
+                <a href="#hd-4" class="headnumber">
+                  4
+                </a>
+                
+                Redundant old stuff
+              </h2>
+            
 
-              
-            </div>
             
-        </li>
-        
-        
-        <li>
-            <div class="annotation annotation-38">
-              
-                <p>I used to think I needed this stuff,
+          </div>
+          
+      </li>
+      
+      
+      <li>
+          <div class="annotation annotation-38">
+            
+              <p>I used to think I needed this stuff,
  until I realized that I didn&#39;t have to define <code>Abs</code> and <code>App</code>
  by a <code>means</code> clause, so that a lot of work in proving these
  clauses suddenly became useless! :(</p>
@@ -1846,12 +1841,12 @@ $$ M\big[v := N\big]\big[w := P\big]
  actually be included in the appropriate <code>TREES_</code> articles.
 [And in <code>TARSKI</code>, as for the transitivity of <code>c=</code>, I mean, what the hell?]</p>
 
-              
-
-              
-            </div>
             
-            <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1196' id='line-1196'>1196</a> <span class="keyword">theorem</span> Th8:
+
+            
+          </div>
+          
+          <div class="content"><div class='highlight'><pre><a class='lineno' href='#line-1196' id='line-1196'>1196</a> <span class="keyword">theorem</span> Th8:
 <a class='lineno' href='#line-1197' id='line-1197'>1197</a>   X c= Y &amp; Y c= Z <span class="keyword">implies</span> X c= Z
 <a class='lineno' href='#line-1198' id='line-1198'>1198</a> <a class="keyword toggle-collapsible" href="#">proof</a><span class="collapsible">
 <a class='lineno' href='#line-1199' id='line-1199'>1199</a>   <span class="keyword">assume</span>
@@ -2089,11 +2084,16 @@ $$ M\big[v := N\big]\big[w := P\big]
 <a class='lineno' href='#line-1431' id='line-1431'>1431</a> <span class="error">::&gt;</span>
 <a class='lineno' href='#line-1432' id='line-1432'>1432</a> <span class="error">::&gt; 4: This inference is not accepted</span>
 <a class='lineno' href='#line-1433' id='line-1433'>1433</a> <span class="error">::&gt; 60: Something remains to be proved in this case</span></pre></div></div>
-            
-        </li>
-        
-    </ul>
-  </div>
+          
+      </li>
+      
+  </ul>
+</div>
+<ul id="scrollheader">
+  <li class="title"><a href="#top">$\lambda$-calculus in Mizar</a></li>
+  <li><a href="#toc">Table of Contents</a></li>
+  <li><a href="#" class="toggle-proofs">Toggle all proofs</a></li>
+</ul>
 
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -2120,6 +2120,24 @@ $(function () {
   $(".collapsible").hide();
   $("a.toggle-collapsible").click(function () {
     $(this).next().toggle();
+    return false;
+  });
+
+  $("a.toggle-proofs").click(function () {
+    var scrollTop = $(window).scrollTop(),
+        lineNo = $(".lineno").filter(function () {
+          return $(this).position().top > scrollTop;
+        }),
+        diff = scrollTop - lineNo.position().top;
+
+    if ($("a.toggle-collapsible").next().filter(":visible").length > 0) {
+      $("a.toggle-collapsible").next().hide();
+    } else {
+      $("a.toggle-collapsible").next().show();
+    }
+
+    $(window).scrollTop(lineNo.position().top + diff);
+
     return false;
   });
 
