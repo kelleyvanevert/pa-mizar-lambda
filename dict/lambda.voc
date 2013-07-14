@@ -29,7 +29,6 @@ VLambdaTerm-like
 ::: ## Modes
 ::: `perl -ne "s/^ *mode ([a-zA-Z-]+).*$/M$1/ && print" text/lambda.miz | sort -u`
 MLambdaTerm
-MVariable
 
 ::: ## Predicates
 ::: `perl -ne "s/^ *pred (?:[a-zA-Z](?:, ?[a-zA-Z])* )?([^ ]{2,}) .*$/R$1/ && print" text/lambda.miz | sort -u`
@@ -44,3 +43,5 @@ Rholds_variable
 Ris_abstraction_in
 Ris_application_in
 Ris_variable_in
+Rloose
+Roccurs_free_in

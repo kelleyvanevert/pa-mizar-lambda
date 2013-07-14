@@ -111,22 +111,18 @@ begin
 :::  by nature work with inductive types, recursive definitions etc,
 :::  and I think that most operations that must be included in a
 :::  formalization of the $\lambda$-calculus using De Bruijn indices,
-:::  like lifting and subsitution, would then be unwieldy.
+:::  like lifting and substitution, would then be unwieldy.
 
 ::: (Actually, I initially planned to work with De Bruijn indices, and
-:::  did define lifting $M\!\uparrow^n_k$, but this required so much effort
+:::  did define lifting, but this required so much effort
 :::  that I switched back to named variables.)
-
-definition
-  mode Variable is Element of NAT;
-end;
 
 reserve T,T1,T2 for Tree,
         D,D1,D2,E for DecoratedTree,
         p,q,q0,q1,q2,r,r2 for FinSequence of NAT,
         x,y,z,X,Y,Z for set,
         i,j,k,l,m,n for Element of NAT,
-        u,v,w for Variable;
+        u,v,w for Element of NAT; :: variables
 
 definition
   let D;
@@ -264,8 +260,7 @@ end;
 ::: Some helper definitions for working with lambda terms.
 
 definition
-  let M be LambdaTerm,
-      r; :: be Node of M;
+  let M,r;
 
   pred r is_variable_in M means
 :: LAMBDA:def 4
@@ -293,13 +288,13 @@ definition
 :: LAMBDA:def 7
 
     r is_variable_in M &
-    M.r = n;
+    M.r = v;
 
   pred M,r abstracts v means
 :: LAMBDA:def 8
 
     r is_abstraction_in M &
-    M.r = n;
+    M.r = v;
 end;
 
 definition
@@ -323,6 +318,44 @@ theorem :: LAMBDA:3
   & not q is_a_proper_prefix_of r
   & not r is_a_proper_prefix_of q;
 
+::: ### $\alpha$ conversion
+
+definition
+  let M,v;
+
+  pred v occurs_free_in M means
+:: LAMBDA:def 10
+
+    ex r being Element of dom M st
+      r is_variable_in M &
+      not ex q st q is_a_prefix_of r &
+        M,q abstracts M.r;
+end;
+
+definition
+  let P,Q;
+
+  pred P alpha Q means
+:: LAMBDA:def 11
+    dom P = dom Q &
+    ex renaming being Function of NAT,NAT st
+      for r st r in dom P holds
+        r is_application_in P & Q.r = P.r or
+        not r is_application_in P & Q.r = renaming.(P.r);
+end;
+
+definition
+  let M,N;
+
+  pred M loose N means
+:: LAMBDA:def 12
+
+    M alpha N &
+    not ex v st
+      v occurs_free_in M &
+      v occurs_free_in N;
+end;
+
 ::: ## Constructing terms
 
 ::: Now we have enough tools at hand to easily construct
@@ -340,7 +373,7 @@ definition
   let v;
 
   func Var(v) -> LambdaTerm equals
-:: LAMBDA:def 10
+:: LAMBDA:def 13
 
     { <*> NAT } --> v;
 end;
@@ -351,7 +384,7 @@ definition
   let v,M;
 
   func Abs(v,M) -> LambdaTerm equals
-:: LAMBDA:def 11
+:: LAMBDA:def 14
 
     (PreAbstractionTerm v) with-replacement (<*0*>, M);
 end;
@@ -362,7 +395,7 @@ definition
   let M,N;
 
   func App(M,N) -> LambdaTerm equals
-:: LAMBDA:def 12
+:: LAMBDA:def 15
 
     (PreApplicationTerm
       with-replacement (<*0*>, M)
@@ -376,32 +409,32 @@ end;
 
 definition
   func cI -> LambdaTerm equals
-:: LAMBDA:def 13
+:: LAMBDA:def 16
 
     Abs(0,Var(0));
 
   func cOne -> LambdaTerm equals
-:: LAMBDA:def 14
+:: LAMBDA:def 17
 
     Abs(0,Abs(1,App(Var(0),Var(1))));
 
   func cK -> LambdaTerm equals
-:: LAMBDA:def 15
+:: LAMBDA:def 18
 
     Abs(0,Abs(1,Var(0)));
 
   func cK* -> LambdaTerm equals
-:: LAMBDA:def 16
+:: LAMBDA:def 19
 
     Abs(0,Abs(1,Var(1)));
 
   func cDelta -> LambdaTerm equals
-:: LAMBDA:def 17
+:: LAMBDA:def 20
 
     Abs(0,App(Var(0),Var(0)));
 
   func cY -> LambdaTerm equals
-:: LAMBDA:def 18
+:: LAMBDA:def 21
 
     Abs(1,App(
       Abs(0,App(Var(1),App(Var(0),Var(0)))),
@@ -411,7 +444,7 @@ end;
 
 definition
   func cOmega -> LambdaTerm equals
-:: LAMBDA:def 19
+:: LAMBDA:def 22
 
     App(cDelta,cDelta);
 end;
@@ -430,6 +463,10 @@ end;
 
 ::: #### Substitution lemma
 
+::: If $v \not\in P$, then
+::: $$ M\big[v := N\big]\big[w := P\big]
+:::  = M\big[w := P\big]\big[v := N[w := P]\big] $$
+
 ::: This is not trivial, I don't have time for it anymore...
 
 theorem :: LAMBDA:4
@@ -440,31 +477,22 @@ theorem :: LAMBDA:4
 
 ::: ## Conversion and reduction
 
-::: ### $\alpha$ conversion
-
-definition
-  let P,Q;
-
-  pred P alpha Q means
-:: LAMBDA:def 20
-    dom P = dom Q &
-    ex renaming being Function of NAT,NAT st
-      for r st r in dom P holds
-        r is_application_in P & Q.r = P.r or
-        not r is_application_in P & Q.r = renaming.(P.r);
-end;
-
 ::: ### $\beta$ reduction and conversion
 
-::: First we define one-step toplevel (_shallow_) reduction.
+::: As a technical definition, we first define one-step toplevel
+:::  "_shallow_" reduction, also including alpha conversion along
+:::  the way.
 
 definition
   let P,Q;
 
   :: P === (\x.N)M --> N[x:=M] =alpha= Q
   pred P beta->shallow Q means
-:: LAMBDA:def 21
+:: LAMBDA:def 23
     ex N,n,M st
+      :: prevent variable capture
+      N loose M &
+
       :: P === (\x.N)M
       P = App(Abs(n,N),M) &
 
@@ -478,7 +506,7 @@ definition
   let M,N;
 
   pred M beta-> N means
-:: LAMBDA:def 22
+:: LAMBDA:def 24
     ex p being Element of dom M, P st
       M|p beta->shallow P &
       N = M with-replacement (p, P);
@@ -490,7 +518,7 @@ definition
   let M,N;
 
   pred M beta->* N means
-:: LAMBDA:def 23
+:: LAMBDA:def 25
     M = N or
     ex reduction being FinSequence st
       reduction.1 = M & reduction.(len reduction) = N &
@@ -506,14 +534,14 @@ definition
   let M,N;
 
   pred M beta= N means
-:: LAMBDA:def 24
+:: LAMBDA:def 26
     M beta->* N or N beta->* M;
   ::transitivity;
   reflexivity;
   symmetry;
 end;
 
-::: ### OLD STUFF
+::: ## Redundant old stuff
 
 ::: I used to think I needed this stuff,
 :::  until I realized that I didn't have to define `Abs` and `App`
@@ -532,7 +560,7 @@ theorem :: LAMBDA:6
   implies
     not p,q^r are_c=-comparable;
 
-::: The `DecoratedTree` analog of `TREES_1:33`
+:: The `DecoratedTree` analog of `TREES_1:33`
 theorem :: LAMBDA:7
     r in dom D
   implies

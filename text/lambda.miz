@@ -5,8 +5,6 @@
 :::  [.miz](text/lambda.miz),
 :::  [.voc](dict/lambda.voc)
 
-::: TODO treat variable captures
-
 ::: @TOC
 
 :: Environ originally taken from `FINSEQ_2`. Later, I added trees and orders.
@@ -119,16 +117,12 @@ begin
 :::  did define lifting, but this required so much effort
 :::  that I switched back to named variables.)
 
-definition
-  mode Variable is Element of NAT;
-end;
-
 reserve T,T1,T2 for Tree,
         D,D1,D2,E for DecoratedTree,
         p,q,q0,q1,q2,r,r2 for FinSequence of NAT,
         x,y,z,X,Y,Z for set,
         i,j,k,l,m,n for Element of NAT,
-        u,v,w for Variable;
+        u,v,w for Element of NAT; :: variables
 
 definition
   let D;
@@ -818,8 +812,7 @@ end;
 ::: Some helper definitions for working with lambda terms.
 
 definition
-  let M be LambdaTerm,
-      r; :: be Node of M;
+  let M,r;
   
   pred r is_variable_in M means
     :Def5:
@@ -843,12 +836,12 @@ definition
   pred M,r holds_variable v means
     :Def8:
     r is_variable_in M &
-    M.r = n;
+    M.r = v;
 
   pred M,r abstracts v means
     :Def9:
     r is_abstraction_in M &
-    M.r = n;
+    M.r = v;
 end;
 
 definition
@@ -903,6 +896,41 @@ A1: not q,r are_c=-comparable;
     then r,q are_c=-comparable by XBOOLE_0:def 9;
     hence contradiction by A1;
   end;
+end;
+
+::: ### $\alpha$ conversion
+
+definition
+  let M,v;
+
+  pred v occurs_free_in M means
+    :Def22:
+    ex r being Element of dom M st
+      r is_variable_in M &
+      not ex q st q is_a_prefix_of r &
+        M,q abstracts M.r;
+end;
+
+definition
+  let P,Q;
+
+  pred P alpha Q means
+    dom P = dom Q &
+    ex renaming being Function of NAT,NAT st
+      for r st r in dom P holds
+        r is_application_in P & Q.r = P.r or
+        not r is_application_in P & Q.r = renaming.(P.r);
+end;
+
+definition
+  let M,N;
+
+  pred M loose N means
+    :Def23:
+    M alpha N &
+    not ex v st
+      v occurs_free_in M &
+      v occurs_free_in N;
 end;
 
 ::: ## Constructing terms
@@ -1112,19 +1140,6 @@ end;
 
 ::: ## Conversion and reduction
 
-::: ### $\alpha$ conversion
-
-definition
-  let P,Q;
-
-  pred P alpha Q means
-    dom P = dom Q &
-    ex renaming being Function of NAT,NAT st
-      for r st r in dom P holds
-        r is_application_in P & Q.r = P.r or
-        not r is_application_in P & Q.r = renaming.(P.r);
-end;
-
 ::: ### $\beta$ reduction and conversion
 
 ::: As a technical definition, we first define one-step toplevel
@@ -1137,6 +1152,9 @@ definition
   :: P === (\x.N)M --> N[x:=M] =alpha= Q
   pred P beta->shallow Q means
     ex N,n,M st
+      :: prevent variable capture
+      N loose M &
+
       :: P === (\x.N)M
       P = App(Abs(n,N),M) &
 
