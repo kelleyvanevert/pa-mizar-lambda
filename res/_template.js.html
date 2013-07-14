@@ -2,15 +2,17 @@
 <html>
 <head>
   <title><%= fragments.structure.title %></title>
-  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" media="all" href="res/style.css" />
   <meta charset="utf8">
 </head>
 <body>
+<!--
   <ul class="tools">
     <li><a href="#top">▴</a></li>
     <li><a href="#toc">□</a></li>
   </ul>
+-->
   <%
     var printTOC = function () {
       return '<div class="toc" id="toc">' +
@@ -36,6 +38,7 @@
   %>
   <div id="container">
     <div id="background"></div>
+    <div id="linenos"></div>
     <ul class="fragments" id="top">
         <% for (var i=0, l=fragments.length; i<l; i++) { %>
         <% var fragment = fragments[i]; %>
@@ -76,11 +79,16 @@
     extensions: ["tex2jax.js"],
     jax: ["input/TeX", "output/HTML-CSS"],
     tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
       processEscapes: true
     },
-    "HTML-CSS": { availableFonts: ["TeX"], scale: 90 }
+    "HTML-CSS": {
+      availableFonts: ["TeX"],
+      scale: 90,
+      minScaleAdjust: 90,
+      styles: {}
+    }
   });
 </script>
 <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

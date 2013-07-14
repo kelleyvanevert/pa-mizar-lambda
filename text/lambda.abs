@@ -1,4 +1,4 @@
-::: # Lambda calculus
+::: # $\lambda$-calculus in Mizar
 
 ::: Original files:
 :::  [.abs](text/lambda.abs),
@@ -7,10 +7,7 @@
 
 ::: @TOC
 
-::: TODO note how we almost never work by inductive/recursive means,
-:::  in constract with, say, Coq.
-
-:: Environ originally taken from `finseq_2`. Later, I added trees and orders.
+:: Environ originally taken from `FINSEQ_2`. Later, I added trees and orders.
 environ
 
   :: Vocabularies are basically for Mizar's lexer.
@@ -90,42 +87,46 @@ environ
 
 begin
 
-::: ## Syntax and behaviour
+::: ## Lambda terms
+
+::: ### Formal representation
+
+::: We identify a _lambda term_ with its AST (abstract
+:::  syntax tree). More precisely, we encode a lambda term
+:::  as a finite decorated tree.
+
+::: The nodes of the tree denote either an application, an abstraction
+:::  or a variable. As the three types of nodes have a different
+:::  count of direct children, no extra information is needed to
+:::  distinguish them.
+
+::: We decorate each node of the tree with a natural number. Variables
+:::  are naturally decorated with a number denoting their name, and
+:::  abstractions with a number denoting the variable they abstract.
+:::  We require application nodes to be `0`, so as to canonicalize
+:::  the representation of a lambda term.
+
+::: We use named variables, as it seemed more
+:::  appropriate for the way in which Mizar works. Mizar doesn't
+:::  by nature work with inductive types, recursive definitions etc,
+:::  and I think that most operations that must be included in a
+:::  formalization of the $\lambda$-calculus using De Bruijn indices,
+:::  like lifting and subsitution, would then be unwieldy.
+
+::: (Actually, I initially planned to work with De Bruijn indices, and
+:::  did define lifting $M\!\uparrow^n_k$, but this required so much effort
+:::  that I switched back to named variables.)
 
 definition
   mode Variable is Element of NAT;
 end;
 
 reserve T,T1,T2 for Tree,
-        D,D2,E for DecoratedTree,
+        D,D1,D2,E for DecoratedTree,
         p,q,q0,q1,q2,r,r2 for FinSequence of NAT,
         x,y,z,X,Y,Z for set,
         i,j,k,l,m,n for Element of NAT,
         u,v,w for Variable;
-
-::: ### Lambda terms
-
-::: A _lambda term_ is identified with it's AST (abstract
-:::  syntax tree). More precisely, we identify a lambda term
-:::  with a finite decorated tree.
-::: The nodes of the tree denote either application, abstraction
-:::  or a variable. Using _De Bruijn_ variable indexing, we decorate
-:::  variables with their De Bruijn index (a natural nuber). Note
-:::  that we needn't explicitly annotate the type of a node,
-:::  as the three types of nodes differ in how many children they must
-:::  have: an application always has two children, an abstraction but one,
-:::  and variables don't have any. So it suffices to decorate application
-:::  and abstraction nodes with some default value (say, $0$).
-
-::: In Mizar, a `Tree` is a non-empty subset of `NAT*`, so a set of finite
-:::  sequences of natural numbers, such that certain logical properties hold.
-::: Every such sequence denotes a node in the tree, and can be interpreted
-:::  as a _path specification_ (how to get there, from the top). We see, then,
-:::  that lambda term trees are a specific subset of general trees, in which
-:::  only finite sequences of $\\{0,1\\}$ are used to denote nodes, nodes
-:::  with children are decorated with a $0$, and is also finite in height.
-::: By _decorating_ a node `r` with a number `n`, we mean that `M.r = n`.
-::: Here `M` is the `DecoratedTree of NAT` which represents the lambda term.
 
 definition
   let D;
@@ -140,10 +141,10 @@ definition
           implies D.r = 0);
 end;
 
-::: Some simple `LambdaTerm-like` things.
-
-::: TODO: some more of these simple trees, for easy usage
-:::  later on, when defining application and abstraction.
+::: The way Mizar works (or is often used) is that we start out
+:::  defining an attribute conveying what we want a $\lambda$-term to be.
+:::  Then, we provide some examples, do some type registrations and conclude
+:::  with a `mode LambdaTerm`.
 
 registration
   let v;
@@ -179,8 +180,9 @@ registration
   cluster { {}, <*0*>, <*1*> } --> 0 -> LambdaTerm-like;
 end;
 
-::: And then we can easily define a `LambdaTerm-like` cluster,
-:::  and make a mode `LambdaTerm` out of it.
+::: Now we can easily define a `LambdaTerm-like` cluster,
+:::  and make a `mode LambdaTerm` out of it.
+
 registration
   cluster LambdaTerm-like for DecoratedTree of NAT;
 end;
@@ -188,6 +190,11 @@ end;
 definition
   mode LambdaTerm is LambdaTerm-like DecoratedTree of NAT;
 end;
+
+reserve M,N,P,Q for LambdaTerm;
+
+::: We also create two specific terms that we'll be using later
+:::  to easily define operations to create bigger terms.
 
 definition
   let v;
@@ -203,27 +210,17 @@ definition
     { {}, <*0*>, <*1*> } --> 0;
 end;
 
-reserve M,N,P,Q for LambdaTerm;
+::: ### Operations
 
-definition
-  let M,r;
+::: On `Tree`s, respectively `DecoratedTree`s, various useful
+:::  operations already exist. We take a particular interest in
+:::  the restriction operation `|` and the replacement, or "single
+:::  substitution", operation `with-replacement`.
 
-  attr r is M-existingPath means
-:: LAMBDA:def 4
+::: To use these to our advantage, we prove that $\lambda$-terms
+:::  are closed under these operations, and tell Mizar's type system
+:::  so by some cluster registrations.
 
-    r is Element of dom M;
-end;
-
-::: #### Preservation under operations
-
-::: `LambdaTerm`s are preserved under taking subterms, and composing
-:::  terms. We'll register this knowledge in the type system.
-
-::: Let Mizar know that `M|r` is also a `LambdaTerm`.
-::: The definition of `|` that we are using is the definition
-:::  that operates on (and returns) a `DecoratedTree`. Showing
-:::  that retricting a `LambdaTerm` produces a `LambdaTerm-like`
-:::  result ensures us that the result is a `LambdaTerm`.
 registration
   let M be LambdaTerm,
       r be Element of dom M;
@@ -231,14 +228,8 @@ registration
   cluster M|r -> LambdaTerm-like;
 end;
 
-::: Let Mizar know that `P with-replacement (p,Q)` is also a `LambdaTerm`.
-::: First we prove a slightly more general theorem about the ranges of
-:::  composed `DecoratedTree`s, and add this knowledge to the type system.
-reserve X for set,
-        D1,D2 for DecoratedTree,
-        p for Element of dom D1;
-
 theorem :: LAMBDA:1
+  p in dom D1 &
   D1 is X-valued & D2 is Y-valued implies
     D1 with-replacement (p,D2) is (X \/ Y)-valued;
 
@@ -249,9 +240,8 @@ registration
   cluster P with-replacement (p,Q) -> NAT-valued;
 end;
 
-reserve p for Element of dom P;
-
 theorem :: LAMBDA:2
+  p in dom P implies
   P with-replacement (p,Q) is LambdaTerm-like;
 
 registration
@@ -270,27 +260,27 @@ definition
 end;
 
 ::: ### Helper definitions
+
 ::: Some helper definitions for working with lambda terms.
 
-::: #### Variable occurences
 definition
   let M be LambdaTerm,
       r; :: be Node of M;
 
   pred r is_variable_in M means
-:: LAMBDA:def 5
+:: LAMBDA:def 4
 
     r in dom M &
     not r^<*0*> in dom M;
 
   pred r is_abstraction_in M means
-:: LAMBDA:def 6
+:: LAMBDA:def 5
 
     r in dom M &
     r^<*0*> in dom M & not r^<*1*> in dom M;
 
   pred r is_application_in M means
-:: LAMBDA:def 7
+:: LAMBDA:def 6
 
     r in dom M &
     r^<*0*> in dom M & r^<*1*> in dom M;
@@ -300,13 +290,13 @@ definition
   let M,r,v;
 
   pred M,r holds_variable v means
-:: LAMBDA:def 8
+:: LAMBDA:def 7
 
     r is_variable_in M &
     M.r = n;
 
   pred M,r abstracts v means
-:: LAMBDA:def 9
+:: LAMBDA:def 8
 
     r is_abstraction_in M &
     M.r = n;
@@ -316,14 +306,14 @@ definition
   let M,v;
 
   pred M contains_variable v means
-:: LAMBDA:def 10
+:: LAMBDA:def 9
 
     ex r st M,r holds_variable v;
 end;
 
-::: #### Abstraction and application
-
-reserve p for FinSequence of NAT;
+::: We also include the following lemma in this section,
+:::  which would preferrably already have been stated in one of
+:::  the `TREES_` articles.
 
 theorem :: LAMBDA:3
     not q,r are_c=-comparable
@@ -333,322 +323,85 @@ theorem :: LAMBDA:3
   & not q is_a_proper_prefix_of r
   & not r is_a_proper_prefix_of q;
 
-::: Why the hell would TARSKI:def 3 not include transitivity?!
-theorem :: LAMBDA:4
-  X c= Y & Y c= Z implies X c= Z;
+::: ## Constructing terms
 
-theorem :: LAMBDA:5
-    not p,q are_c=-comparable
-  implies
-    not p,q^r are_c=-comparable;
+::: Now we have enough tools at hand to easily construct
+:::  bigger terms from previous ones.
 
-::: The `DecoratedTree` analog of `TREES_1:33`
-theorem :: LAMBDA:6
-    r in dom D
-  implies
-    D2 = D with-replacement (r,D2)|r;
+::: Somewhat stupidly, I had earlier not yet thought of simply
+:::  defining `Abs` and `App` by means of an `equals`, seen
+:::  as we already have enough registrations for Mizar's type
+:::  system to allow it. I put a lot of work into `means` clauses
+:::  for these two functors :(
 
-reserve q,r for Element of T;
-
-theorem :: LAMBDA:7
-    not q,r are_c=-comparable
-  implies
-    T|r = (T with-replacement (q,T2))|r;
-
-reserve q,r for Element of dom D;
-
-theorem :: LAMBDA:8
-    not q,r are_c=-comparable
-  implies
-    D|r = (D with-replacement (q,D2))|r;
-
-reserve q,r for FinSequence of NAT;
+::: ### Variables
 
 definition
   let v;
 
   func Var(v) -> LambdaTerm equals
-:: LAMBDA:def 11
+:: LAMBDA:def 10
 
     { <*> NAT } --> v;
 end;
 
-::: Then we can define abstraction and application
-::definition
-::  func AbsLoc -> FinSequence of NAT equals <*0*>;
-::  coherence;
-::end;
-::
-::definition
-::  let v,r;
-::
-::  attr r is v-existingVarPath means
-::    :Def19:
-::    r is (PreAbstractionTerm v)-existingPath;
-::end;
-::
-::registration
-::  let v;
-::
-::  cluster AbsLoc -> v-existingVarPath;
-::::>                                 *100
-::  coherence;
-::::>       *4
-::end;
+::: ### Abstractions
 
 definition
   let v,M;
 
   func Abs(v,M) -> LambdaTerm equals
-:: LAMBDA:def 12
+:: LAMBDA:def 11
 
     (PreAbstractionTerm v) with-replacement (<*0*>, M);
-
-::  func Abs(v,M) -> LambdaTerm means
-::    it,(<*> NAT) abstracts v &
-::    it|<*0*> = M &
-::    not <*1*> in dom it;
-::  existence
-::  proof
-::    set e = <*> NAT;
-::    set e0 = <*0*>;
-::    set e1 = <*1*>;
-::  A3: not e0,e1 are_c=-comparable
-::    proof
-::      assume e0,e1 are_c=-comparable;
-::      then 0 = 1 by TREES_1:5;
-::      hence contradiction;
-::    end;
-::
-::  A6: dom (PreAbstractionTerm v) = { {}, <*0*> } by FUNCOP_1:13;
-::    then <*0*> in dom (PreAbstractionTerm v) by TARSKI:def 2;
-::    then reconsider e0 as Element of dom (PreAbstractionTerm v);
-::    set D = (PreAbstractionTerm v) with-replacement (e0, M);
-::
-::    take D;
-::    thus D,e abstracts v
-::    proof
-::      thus thesis;
-::::>             *4
-::    end;
-::
-::    thus D|<*0*> = M by Th3;
-::    thus not <*1*> in dom D
-::    proof
-::      assume e1 in dom D;
-::      then e1 in (dom (PreAbstractionTerm v)) with-replacement (e0, dom M)
-::        by TREES_2:def 11;
-::      then
-::    A4: (e1 in (dom (PreAbstractionTerm v)) & not e0 is_a_proper_prefix_of e1)
-::     or (ex r st r in dom M & e1 = e0^r)
-::        by TREES_1:def 9;
-::      (e1 in (dom (PreAbstractionTerm v)) & not e0 is_a_proper_prefix_of e1)
-::      proof
-::        assume not thesis;
-::        then (ex r st r in dom M & e1 = e0^r) by A4;
-::        then consider r such that r in dom M and
-::      A2: e1 = e0^r;
-::        e0 is_a_prefix_of e1 by A2, TREES_1:1;
-::        then e0,e1 are_c=-comparable by XBOOLE_0:def 9;
-::        hence contradiction by A3;
-::      end;
-::      then
-::    A5: e1 in (dom (PreAbstractionTerm v));
-::      then
-::    A7: e1 = {} or e1 = <*0*> by A6, TARSKI:def 2;
-::      per cases;
-::      suppose e1 = {};
-::        then e1 is empty;
-::        hence contradiction;
-::      end;
-::      suppose not e1 = {};
-::        then e1 = <*0*> by A7;
-::        then
-::      A8: e1.1 = 0 by FINSEQ_1:40;
-::        e1.1 = 1 by FINSEQ_1:40;
-::        hence contradiction by A8;
-::      end;
-::    end;
-::  end;
-::  uniqueness;
-::::>        *4
 end;
+
+::: ### Applications
 
 definition
   let M,N;
 
   func App(M,N) -> LambdaTerm equals
-:: LAMBDA:def 13
+:: LAMBDA:def 12
 
     (PreApplicationTerm
       with-replacement (<*0*>, M)
     )
       with-replacement (<*1*>, N);
-
-::  func App(M,N) -> LambdaTerm means
-::    it|<*0*> = M & it|<*1*> = N;
-::  existence
-::  proof
-::    set e0 = <*0*>;
-::    set e1 = <*1*>;
-::  A3: not e0,e1 are_c=-comparable
-::    proof
-::      assume e0,e1 are_c=-comparable;
-::      then 0 = 1 by TREES_1:5;
-::      hence contradiction;
-::    end;
-::  A4: not e0 is_a_proper_prefix_of e1 by A3, Th6;
-::
-::    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
-::    then
-::  A7: <*0*> in dom PreApplicationTerm by ENUMSET1:def 1;
-::    then reconsider e0 as Element of dom PreApplicationTerm;
-::    set preD = PreApplicationTerm with-replacement (e0, M);
-::    preD is LambdaTerm;
-::
-::  A1: dom preD = (dom PreApplicationTerm) with-replacement (e0, dom M)
-::      by TREES_2:def 11;
-::    dom PreApplicationTerm = { {}, <*0*>, <*1*> } by FUNCOP_1:13;
-::    then
-::  A2: <*1*> in dom PreApplicationTerm by ENUMSET1:def 1;
-::    <*1*> in dom preD by A1, A2, A4, TREES_1:def 9;
-::    then reconsider e1 as Element of dom preD;
-::    set D = preD with-replacement (e1, N);
-::    D is LambdaTerm;
-::
-::  A6: e0 in dom preD
-::    proof
-::    A8: e0 in dom PreApplicationTerm by A7;
-::      not e0 is_a_proper_prefix_of e0;
-::      then e0 in (dom PreApplicationTerm) with-replacement (e0, dom M)
-::        by A8, TREES_1:def 9;
-::      hence thesis by A1, TREES_2:def 11;
-::    end;
-::  A5: e0 in dom D
-::    proof
-::    A9: e0 in dom preD by A6;
-::      not e1 is_a_proper_prefix_of e0 by A3, Th6;
-::      then e0 in (dom preD) with-replacement (e1, dom N)
-::        by A9, TREES_1:def 9;
-::      hence thesis by A1, TREES_2:def 11;
-::    end;
-::
-::    take D;
-::    thus D|<*0*> = preD|<*0*> by A3, A5, A6, Th5
-::                .= M by Th3;
-::    thus D|<*1*> = N by Th3;
-::  end;
-::  uniqueness;
-::::>        *4
 end;
 
-::: ### Substitution
+::: ### Some common terms
 
-definition
-  let N,M,v;
+::: As a note of victory, let's go ahead and define some common terms! :)
 
-  redefine func (N,v) <- M -> LambdaTerm;
-end;
-
-::: #### Substitution lemma
-::: (If I have time...)
-
-theorem :: LAMBDA:9
-  not P contains_variable v implies
-    ::M[v := N][w := P] =
-    (((M,v) <- N),w) <- P =
-    (((M,w) <- P),v) <- ((N,w) <- P);
-
-::: ### Reduction and conversion
-
-::: First we define one-step toplevel (_shallow_) reduction.
-
-definition
-  let P,Q;
-
-  :: P === (\x.N)M --> N[x:=M] === Q
-  pred P beta->shallow Q means
-:: LAMBDA:def 14
-    ex N,n,M st
-      :: P === (\x.N)M
-      P = App(Abs(n,N),M) &
-
-      :: Q === N[x:=M]
-      Q = (N,n) <- M;
-end;
-
-::: Then we close under subterm reduction to get actual one-step beta reduction.
-
-::: Note that I had to use a work-around here, where I have two
-:::  set-theoretically identical elements `p` and `q`, but considered
-:::  in Mizar as having different types to enable the two `|` operations
-:::  to work. I also tried defining something like `Element of (dom M),(dom N)`,
-:::  but this is extremely difficult, if not impossible.
-definition
-  let M,N;
-
-  :: TODO better definition with tree operations ?
-
-  pred M beta-> N means
-:: LAMBDA:def 15
-    ex
-      p being Element of dom M,
-      q being Element of dom N st
-        p = q &
-        M|p beta->shallow N|q &
-        for q st not p is_a_prefix_of q holds
-          [r,x] in M iff [r,x] in N;
-end;
-
-::: We close under transitivity and reflexivity
-:::  to get full beta reduction.
-definition
-  let M,N;
-
-  pred M beta->* N means
-:: LAMBDA:def 16
-    M = N or
-    ex P st M beta-> P & P beta-> N;
-end;
-
-::: And then close under symmetry to get beta conversion.
-definition
-  let M,N;
-
-  pred M beta= N means
-:: LAMBDA:def 17
-    M beta->* N or N beta->* M;
-end;
-
-::: As a note of victory, let's just define some terms! :)
 definition
   func cI -> LambdaTerm equals
-:: LAMBDA:def 18
+:: LAMBDA:def 13
 
     Abs(0,Var(0));
 
   func cOne -> LambdaTerm equals
-:: LAMBDA:def 19
+:: LAMBDA:def 14
 
     Abs(0,Abs(1,App(Var(0),Var(1))));
 
   func cK -> LambdaTerm equals
-:: LAMBDA:def 20
+:: LAMBDA:def 15
 
     Abs(0,Abs(1,Var(0)));
 
   func cK* -> LambdaTerm equals
-:: LAMBDA:def 21
+:: LAMBDA:def 16
 
     Abs(0,Abs(1,Var(1)));
 
   func cDelta -> LambdaTerm equals
-:: LAMBDA:def 22
+:: LAMBDA:def 17
 
     Abs(0,App(Var(0),Var(0)));
 
   func cY -> LambdaTerm equals
-:: LAMBDA:def 23
+:: LAMBDA:def 18
 
     Abs(1,App(
       Abs(0,App(Var(1),App(Var(0),Var(0)))),
@@ -658,10 +411,147 @@ end;
 
 definition
   func cOmega -> LambdaTerm equals
-:: LAMBDA:def 24
+:: LAMBDA:def 19
 
     App(cDelta,cDelta);
 end;
+
+::: ### Substitution
+
+::: Another tree operation which we prove is closed under $\lambda$-terms,
+:::  which we did not mention previously, is the `<-` operation which
+:::  in our case is just the substitution operation we need! :)
+
+definition
+  let N,M,v;
+
+  redefine func (N,v) <- M -> LambdaTerm;
+end;
+
+::: #### Substitution lemma
+
+::: This is not trivial, I don't have time for it anymore...
+
+theorem :: LAMBDA:4
+  not P contains_variable v implies
+    ::M[v := N][w := P] =
+    (((M,v) <- N),w) <- P =
+    (((M,w) <- P),v) <- ((N,w) <- P);
+
+::: ## Conversion and reduction
+
+::: ### $\alpha$ conversion
+
+definition
+  let P,Q;
+
+  pred P alpha Q means
+:: LAMBDA:def 20
+    dom P = dom Q &
+    ex renaming being Function of NAT,NAT st
+      for r st r in dom P holds
+        r is_application_in P & Q.r = P.r or
+        not r is_application_in P & Q.r = renaming.(P.r);
+end;
+
+::: ### $\beta$ reduction and conversion
+
+::: First we define one-step toplevel (_shallow_) reduction.
+
+definition
+  let P,Q;
+
+  :: P === (\x.N)M --> N[x:=M] =alpha= Q
+  pred P beta->shallow Q means
+:: LAMBDA:def 21
+    ex N,n,M st
+      :: P === (\x.N)M
+      P = App(Abs(n,N),M) &
+
+      :: Q =alpha= N[x:=M]
+      Q alpha (N,n) <- M;
+end;
+
+::: Then we close under subterm reduction to get actual one-step beta reduction.
+
+definition
+  let M,N;
+
+  pred M beta-> N means
+:: LAMBDA:def 22
+    ex p being Element of dom M, P st
+      M|p beta->shallow P &
+      N = M with-replacement (p, P);
+end;
+
+::: We close under transitivity and reflexivity
+:::  to get full beta reduction.
+definition
+  let M,N;
+
+  pred M beta->* N means
+:: LAMBDA:def 23
+    M = N or
+    ex reduction being FinSequence st
+      reduction.1 = M & reduction.(len reduction) = N &
+      for i st 1 <= i & i + 1 <= len reduction holds
+        ex P,Q st P = reduction.i & Q = reduction.(i + 1)
+          & P beta->shallow Q;
+  ::transitivity;
+  reflexivity;
+end;
+
+::: And then close under symmetry to get beta conversion.
+definition
+  let M,N;
+
+  pred M beta= N means
+:: LAMBDA:def 24
+    M beta->* N or N beta->* M;
+  ::transitivity;
+  reflexivity;
+  symmetry;
+end;
+
+::: ### OLD STUFF
+
+::: I used to think I needed this stuff,
+:::  until I realized that I didn't have to define `Abs` and `App`
+:::  by a `means` clause, so that a lot of work in proving these
+:::  clauses suddenly became useless! :(
+
+::: However, these theorems ARE perfectly useful, and I think should
+:::  actually be included in the appropriate `TREES_` articles.
+::: [And in `TARSKI`, as for the transitivity of `c=`, I mean, what the hell?]
+
+theorem :: LAMBDA:5
+  X c= Y & Y c= Z implies X c= Z;
+
+theorem :: LAMBDA:6
+    not p,q are_c=-comparable
+  implies
+    not p,q^r are_c=-comparable;
+
+::: The `DecoratedTree` analog of `TREES_1:33`
+theorem :: LAMBDA:7
+    r in dom D
+  implies
+    D2 = D with-replacement (r,D2)|r;
+
+reserve q,r for Element of T;
+
+theorem :: LAMBDA:8
+    not q,r are_c=-comparable
+  implies
+    T|r = (T with-replacement (q,T2))|r;
+
+reserve q,r for Element of dom D;
+
+theorem :: LAMBDA:9
+    not q,r are_c=-comparable
+  implies
+    D|r = (D with-replacement (q,D2))|r;
+
 
 ::>
 ::> 4: This inference is not accepted

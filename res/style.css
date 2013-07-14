@@ -1,24 +1,10 @@
 
-@import url("lmodern/stylesheet.css");
-
-@font-face {
-    font-family: "Junicode";
-    src: url('lmroman10-regular-webfont.eot');
-    src: url('lmroman10-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('lmroman10-regular-webfont.woff') format('woff'),
-         url('lmroman10-regular-webfont.ttf') format('truetype'),
-         url('lmroman10-regular-webfont.svg#LatinModernRoman10Regular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
 html { height: 100%; }
 body {
-  font-family: "LatinModernRoman10Regular", serif;
-  font-size: 17px;
-  line-height: 24px;
-  color: #111;
+  font-family: serif;
+  font-size: 16px;
+  line-height: 22px;
+  color: #222;
   text-align: justify;
   margin: 0;
   padding: 0;
@@ -34,13 +20,13 @@ a {
 }
 
 b, strong {
-  font-weight: normal;
-  font-family: "LatinModernRoman10Bold", serif;
+  font-weight: bold;
+  font-family: serif;
 }
 
 i, em {
-  font-style: normal;
-  font-family: "LatinModernRoman10Italic", serif;
+  font-style: italic;
+  font-family: serif;
 }
 
 p, ul, ol {
@@ -49,8 +35,8 @@ p, ul, ol {
 
 h1, h2, h3, h4, h5, h6 {
   color: #000;
-  font-weight: normal;
-  font-family: "LatinModernRomanDemi10Regular", serif;
+  font-weight: bold;
+  font-family: serif;
   padding-top: 30px;
   margin: 0 0 15px 0;
 }
@@ -58,6 +44,7 @@ h1 {
   font-size: 45px;
   line-height: 60px;
   text-rendering: optimizeLegibility;
+  text-align: left;
 }
 h2 {
   font-size: 30px;
@@ -101,15 +88,20 @@ h4 {
   padding-top: 20px;
 }
 .toc li.depth-2:first-child {
-  padding-top: 10px;
+  padding-top: 20px;
 }
-.toc li.depth-3 {
-  padding-top: 2px;
+.toc li.depth-3,
+.toc li.depth-4 {
+  padding-top: 5px;
+}
+.toc li.depth-3:first-child {
+  padding-top: 10px;
 }
 .toc .headnumber.depth-2,
 .toc a.depth-2 {
-  font-family: "LatinModernRomanDemi10Regular";
-  font-size: 20px;
+  font-family: serif;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 ul.tools {
@@ -134,21 +126,19 @@ h1 {
 }
 
 ul.vocabulary {
-  margin: 10px -15px !important;
-  padding: 2px 15px 4px 15px !important;
+  margin: 10px 0 !important;
+  padding: 6px 0 5px 20px !important;
   text-align: left;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: inset 0 0 10px #f5f5f5;
+  border-left: 2px solid #000;
 }
 ul.vocabulary li {
-  display: inline;
   margin: 0;
   padding: 0;
   white-space: nowrap;
+  list-style: none;
 }
 ul.vocabulary li a {
-  margin-right: 35px;
+  margin-right: 30px;
   text-decoration: none;
 }
 ul.vocabulary li a code {
@@ -158,33 +148,35 @@ ul.vocabulary li a code {
   font-size: 12px;
 }
 ul.vocabulary li:before {
-  font-size: 12px;
-  color: #637486;
-  font-family: Menlo, Monaco, Consolas, "Lucida Console", monospace;
+  font-weight: bold;
+  color: #000;
+  font-size: 16px;
+  font-style: italic;
+  margin-right: 4px;
 }
 ul.vocabulary li.type-pred:before {
   content: "pred ";
-  color: #C40F0F;
+/*  color: #C40F0F;*/
 }
 ul.vocabulary li.type-func:before {
   content: "func ";
-  color: #0F6DC4;
+/*  color: #0F6DC4;*/
 }
 ul.vocabulary li.type-selector:before {
   content: "selector ";
-  color: #979797;
+/*  color: #979797;*/
 }
 ul.vocabulary li.type-mode:before {
   content: "mode ";
-  color: #B4069F;
+/*  color: #B4069F;*/
 }
 ul.vocabulary li.type-struct:before {
   content: "struct ";
-  color: #650FD3;
+/*  color: #650FD3;*/
 }
 ul.vocabulary li.type-attr:before {
   content: "attr ";
-  color: #77AD04;
+/*  color: #77AD04;*/
 }
 
 hr {
@@ -195,9 +187,9 @@ hr {
 }
 
 pre, tt, code {
-  font-size: 14px;
-  line-height: 20px;
-  font-family: Menlo, Monaco, Consolas, "Lucida Console", monospace;
+  font-size: 12px;
+  line-height: 18px;
+  font-family: Menlo, Monaco, Consolas, monospace;
   margin: 0;
   padding: 0;
 }
@@ -217,8 +209,9 @@ pre, tt, code {
       background: transparent;
     }
   .annotation code {
-    margin: -2px -1px;
+    margin: -2px 0;
     padding: 2px 3px;
+    background: #eee;
   }
 
 
@@ -229,7 +222,8 @@ blockquote {
 }
   .fragments blockquote p {
     font-family: Menlo, Consolas, Monaco, monospace;
-    font-size: 12px; line-height: 16px;
+    font-size: 12px;
+    line-height: 16px;
     color: #999;
     margin: 10px 0 0;
     white-space: pre-wrap;
@@ -237,8 +231,8 @@ blockquote {
 
 ul.fragments {
   list-style: none;
-  padding:0 0 5px 0;;
-  margin:0 0 0 30px;
+  padding: 0;
+  margin: 0;
 }
 
 /*
@@ -256,7 +250,7 @@ ul.fragments > li > div {
 }
 
   body {
-    background: #F5F7F8;
+    /*background: #fcfcfc;*/
   }
   p, ul, ol {
     margin: 0 0 15px;
@@ -286,14 +280,21 @@ ul.fragments > li > div {
 
 #background {
   position: absolute;
-  left: 30px;
-  top: 0; bottom: 0;
-  width: 600px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 550px;
   background: #fff;
-  border-left: 1px solid #E0DAC5;
-  border-right: 1px solid #E0DAC5;
+  border-right: 2px solid #666;
   z-index: -1;
-  box-shadow: 0 0 20px #E0E4E6;
+}
+#linenos {
+  position: absolute;
+  left: 602px;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  z-index: -1;
 }
 
 ul.fragments > li > div.annotation ul, ul.fragments > li > div.annotation ol {
@@ -313,8 +314,8 @@ ul.fragments > li > div {
   overflow-x: hidden;
   white-space: normal;
   vertical-align: top;
-  width: 600px;
-  padding: 10px 50px 1px 50px;
+  width: 550px;
+  padding: 10px 40px 1px 40px;
 }
 .annotation-0 {
   padding-top: 0;
@@ -329,7 +330,7 @@ ul.fragments > li > div.content {
   border: none;
   -webkit-box-shadow: none;
   box-shadow: none;
-  padding: 9px 15px 16px 0;
+  padding: 10px 0px 10px 0;
 }
 
 .pilwrap {
@@ -366,7 +367,7 @@ ul.fragments > li > div.annotation:hover .pilcrow {
   text-align: right;
   width: 40px;
   padding-right: 10px;
-  color: #D2D6D6;
+  color: #999;
   font-size: 12px;
 }
 
@@ -376,123 +377,36 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 */
 
-pre code {
-  display: block; padding: 0.5em;
-  color: #000;
-  background: #f8f8ff
-}
 
 pre .error {
-  color: #DC322F;
+  color: #fff;
+  font-weight: bold;
+  margin: -1px -2px;
+  padding: 1px 2px;
+  background: #DC322F;
+}
+
+pre .comment {
+  color: #888;
+  font-style: italic;
+}
+
+pre .keyword {
+  color: #000;
   font-weight: bold;
 }
 
-pre .comment,
-pre .template_comment,
-pre .diff .header,
-pre .javadoc {
-  color: #ABB8B8;
-}
-
-pre .keyword,
-pre .assignment,
-pre .literal,
-pre .css .rule .keyword,
-pre .winutils,
-pre .javascript .title,
-pre .lisp .title,
-pre .subst {
-  color: #637486;
+.keyword.toggle-collapsible {
+  margin: -1px -2px;
+  padding: 1px 2px;
+  background: #555;
+  color: #fff;
+  text-decoration: none;
 }
 
 pre .reference {
-  color: #323644;
-  font-weight: bold;
-}
-
-pre .number,
-pre .hexcolor {
-  color: #40a070
-}
-
-pre .string,
-pre .tag .value,
-pre .phpdoc,
-pre .tex .formula {
-  color: #219161;
-}
-
-pre .title,
-pre .id {
-  color: #19469D;
-}
-pre .params {
-  color: #00F;
-}
-
-pre .javascript .title,
-pre .lisp .title,
-pre .subst {
-  font-weight: normal
-}
-
-pre .class .title,
-pre .haskell .label,
-pre .tex .command {
-  color: #458;
-  font-weight: bold
-}
-
-pre .tag,
-pre .tag .title,
-pre .rules .property,
-pre .django .tag .keyword {
-  color: #000080;
-  font-weight: normal
-}
-
-pre .attribute,
-pre .variable,
-pre .instancevar,
-pre .lisp .body {
-  color: #008080
-}
-
-pre .regexp {
-  color: #B68
-}
-
-pre .class {
-  color: #458;
-  font-weight: bold
-}
-
-pre .symbol,
-pre .ruby .symbol .string,
-pre .ruby .symbol .keyword,
-pre .ruby .symbol .keymethods,
-pre .lisp .keyword,
-pre .tex .special,
-pre .input_number {
-  color: #990073
-}
-
-pre .builtin,
-pre .constructor,
-pre .built_in,
-pre .lisp .title {
-  color: #0086b3
-}
-
-pre .preprocessor,
-pre .pi,
-pre .doctype,
-pre .shebang,
-pre .cdata {
-  color: #999;
-  font-weight: bold
-}
-
-.sidebar {
-  display: none;
+  margin: -1px -2px;
+  padding: 1px 2px;
+  color: #000;
+  background: #eee;
 }

@@ -35,6 +35,6 @@ fi
 #cake build
 #cd /home/kelley/studie/proof_assistants/ex
 
-docco --output ./ --template ./res/_template.js.html --pass ./res/process-doc.js text/lambda.miz
+#docco --output ./ --template ./res/_template.js.html --pass ./res/process-doc.js text/lambda.miz
 
 #dokko -v */lambda.{miz,voc}

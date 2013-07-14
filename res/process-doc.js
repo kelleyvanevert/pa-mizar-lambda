@@ -28,12 +28,12 @@ var _N = 0,
       }
     },
     voc = [
-      ["func", /^ *func (?:\([^\)]*\))?([^\( ]+).*$/],
+      ["func", /^ *func \(?(?:[a-zA-Z](?:, ?[a-zA-Z])*\)? )?([^\( ]{2,}).*$/],
       ["selector", /^ *([a-zA-Z]+) ->.*$/],
       ["struct", /^ *struct ([a-zA-Z-]+).*$/],
       ["attr", /^ *attr [a-zA-Z] is (?:(?:[a-zA-Z],)*[a-zA-Z](?=-))?([a-zA-Z-]+) .*$/],
       ["mode", /^ *mode ([a-zA-Z-]+).*$/],
-      ["pred", /^ *pred (?:[a-zA-Z] )*([^ ]{2,}) .*$/]
+      ["pred", /^ *pred (?:[a-zA-Z](?:, ?[a-zA-Z])* )?([^ ]{2,}) .*$/]
     ],
     discoverVocabulary = function (fragments) {
       var m,
